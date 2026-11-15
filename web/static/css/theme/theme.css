@@ -1,0 +1,5 @@
+/* Point d'entrée du thème : un seul lien dans le gabarit. */
+@import url("/static/css/theme/tokens.css");
+@import url("/static/css/theme/fonts.css");
+@import url("/static/css/theme/components.css");
+@import url("/static/css/theme/snow.css");

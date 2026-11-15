@@ -1,0 +1,30 @@
+/* Jetons du thème de Noël (fiche « tokens » de la maquette approuvée). */
+:root {
+  --red: #c41e3a;
+  --green: #165b33;
+  --gold: #ffd700;
+  --gold-deep: #d9a800;
+  --night-1: #0f1b3d;
+  --night-2: #1c2f6b;
+  --night-gradient: linear-gradient(180deg, #0f1b3d, #1c2f6b);
+  --frost: #eaf4ee;
+  --line: #c5ddd0;
+  --ink: #1f2d26;
+  --ink-2: #4a5a50;
+  --night-muted: #c9d3f0;
+  --danger: #8f1329;
+  --danger-bg: #fde0e4;
+  --ok-bg: #dff3e4;
+  --ok-ink: #0f4a2a;
+  --warn-bg: #fff1c2;
+  --warn-ink: #6b4b00;
+  --field-line: #7d9686;
+  --card: #ffffff;
+  --radius-s: 8px;
+  --radius: 14px;
+  --radius-l: 20px;
+  --radius-pill: 999px;
+  --target: 44px;
+  --font-body: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Mountains of Christmas", "Nunito", cursive, system-ui, sans-serif;
+}
