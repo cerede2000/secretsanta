@@ -1,0 +1,70 @@
+From: =?UTF-8?Q?P=C3=A8re_No=C3=ABl_secret?= <pere-noel@example.org>
+To: =?UTF-8?Q?L=C3=A9a?= <lea@example.net>
+Subject: =?UTF-8?Q?Le_tirage_est_fait?=
+Date: Tue, 01 Dec 2026 09:30:15 +0000
+Message-ID: <0e42d4cae8864908e0b8c7520e360aa4@example.org>
+MIME-Version: 1.0
+Content-Language: fr
+Auto-Submitted: auto-generated
+X-Auto-Response-Suppress: All
+Content-Type: multipart/alternative;
+ boundary="=_04427c9053d9a667be544c14e69fa482"
+
+--=_04427c9053d9a667be544c14e69fa482
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Bonjour L=C3=A9a,
+
+Le tirage de l'=C3=A9change =C2=AB Famille Martin =C2=BB est fait : tu rece=
+vras un cadeau.
+
+Tu n'as pas de cadeau =C3=A0 offrir cette fois. =C3=89cris ta lettre au P=
+=C3=A8re No=C3=ABl pour guider la personne qui t'en offrira un.
+
+Voici ton lien personnel pour =C3=A9crire ta lettre :
+
+https://noel.example.org/famille/lettre/abc123def456
+
+Budget indicatif par cadeau : 25 =E2=82=AC.
+
+--
+Tu re=C3=A7ois ce message parce que ton adresse figure parmi les participan=
+ts de l'=C3=A9change de cadeaux =C2=AB Famille Martin =C2=BB.
+
+Ce message est envoy=C3=A9 automatiquement par l'application P=C3=A8re No=
+=C3=ABl secret, au nom du groupe =C2=AB Famille Martin =C2=BB.
+
+--=_04427c9053d9a667be544c14e69fa482
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html lang=3D"fr">
+<head>
+<meta charset=3D"utf-8">
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1"=
+>
+<title>Le tirage est fait</title>
+</head>
+<body>
+<p>Bonjour L=C3=A9a,</p>
+<p>Le tirage de l&#39;=C3=A9change =C2=AB Famille Martin =C2=BB est fait : =
+tu recevras un cadeau.</p>
+<p>Tu n&#39;as pas de cadeau =C3=A0 offrir cette fois. =C3=89cris ta lettre=
+ au P=C3=A8re No=C3=ABl pour guider la personne qui t&#39;en offrira un.</p=
+>
+<p>Voici ton lien personnel pour =C3=A9crire ta lettre :</p>
+<p><a href=3D"https://noel.example.org/famille/lettre/abc123def456">https:/=
+/noel.example.org/famille/lettre/abc123def456</a></p>
+<p>Budget indicatif par cadeau : 25 =E2=82=AC.</p>
+<hr>
+<p>Tu re=C3=A7ois ce message parce que ton adresse figure parmi les partici=
+pants de l&#39;=C3=A9change de cadeaux =C2=AB Famille Martin =C2=BB.</p>
+<p>Ce message est envoy=C3=A9 automatiquement par l&#39;application P=C3=A8=
+re No=C3=ABl secret, au nom du groupe =C2=AB Famille Martin =C2=BB.</p>
+</body>
+</html>
+
+--=_04427c9053d9a667be544c14e69fa482--
+
