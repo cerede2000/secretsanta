@@ -1,0 +1,17 @@
+{{/*
+  Confirmation d'un lien (magique ou personnel). Le lien n'est consommé que
+  par le POST de ce formulaire : le simple chargement de la page, par exemple
+  par un scanneur de courriel, ne fait rien. Données : .Slug, .GroupName,
+  .Action.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/access/access.css">
+<div class="access access-night theme-night">
+<div class="access-hero">
+<h1 class="theme-title access-title">{{t "access.confirm.title"}}</h1>
+</div>
+<form class="card access-card" method="post" action="{{.Action}}">
+{{csrfField}}
+<p class="access-intro">{{t "access.confirm.intro" "group" .GroupName}}</p>
+<button class="btn btn-red access-submit" type="submit">{{t "access.confirm.submit"}}</button>
+</form>
+</div>{{end}}
