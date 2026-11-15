@@ -43,7 +43,7 @@ for (const current of ['fr', 'en'] as const) {
     const options = await select.locator('option').evaluateAll((os) =>
       os.map((o) => ({ value: (o as HTMLOptionElement).value, name: o.textContent!.trim() })),
     );
-    expect(options.map((o) => o.name).sort()).toEqual(['English', 'Français']);
+    expect(options.map((o) => o.name).sort()).toEqual(['English', 'Français', 'Testlandia']);
     expect(options.find((o) => o.name === 'English')!.value).toBe('en');
     expect(options.find((o) => o.name === 'Français')!.value).toBe('fr');
     await expect(select).toHaveValue(current);

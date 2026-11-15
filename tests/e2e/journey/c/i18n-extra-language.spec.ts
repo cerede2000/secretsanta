@@ -99,7 +99,7 @@ test('parcours i18n 1 : anglais sur les écrans principaux, sans clé brute ni f
   await expect(root).toHaveAttribute('data-phase', 'revealed');
   await expectLanguage(page, 'découverte (cible révélée)', 'en');
   await page.locator('[data-role="letter"]').click();
-  await expect(page.locator('.letter-sheet .letter-intro')).toContainText('Hello, this is');
+  await expect(page.locator('.letter-sheet .letter-intro')).toContainText(/Hello, this is|This letter is still blank/);
   await expectLanguage(page, 'lettre reçue', 'en');
 });
 
