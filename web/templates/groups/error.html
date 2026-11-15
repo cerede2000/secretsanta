@@ -1,0 +1,15 @@
+{{/* Page neutre : groupe introuvable ou erreur. Données : .Lang, .TitleKey, .ErrorKey. */}}
+{{define "groups/error"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/groups/groups.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<h1>{{t .ErrorKey}}</h1>
+<a class="btn btn-green" href="/creer">{{t "groups.error.back"}}</a>
+</main>
+{{template "layout/footer" .}}
+</body>
+</html>{{end}}

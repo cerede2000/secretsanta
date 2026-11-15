@@ -1,0 +1,41 @@
+/* Pages de groupe : accueil, création, affichage unique du secret. Mobile d'abord. */
+.groups-home { max-width: 100%; margin: 0 auto; padding: 32px 16px 24px; border-radius: var(--radius-l); display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; overflow: hidden; }
+.groups-kicker { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--night-muted); }
+.groups-home-name { margin: 0; font-family: var(--font-display); font-size: 36px; line-height: 1.05; color: var(--gold); text-wrap: balance; }
+.groups-tree { width: 150px; height: auto; flex: none; }
+.groups-welcome { width: 100%; text-align: left; display: flex; flex-direction: column; gap: 10px; }
+.groups-welcome h2 { margin: 0; font-family: var(--font-display); font-size: 26px; color: var(--green); }
+.groups-welcome p { margin: 0; line-height: 1.5; color: var(--ink-2); }
+.groups-actions { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.groups-actions .btn { width: 100%; }
+.groups-enter { min-height: 56px; font-size: 18px; }
+.groups-privacy { margin: 0; max-width: 300px; font-size: 13px; line-height: 1.45; color: var(--night-muted); }
+
+.groups-create-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: var(--radius); background: var(--green); color: #fff; }
+.groups-create-head h1 { margin: 0; font-family: var(--font-display); font-size: 24px; color: #fff; }
+.groups-form { display: flex; flex-direction: column; gap: 14px; margin-top: 14px; }
+.groups-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: var(--radius); background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+.groups-card h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.groups-hint { margin: 0; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
+.groups-optional { font-weight: 600; color: var(--ink-2); }
+.groups-money { position: relative; }
+.groups-money .field { padding-right: 44px; }
+.groups-money-unit { position: absolute; right: 14px; top: 12px; font-weight: 800; color: var(--ink-2); }
+.groups-check { display: flex; align-items: flex-start; gap: 12px; min-height: var(--target); }
+.groups-check input { flex: none; width: 24px; height: 24px; margin: 2px 0 0; accent-color: var(--red); }
+.groups-check label { font-size: 15px; line-height: 1.4; font-weight: 700; }
+.groups-alert { display: block; padding: 8px 10px; border-radius: 10px; background: var(--danger-bg); color: var(--danger); font-size: 13px; font-weight: 700; line-height: 1.4; }
+.groups-note { padding: 10px 12px; border-radius: 10px; background: var(--frost); color: var(--warn-ink); font-size: 13px; font-weight: 700; line-height: 1.45; }
+.groups-submit { width: 100%; min-height: 54px; font-size: 17px; }
+
+.groups-created { display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: var(--radius); background: #f4faf6; box-shadow: inset 0 0 0 2px var(--gold); }
+.groups-created h1 { margin: 0; font-size: 18px; color: var(--green); }
+.groups-created p { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink-2); }
+.groups-secret-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.groups-secret { flex: 1 1 180px; min-width: 0; min-height: 48px; display: flex; align-items: center; padding: 6px 14px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 2px var(--green); font: 800 16px/1.3 ui-monospace, Menlo, Consolas, monospace; overflow-wrap: anywhere; }
+.groups-copy { min-width: 96px; }
+.groups-link { overflow-wrap: anywhere; font-weight: 700; }
+.groups-status { display: block; padding: 8px 10px; border-radius: 10px; background: var(--ok-bg); color: var(--ok-ink); font-size: 13px; font-weight: 700; }
+.groups-status[hidden] { display: none; }
+.groups-status-error { background: var(--danger-bg); color: var(--danger); }
+.groups-offscreen { position: fixed; left: -9999px; top: 0; }
