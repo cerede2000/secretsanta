@@ -2,6 +2,7 @@ package grouppages
 
 import (
 	"context"
+	"html"
 	"regexp"
 	"strings"
 	"testing"
@@ -120,5 +121,41 @@ func TestHomeShowsNameOnly(t *testing.T) {
 func TestNewRequiresDeps(t *testing.T) {
 	if _, err := New(Deps{}); err == nil {
 		t.Error("dépendances manquantes acceptées")
+	}
+}
+
+// Les erreurs d'adresse s'affichent sous le champ (rouge, aria, role alert),
+// avec la saisie dans le message ; la puce « Validé » prouve le mot de passe.
+func TestCreateSlugFieldErrors(t *testing.T) {
+	e := newEnv(t)
+	e.postCreate(t, "", validForm("doublon"))
+	for _, c := range []struct {
+		slug, want string
+		code       int
+	}{
+		{"admin", "« admin » est réservé à l'appli. Essaie famille-2026.", 422},
+		{"Mauvaise Adresse!", "n'est pas une adresse valide", 422},
+		{"doublon", "« doublon » est déjà pris", 409},
+	} {
+		w := e.postCreate(t, "", validForm(c.slug))
+		body := html.UnescapeString(w.Body.String())
+		if w.Code != c.code {
+			t.Errorf("%s : statut %d", c.slug, w.Code)
+		}
+		for _, frag := range []string{c.want, `aria-invalid="true"`, `aria-describedby="slug-error"`, `id="slug-error" class="groups-alert groups-field-error" role="alert"`, "Validé"} {
+			if !strings.Contains(body, frag) {
+				t.Errorf("%s : %q absent", c.slug, frag)
+			}
+		}
+		if strings.Contains(body, `id="create-error"`) {
+			t.Errorf("%s : alerte générale en plus de l'erreur de champ", c.slug)
+		}
+	}
+	// Mauvais mot de passe : aucune information sur l'adresse ni puce « Validé ».
+	f := validForm("admin")
+	f.Set("password", "faux")
+	body := e.postCreate(t, "", f).Body.String()
+	if strings.Contains(body, "slug-error") || strings.Contains(body, "Validé") || !strings.Contains(body, `id="create-error"`) {
+		t.Errorf("mot de passe faux : %s", body)
 	}
 }

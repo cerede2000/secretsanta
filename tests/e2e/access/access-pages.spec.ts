@@ -60,6 +60,10 @@ test('screen-admin-connexion : onglets, secret faux et message integre', async (
 
 test('un lien affiche un bouton de confirmation et ne se consomme pas en GET', async ({ page }) => {
   await page.goto(`/${slug}/connexion/lien/jeton-de-test`);
-  await expect(page.locator('form[method="post"] button[type="submit"]')).toBeVisible();
+  // Le pied de page porte aussi un formulaire POST (choix de langue) : on
+  // vise le formulaire de confirmation par son action.
+  const confirm = page.locator(`form[method="post"][action="/${slug}/connexion/lien/jeton-de-test"]`);
+  await expect(confirm).toHaveCount(1);
+  await expect(confirm.locator('button[type="submit"]')).toBeVisible();
   expect(new URL(page.url()).pathname).toBe(`/${slug}/connexion/lien/jeton-de-test`);
 });

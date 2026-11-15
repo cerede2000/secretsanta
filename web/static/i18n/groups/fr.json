@@ -26,13 +26,17 @@
   "groups.create.event": "Jour J",
   "groups.create.options": "4. Options",
   "groups.create.admin_view": "L'admin peut consulter une paire",
-  "groups.create.admin_view_hint": "Désactivée par défaut. Si tu l'actives, chaque consultation est notée dans le journal.",
+  "groups.create.admin_view_hint": "Désactivée par défaut. Si tu l'actives, chaque consultation est notée dans le journal visible de tous les participants.",
   "groups.create.submit": "Créer le groupe",
   "groups.create.error.password": "Mot de passe d'instance incorrect.",
   "groups.create.error.limited": "Trop de tentatives. Réessaie dans quelques minutes.",
   "groups.create.error.validation": "Vérifie les champs : un nom, une adresse (lettres minuscules, chiffres, tirets), un budget en euros ou vide, des dates valides.",
   "groups.create.error.conflict": "Cette adresse est déjà prise. Choisis-en une autre.",
   "groups.create.error.reveal": "La date de révélation n'est pas valide.",
+  "groups.create.error.slug_reserved": "« {slug} » est réservé à l'appli. Essaie famille-2026.",
+  "groups.create.error.slug_syntax": "« {slug} » n'est pas une adresse valide : lettres minuscules sans accent, chiffres et tirets (3 à 40 caractères). Essaie famille-2026.",
+  "groups.create.error.slug_taken": "« {slug} » est déjà pris. Choisis-en une autre.",
+  "groups.create.validated": "Validé",
   "groups.created.title": "Groupe créé",
   "groups.created.heading": "Groupe créé : accès généré",
   "groups.created.intro": "Voici ton secret d'organisateur pour {name}, affiché une seule fois. Copie-le maintenant.",
@@ -42,5 +46,6 @@
   "groups.created.copy_failed": "Copie impossible : sélectionne le secret et copie-le à la main.",
   "groups.created.lost": "Perdu ? Un nouveau secret se génère depuis l'espace admin, ou avec la commande du serveur.",
   "groups.created.link_label": "Adresse du groupe",
-  "groups.created.admin": "Aller à l'espace organisateur"
+  "groups.created.admin": "Aller à l'espace organisateur",
+  "groups.create.reveal_optional": "(facultative)"
 }

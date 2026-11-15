@@ -58,7 +58,8 @@ func pagesEnglish(t *testing.T, e *testEnv) map[string]string {
 	bad := validForm("english-bad")
 	bad.Set("password", "wrong")
 	badPw := e.postCreate(t, "en", bad)
-	invalid := validForm("x")
+	// Adresse valide : l'erreur visée est celle du budget (message général).
+	invalid := validForm("budget-ko")
 	invalid.Set("budget", "abc")
 	badFields := e.postCreate(t, "en", invalid)
 	created := e.postCreate(t, "en", validForm("english-two"))

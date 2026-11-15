@@ -27,7 +27,7 @@ test('creation de groupe : erreur integree a la page, jamais de boite du navigat
   await page.fill('#g-password', 'mauvais-mot-de-passe');
   await page.fill('#g-name', 'Famille test');
   await page.fill('#g-slug', uniqueSlug('erreur'));
-  await page.click('button[type="submit"]');
+  await page.click('.groups-submit');
   const alert = page.locator('[role="alert"]');
   await expect(alert).toBeVisible();
   await expect(page.locator('#g-name')).toHaveValue('Famille test');
@@ -44,7 +44,7 @@ test('creation puis accueil : secret affiche une fois, bouton Copier, accueil sa
   await page.fill('#g-password', INSTANCE_PASSWORD);
   await page.fill('#g-name', 'Noel en famille');
   await page.fill('#g-slug', slug);
-  await page.click('button[type="submit"]');
+  await page.click('.groups-submit');
 
   const secret = page.locator('#admin-secret');
   await expect(secret).toBeVisible();
@@ -75,5 +75,22 @@ test('creation puis accueil : secret affiche une fois, bouton Copier, accueil sa
 test('accueil d un groupe inconnu : page neutre 404 sans defilement horizontal', async ({ page }) => {
   const res = await page.goto(`/${uniqueSlug('inconnu')}`);
   expect(res?.status()).toBe(404);
+  await expectNoHorizontalScroll(page);
+});
+
+test('creation de groupe : adresse reservee, erreur sous le champ avec bordure rouge', async ({ page }) => {
+  test.skip(INSTANCE_PASSWORD === '', 'E2E_INSTANCE_PASSWORD (ou INSTANCE_PASSWORD) non fourni');
+  await page.goto('/creer');
+  await page.fill('#g-password', INSTANCE_PASSWORD);
+  await page.fill('#g-name', 'Noel en famille');
+  await page.fill('#g-slug', 'admin');
+  await page.click('.groups-submit');
+  const err = page.locator('#slug-error');
+  await expect(err).toBeVisible();
+  await expect(err).toHaveAttribute('role', 'alert');
+  await expect(err).toContainText('« admin » est réservé');
+  await expect(page.locator('#g-slug')).toHaveAttribute('aria-describedby', 'slug-error');
+  await expect(page.locator('#g-slug')).toHaveCSS('border-top-color', 'rgb(196, 30, 58)');
+  await expect(page.locator('#create-error')).toHaveCount(0);
   await expectNoHorizontalScroll(page);
 });

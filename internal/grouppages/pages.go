@@ -88,6 +88,12 @@ type Page struct {
 	Name     string
 	Slug     string
 	Form     Form
+	// SlugErrorKey est la clé du message sous le champ « adresse » (vide :
+	// pas d'erreur propre à ce champ) ; l'adresse saisie sert de paramètre
+	// {slug}. PasswordOK vaut vrai quand l'erreur prouve que le mot de passe
+	// d'instance a été accepté (puce « Validé »).
+	SlugErrorKey string
+	PasswordOK   bool
 	// Renseignés une seule fois, à la création.
 	Secret    string
 	GroupURL  string
@@ -210,6 +216,10 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request) {
 	res, err := p.d.Groups.Create(r.Context(), in)
 	if err != nil {
 		status, key := errorStatus(err)
+		if slugKey := slugErrorKey(err, f.Slug); slugKey != "" {
+			p.d.Render(w, r, status, TemplateCreate, Page{Lang: p.lang(r), TitleKey: "groups.create.title", Form: f, SlugErrorKey: slugKey, PasswordOK: true})
+			return
+		}
 		p.fail(w, r, status, key, f)
 		return
 	}
@@ -242,4 +252,23 @@ func errorStatus(err error) (int, string) {
 		return http.StatusConflict, "groups.create.error.conflict"
 	}
 	return http.StatusInternalServerError, "core.errors.internal"
+}
+
+// slugErrorKey renvoie la clé du message propre au champ « adresse » quand
+// l'échec du service tient à l'adresse (réservée, syntaxe, déjà prise), sinon
+// « ». Le service contrôle le mot de passe avant l'adresse : une telle erreur
+// prouve que le mot de passe était bon.
+func slugErrorKey(err error, slug string) string {
+	switch errs.KindOf(err) {
+	case errs.KindConflict:
+		return "groups.create.error.slug_taken"
+	case errs.KindValidation:
+		if _, verr := groups.ValidateSlug(slug); verr != nil {
+			if groups.IsReservedSlug(slug) {
+				return "groups.create.error.slug_reserved"
+			}
+			return "groups.create.error.slug_syntax"
+		}
+	}
+	return ""
 }
