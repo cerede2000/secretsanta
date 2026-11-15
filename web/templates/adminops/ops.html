@@ -1,0 +1,104 @@
+{{/*
+  Outils d'exploitation de l'administration (F10b.2) : section « Données »
+  (export et import JSON, sauvegarde, duplication), accès administrateur et
+  zone sensible (suppression). Rendue dans layout/admin. Donnée : adminops.Page
+  (.View vaut data, secret, duplicated ou deleted). Aucun texte brut : tout
+  passe par t. Aucune paire du tirage n'est jamais affichée.
+*/}}
+{{define "adminops/msg"}}{{t .Key "n" .N "participants" .Participants "households" .Households}}{{end}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/menu/menu.css">
+<section class="admin-menu" aria-labelledby="adminops-title">
+<header class="admin-menu-head">
+<p class="admin-menu-kicker">{{t "adminops.kicker"}}</p>
+<h1 id="adminops-title" class="admin-menu-title">{{t .TitleKey "name" .NewName}}</h1>
+</header>
+<div class="admin-menu-body">
+{{- if eq .View "deleted"}}
+<div class="card-admin" role="status">
+<p>{{t "adminops.deleted.body" "name" .GroupName}}</p>
+<a class="btn btn-green" href="/">{{t "adminops.deleted.home"}}</a>
+</div>
+{{- else if eq .View "secret"}}
+<div class="card-admin">
+<p role="status">{{t "adminops.secret.once"}}</p>
+<p><label class="field-label" for="adminops-secret">{{t "adminops.secret.label"}}</label>
+<input id="adminops-secret" class="field" type="text" readonly value="{{.Secret}}" autocomplete="off" spellcheck="false"></p>
+<p class="text-secondary">{{t "adminops.secret.sessions"}}</p>
+<a class="btn btn-green" href="{{.LoginURL}}">{{t "adminops.secret.login"}}</a>
+</div>
+{{- else if eq .View "duplicated"}}
+<div class="card-admin">
+<p role="status">{{t "adminops.duplicated.body" "name" .NewName "slug" .NewSlug}}</p>
+<p><label class="field-label" for="adminops-secret">{{t "adminops.duplicated.secret"}}</label>
+<input id="adminops-secret" class="field" type="text" readonly value="{{.Secret}}" autocomplete="off" spellcheck="false"></p>
+<p class="text-secondary">{{t "adminops.secret.once"}}</p>
+<a class="btn btn-green" href="{{.LoginURL}}">{{t "adminops.duplicated.open"}}</a>
+<a class="btn btn-ghost" href="{{.BackURL}}">{{t "adminops.back"}}</a>
+</div>
+{{- else}}
+<p><a class="btn btn-ghost" href="{{.BackURL}}">{{t "adminops.back"}}</a></p>
+{{- with .Status}}
+<p class="chip chip-ok" role="status">{{template "adminops/msg" .}}</p>
+{{- end}}
+
+<section class="card-admin" aria-labelledby="adminops-data">
+<h2 id="adminops-data">{{t "adminops.data.title"}}</h2>
+<p><a class="btn btn-ghost" href="{{.ExportURL}}" download>{{t "adminops.export.button"}}</a></p>
+<p class="text-secondary">{{t "adminops.export.hint"}}</p>
+
+<form method="post" action="{{.ImportAction}}" enctype="multipart/form-data">
+{{csrfField}}
+<label class="field-label" for="adminops-file">{{t "adminops.import.label"}}</label>
+<input id="adminops-file" class="field" type="file" name="file" accept="application/json,.json" required{{if .ImportError}} aria-invalid="true" aria-describedby="adminops-file-error"{{else}} aria-describedby="adminops-file-hint"{{end}}>
+{{- with .ImportError}}
+<p id="adminops-file-error" class="field-error" role="alert">{{template "adminops/msg" .}}</p>
+{{- end}}
+<p id="adminops-file-hint" class="text-secondary">{{t "adminops.import.hint"}}</p>
+<button class="btn btn-ghost" type="submit">{{t "adminops.import.button"}}</button>
+</form>
+
+<form method="post" action="{{.BackupAction}}">
+{{csrfField}}
+<button class="btn btn-ghost" type="submit">{{t "adminops.backup.button"}}</button>
+</form>
+<p class="text-secondary">{{t "adminops.backup.hint"}}</p>
+<p>{{if .LastBackup}}<span class="chip chip-ok">{{t "adminops.backup.last"}}</span> {{t "adminops.backup.date" "date" .LastBackup}}{{else}}<span class="chip chip-warn">{{t "adminops.backup.last"}}</span> {{t "adminops.backup.never"}}{{end}}</p>
+
+{{- with .Plan}}
+<form method="post" action="{{$.DuplicateAction}}">
+{{csrfField}}
+<h3>{{t "adminops.duplicate.label"}}</h3>
+<p class="text-secondary">{{t "adminops.duplicate.hint" "name" .Name "slug" .Slug}}</p>
+<button class="btn btn-green" type="submit">{{t "adminops.duplicate.button" "year" .Year}}</button>
+</form>
+{{- end}}
+</section>
+
+<section class="card-admin" aria-labelledby="adminops-access">
+<h2 id="adminops-access">{{t "adminops.access.title"}}</h2>
+<p class="text-secondary">{{t "adminops.access.hint"}}</p>
+<form method="post" action="{{.ResetAction}}">
+{{csrfField}}
+<button class="btn btn-ghost" type="submit">{{t "adminops.access.button"}}</button>
+</form>
+</section>
+
+<section class="card-admin" aria-labelledby="adminops-danger">
+<h2 id="adminops-danger">{{t "adminops.danger.title"}}</h2>
+<form method="post" action="{{.DeleteAction}}">
+{{csrfField}}
+<h3>{{t "adminops.delete.title"}}</h3>
+<p>{{t "adminops.delete.warning"}}</p>
+<label class="field-label" for="adminops-confirm">{{t "adminops.delete.confirm_label"}}</label>
+<input id="adminops-confirm" class="field" type="text" name="confirm_name" value="{{.ConfirmValue}}" required autocomplete="off"{{if .DeleteError}} aria-invalid="true" aria-describedby="adminops-confirm-error"{{end}}>
+{{- with .DeleteError}}
+<p id="adminops-confirm-error" class="field-error" role="alert">{{template "adminops/msg" .}}</p>
+{{- end}}
+<p><label><input type="checkbox" name="purge" value="1"{{if .Purge}} checked{{end}}> {{t "adminops.delete.purge"}}</label></p>
+<button class="btn btn-danger" type="submit">{{t "adminops.delete.button"}}</button>
+</form>
+</section>
+{{- end}}
+</div>
+</section>
+{{end}}
