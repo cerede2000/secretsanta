@@ -1501,8 +1501,8 @@ Executed by `/wave-planning:wave-execute`. See that skill for the worktree, disp
 ```yaml status
 base_branch: main
 integration_branch: wave/integration
-integration_head: 932cf2112ab90863b445d5800bf8e98d152b61b8
-W1: running
+integration_head: 04953e017c47d2d2cc0dc892b527f06433f405b5
+W1: done
 W2: pending
 W3: pending
 W4: pending
@@ -1516,10 +1516,10 @@ W11: pending
 W12: pending
 W13: pending
 W14: pending
-P1a: merged
-P1b-db: merged
-P1b-sh1: merged
-P1b-sh2: merged
+P1a: done
+P1b-db: done
+P1b-sh1: done
+P1b-sh2: done
 P1c-ci: pending
 P1c-entry: pending
 P1c-infra: pending
