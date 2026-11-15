@@ -1,0 +1,46 @@
+name: recette
+
+# Recette complète sur linux/amd64, sans rien publier (ni image, ni tag).
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: recette-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  recette:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: tests/e2e/package-lock.json
+      - name: Playwright (Chromium)
+        run: |
+          cd tests/e2e
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: contrôles de l'image (linux/amd64)
+        run: bash scripts/check-image.sh
+      - name: recette complète (image linux/amd64, rien n'est publié)
+        env:
+          DOCKER_DEFAULT_PLATFORM: linux/amd64
+        run: bash scripts/e2e.sh
+      - name: rapport Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-playwright
+          path: tests/e2e/playwright-report
+          if-no-files-found: ignore

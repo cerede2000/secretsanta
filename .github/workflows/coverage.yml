@@ -1,0 +1,44 @@
+name: coverage
+
+# Rapport de couverture par paquet, publié comme artefact. Ne publie aucune image
+# et ne bloque rien : la publication reste celle de ci.yml (F1).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: couverture par paquet
+        run: COVERAGE_OUT="$RUNNER_TEMP/coverage" bash scripts/coverage.sh | tee "$RUNNER_TEMP/coverage-resume.txt"
+      - name: rapport dans le résumé du job
+        if: always()
+        run: |
+          {
+            echo '```'
+            cat "$RUNNER_TEMP/coverage-resume.txt" 2>/dev/null || echo "aucun rapport"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: artefact de couverture
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapport-couverture
+          path: |
+            ${{ runner.temp }}/coverage/coverage.out
+            ${{ runner.temp }}/coverage/coverage.txt
+          if-no-files-found: warn
