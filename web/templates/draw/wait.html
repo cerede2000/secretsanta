@@ -1,0 +1,62 @@
+{{/*
+  Attente de la révélation (screen-attente-revelation). Page rendue par le
+  serveur, améliorée par js/draw/countdown.js. Données : Page de
+  internal/targetpage. Les textes du script viennent des attributs data-*.
+*/}}
+{{define "draw/wait"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/draw/draw.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<section class="draw-night draw-wait theme-night">
+<div class="draw-head">
+<div class="draw-kicker">{{.GroupName}} {{.Year}}</div>
+<h1 class="draw-title">{{if .NotDone}}{{t "draw.wait.title.notdone"}}{{else}}{{t "draw.wait.title.ready"}}{{end}}</h1>
+{{if .NotDone}}<p class="draw-lead">{{t "draw.wait.lead.notdone"}}</p>
+{{else if .OpenMonthKey}}<p class="draw-lead">{{t "draw.wait.lead.opening" "when" (t "draw.when" "day" .OpenDay "month" (t .OpenMonthKey) "time" .OpenTime)}}</p>
+{{else}}<p class="draw-lead">{{t "draw.wait.lead.soon"}}</p>{{end}}
+</div>
+{{template "draw/banner" .}}
+{{template "draw/error-alert" .}}
+<svg class="draw-art" aria-hidden="true" width="210" height="220" viewBox="0 0 210 220" focusable="false">
+<ellipse cx="105" cy="206" rx="96" ry="10" fill="#e6ecff" opacity=".95"/>
+<rect x="96" y="104" width="18" height="100" rx="4" fill="#6b3f1d"/>
+<rect x="38" y="42" width="134" height="72" rx="30" fill="#c41e3a"/>
+<path d="M38 78a30 36 0 0 1 30-36h74a30 36 0 0 1 30 36z" fill="#d93a55"/>
+<rect x="58" y="76" width="94" height="10" rx="5" fill="#8f1329"/>
+<rect x="150" y="52" width="6" height="40" rx="2" fill="#ffd700"/><path d="M156 52h22v14h-22z" fill="#ffd700"/>
+<rect x="76" y="14" width="58" height="40" rx="4" fill="#eaf4ee" transform="rotate(-6 105 34)"/>
+</svg>
+{{if .HasCountdown}}<div class="draw-timer" role="timer" data-countdown data-until="{{.UntilRFC3339}}" data-now="{{.NowRFC3339}}"
+ data-t-label="{{t "draw.wait.timer_label" "days" "{days}" "hours" "{hours}" "minutes" "{minutes}"}}"
+ aria-label="{{t "draw.wait.timer_label" "days" .Days "hours" .Hours "minutes" .Minutes}}">
+<div class="draw-block"><b data-unit="days">{{.Days}}</b><span>{{t "draw.unit.days"}}</span></div>
+<div class="draw-block"><b data-unit="hours">{{printf "%02d" .Hours}}</b><span>{{t "draw.unit.hours"}}</span></div>
+<div class="draw-block"><b data-unit="minutes">{{printf "%02d" .Minutes}}</b><span>{{t "draw.unit.minutes"}}</span></div>
+</div>
+<p class="draw-sr" data-countdown-done hidden role="status">{{t "draw.wait.timer_done"}}</p>{{end}}
+{{if or .Budget .HasEvent}}<div class="draw-facts">{{if .Budget}}<span>{{t "draw.budget.label" "amount" .Budget}}</span>{{end}}{{if and .Budget .HasEvent}} · {{end}}{{if .HasEvent}}<span>{{t "draw.event.on" "date" (t "draw.date" "day" .EventDay "month" (t .EventMonthKey))}}</span>{{end}}</div>{{end}}
+{{if not .NotDone}}<p class="draw-note">{{t "draw.wait.mail"}}</p>{{end}}
+{{if .CanPick}}<div class="draw-pref card">
+<form method="post" action="{{.PrefAction}}" class="draw-pref-row">{{csrfField}}
+<span id="draw-pref-label" class="draw-pref-label">{{t "draw.pref.label"}}</span>
+<input type="hidden" name="un_seul" value="{{if .PrefOn}}0{{else}}1{{end}}">
+<button type="{{if .PrefLocked}}button{{else}}submit{{end}}" role="switch" aria-checked="{{if .PrefOn}}true{{else}}false{{end}}" aria-labelledby="draw-pref-label" class="draw-switch{{if .PrefLocked}} is-locked{{end}}"{{if .PrefLocked}} aria-disabled="true" disabled{{end}}><span class="draw-switch-knob"></span></button>
+</form>
+<p class="draw-pref-help">{{t "draw.pref.help"}}</p>
+{{if .PrefLocked}}<p class="draw-pref-lock"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#3a4a40" stroke-width="2" stroke-linecap="round" class="draw-lock-icon"><rect x="2.5" y="7" width="11" height="7" rx="2"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span>{{t "draw.pref.locked"}}</span></p>{{end}}
+</div>{{end}}
+<div class="draw-actions">
+<a class="btn btn-gold draw-cta" href="{{.LetterURL}}">{{t "draw.letter.write"}}</a>
+<p class="draw-secret">{{t "draw.wait.secret"}}</p>
+</div>
+</section>
+</main>
+{{template "layout/footer" .}}
+<script type="module" src="/static/js/theme/snow.js"></script>
+{{if .HasCountdown}}<script type="module" src="/static/js/draw/countdown.js"></script>{{end}}
+</body>
+</html>{{end}}

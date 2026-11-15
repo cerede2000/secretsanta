@@ -1,0 +1,47 @@
+{{/*
+  Carte de cible sans animation (screen-ma-cible), une ou deux cibles.
+  Données : Page de internal/targetpage. Une cible non découverte n'a ni nom
+  ni lien : « à découvrir ».
+*/}}
+{{define "draw/card"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/draw/draw.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<section class="draw-night draw-cards theme-night">
+<div class="draw-cards-top">
+<div class="draw-kicker">{{.GroupName}} {{.Year}}</div>
+<a class="draw-mailbox" href="{{.MailboxURL}}" aria-label="{{t "draw.card.mailbox"}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="17" height="12" rx="2.5"/><path d="M3 7l8 6 8-6"/></svg></a>
+</div>
+<h1 class="draw-sr">{{t "draw.card.title"}}</h1>
+{{template "draw/banner" .}}
+{{template "draw/error-alert" .}}
+{{if .TwoTargets}}<p class="draw-two-intro">{{t "draw.card.two_intro"}}</p>{{end}}
+{{range .Cards}}<article class="draw-card">
+{{if $.TwoTargets}}<span class="draw-chip">{{t "draw.card.n_of" "n" .N "total" .Total}}</span>{{end}}
+{{if .Discovered}}<p class="draw-card-gives">{{t "draw.card.gives"}}</p>
+<div class="draw-avatar" aria-hidden="true">{{.Initial}}</div>
+<h2 class="draw-card-name">{{.Name}}</h2>
+<ul class="draw-rows">
+{{if .Hint}}<li class="draw-row"><div><b>{{t "draw.card.hint"}}</b><br>{{.Hint}}</div></li>{{end}}
+{{if $.Budget}}<li class="draw-row"><div><b>{{t "draw.card.budget" "amount" $.Budget}}</b><br>{{t "draw.card.budget_note"}}</div></li>{{end}}
+{{if $.HasEvent}}<li class="draw-row"><div><b>{{t "draw.card.event"}}</b><br>{{t "draw.date" "day" $.EventDay "month" (t $.EventMonthKey)}}</div></li>{{end}}
+</ul>
+<div class="draw-card-actions">
+<a class="btn btn-red draw-cta" href="{{.LetterURL}}">{{t "draw.card.letter"}}</a>
+<a class="btn btn-green draw-cta-2" href="{{.IdeasURL}}">{{t "draw.card.ideas"}}</a>
+</div>
+{{else}}<h2 class="draw-card-name draw-card-todo">{{t "draw.card.to_discover"}}</h2>
+<p class="draw-card-gives">{{t "draw.card.to_discover_help"}}</p>
+<a class="btn btn-red draw-cta" href="{{$.DiscoveryURL}}">{{t "draw.card.discover"}}</a>
+{{end}}
+</article>{{end}}
+</section>
+</main>
+{{template "layout/footer" .}}
+<script type="module" src="/static/js/theme/snow.js"></script>
+</body>
+</html>{{end}}
