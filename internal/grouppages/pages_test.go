@@ -134,8 +134,8 @@ func TestCreateSlugFieldErrors(t *testing.T) {
 		code       int
 	}{
 		{"admin", "« admin » est réservé à l'appli. Essaie famille-2026.", 422},
-		{"Mauvaise Adresse!", "n'est pas une adresse valide", 422},
-		{"doublon", "« doublon » est déjà pris", 409},
+		{"Mauvaise Adresse!", "« Mauvaise Adresse! » n'est pas une adresse valide", 422},
+		{"doublon", "Cette adresse est déjà prise : « doublon ».", 409},
 	} {
 		w := e.postCreate(t, "", validForm(c.slug))
 		body := html.UnescapeString(w.Body.String())
