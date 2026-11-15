@@ -12,7 +12,7 @@
 <p class="adj-hint">{{t "admin.adjust.intro"}}</p>
 {{if .Result}}
 <section class="card-admin adj-card adj-result" aria-labelledby="adj-res"><div class="adj-card-head"><h2 id="adj-res" class="adj-h2">{{t "admin.adjust.result.title"}}</h2><span class="chip chip-ok">{{t "admin.adjust.result.done"}}</span></div>
-<div role="status" class="adj-big adj-big-wait"><p>{{tn "admin.adjust.preview.affected" .Result.Affected}}</p>{{if gt .Result.Affected 0}}<p>{{tn "admin.adjust.preview.discovered" .Result.AlreadyDiscovered}}</p>{{end}}</div>
+<div role="status" class="adj-big adj-big-wait"><p>{{tn "admin.adjust.preview.affected" .Result.Affected}}</p>{{if gt .Result.AlreadyDiscovered 0}}<p>{{tn "admin.adjust.preview.discovered" .Result.AlreadyDiscovered}}</p>{{end}}</div>
 <p class="adj-hint">{{tn "admin.adjust.result.notified" .Result.Notified}}</p>
 {{if gt .Result.NotifyFailed 0}}<p class="adj-hint adj-warn">{{tn "admin.adjust.result.notify_failed" .Result.NotifyFailed}}</p>{{end}}
 <a class="btn btn-green" href="{{.DrawHref}}">{{t "admin.adjust.result.back"}}</a></section>
@@ -34,11 +34,11 @@
 </section>
 {{if .Preview}}{{if .Preview.Possible}}
 <section class="card-admin adj-card adj-preview" aria-labelledby="adj-prev"><div class="adj-card-head"><h2 id="adj-prev" class="adj-h2">{{t "admin.adjust.preview.title"}}</h2><span class="chip chip-ok">{{t "admin.adjust.preview.found"}}</span></div>
-<div class="adj-big adj-big-wait"><p><b>{{tn "admin.adjust.preview.affected" .Preview.Affected}}</b></p>{{if gt .Preview.Affected 0}}<p>{{tn "admin.adjust.preview.discovered" .Preview.AlreadyDiscovered}}</p>{{end}}</div>
+<div class="adj-big adj-big-wait"><p><b>{{tn "admin.adjust.preview.affected" .Preview.Affected}}</b></p>{{if gt .Preview.AlreadyDiscovered 0}}<p>{{tn "admin.adjust.preview.discovered" .Preview.AlreadyDiscovered}}</p>{{end}}</div>
 <p class="adj-note">{{t "admin.adjust.preview.minimal"}}</p>
 <p class="adj-note">{{t "admin.adjust.preview.two_gifts"}}</p>
 <h3 class="adj-h2">{{t "admin.adjust.next.title"}}</h3>
-<p class="adj-hint">{{t "admin.adjust.next.mail"}}</p>
+<p class="adj-hint">{{tn "admin.adjust.next.mail" .Preview.Affected}}</p>
 <p class="adj-hint">{{t "admin.adjust.next.letter"}}</p>
 <p class="adj-hint">{{t "admin.adjust.next.journal"}}</p>
 <form class="adj-form" method="post" action="/{{.Slug}}/admin/ajuster">{{csrfField}}

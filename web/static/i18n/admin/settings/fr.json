@@ -46,6 +46,7 @@
   "admin.settings.group.after.dates": "Dates",
   "admin.settings.group.after.instructions": "Consigne",
   "admin.settings.group.after.names": "Noms et mails",
+  "admin.settings.group.after.hints": "Indices cadeaux",
   "admin.settings.group.after.note": "Une cible déjà découverte ne revient pas en arrière. Pour la changer, passe par « Ajuster le tirage », qui prévient la personne.",
   "admin.settings.mail.title": "Courrier (SMTP)",
   "admin.settings.mail.on": "Configuré",

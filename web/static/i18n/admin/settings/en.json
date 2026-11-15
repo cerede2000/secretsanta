@@ -46,6 +46,7 @@
   "admin.settings.group.after.dates": "Dates",
   "admin.settings.group.after.instructions": "Instructions",
   "admin.settings.group.after.names": "Names and mails",
+  "admin.settings.group.after.hints": "Gift hints",
   "admin.settings.group.after.note": "A target that was already discovered does not go back. To change it, use \"Adjust the draw\", which notifies the person.",
   "admin.settings.mail.title": "Mail (SMTP)",
   "admin.settings.mail.on": "Configured",
