@@ -2,6 +2,7 @@
 // l'application RÉELLE en HTTP (jamais de SQL), comme le fait l'amorçage de
 // _shared/seed.ts, mais propre au parcours : les parcours changent les rôles,
 // lancent un tirage et ne doivent partager leur groupe avec aucune autre spec.
+import type { BrowserContext } from '@playwright/test';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -153,4 +154,9 @@ export async function withMailLock<T>(fn: () => Promise<T>): Promise<T> {
   } finally {
     fs.rmdirSync(dir);
   }
+}
+
+/** Pose le cookie de langue (`lang`) dans le contexte du navigateur, comme le fait le sélecteur de langue. */
+export async function setLang(context: BrowserContext, lang: string): Promise<void> {
+  await context.addCookies([{ name: 'lang', value: lang, url: baseUrl() }]);
 }

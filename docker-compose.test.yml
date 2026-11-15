@@ -29,10 +29,13 @@ services:
       # toutes les requêtes sortantes des suggestions. Depuis le conteneur, l'hôte
       # se joint par host.docker.internal (127.0.0.1 y désignerait le conteneur).
       SEARXNG_URL: http://host.docker.internal:${E2E_FAKE_SEARCH_PORT:-18090}
+      # Langue ajoutée par un fichier plat (tests/e2e/journey/c/i18n-extra-language.spec.ts).
+      I18N_DIR: /i18n
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ss-test-data:/data
+      - ./tests/e2e/fixtures/i18n:/i18n:ro
     depends_on:
       mailpit:
         condition: service_healthy
