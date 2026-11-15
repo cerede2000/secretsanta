@@ -1,6 +1,6 @@
 /* Pages de connexion (screen-connexion, screen-admin-connexion). Mobile
    d'abord ; aucune ressource data:, aucun style en ligne. */
-.access { display: flex; flex-direction: column; gap: 18px; max-width: 100%; }
+.access { display: flex; flex-direction: column; gap: 18px; }
 .access-night { margin: -20px -16px; padding: 20px 16px 32px; min-height: 70vh; }
 .access-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--night-muted); font-weight: 700; font-size: 15px; text-decoration: none; }
 .access-hero { display: flex; align-items: center; gap: 14px; }

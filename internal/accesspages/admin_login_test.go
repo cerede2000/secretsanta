@@ -69,7 +69,8 @@ func TestAdminLoginBlocksRepeatedAttempts(t *testing.T) {
 			t.Fatalf("essai %d : %d", i, rec.Code)
 		}
 	}
-	// Même le bon secret est refusé dans la fenêtre.
+	// Le budget d'échecs de cette adresse est épuisé : même le bon secret
+	// est refusé depuis elle dans la fenêtre (la devinette reste bornée).
 	if rec := e.do(t, http.MethodPost, "/noel/admin/connexion", adminForm(g.AdminSecret), "198.51.100.9", "fr"); rec.Code != http.StatusTooManyRequests {
 		t.Fatalf("429 attendu, %d", rec.Code)
 	}
@@ -79,6 +80,30 @@ func TestAdminLoginBlocksRepeatedAttempts(t *testing.T) {
 	e.clock.Advance(AdminAttempts.Window + time.Second)
 	if rec := e.do(t, http.MethodPost, "/noel/admin/connexion", adminForm(g.AdminSecret), "198.51.100.9", "fr"); rec.Code != http.StatusSeeOther {
 		t.Fatalf("la fenêtre écoulée doit rouvrir l'accès : %d", rec.Code)
+	}
+}
+
+// Seuls les échecs consomment le budget : des connexions réussies ne le
+// vident pas, et des échecs d'ailleurs ne verrouillent pas l'organisateur.
+func TestAdminLoginOnlyFailuresConsumeBudget(t *testing.T) {
+	e := newEnv(t)
+	g := e.createGroup(t, "noel")
+	for i := 0; i < AdminAttempts.Limit*2; i++ {
+		if rec := e.do(t, http.MethodPost, "/noel/admin/connexion", adminForm(g.AdminSecret), "198.51.100.20", "fr"); rec.Code != http.StatusSeeOther {
+			t.Fatalf("connexion réussie %d : %d", i, rec.Code)
+		}
+	}
+	// Plusieurs devineurs d'autres adresses, chacun sous sa limite.
+	for i := 0; i < 4; i++ {
+		for j := 0; j < AdminAttempts.Limit; j++ {
+			ip := "203.0.113." + string(rune('1'+i))
+			if rec := e.do(t, http.MethodPost, "/noel/admin/connexion", adminForm("faux"), ip, "fr"); rec.Code != http.StatusUnauthorized {
+				t.Fatalf("échec %d/%d : %d", i, j, rec.Code)
+			}
+		}
+	}
+	if rec := e.do(t, http.MethodPost, "/noel/admin/connexion", adminForm(g.AdminSecret), "198.51.100.21", "fr"); rec.Code != http.StatusSeeOther {
+		t.Fatalf("le bon secret doit passer tant que le budget de son adresse n'est pas épuisé : %d", rec.Code)
 	}
 }
 

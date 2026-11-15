@@ -60,6 +60,13 @@ type Sessions interface {
 // 5 essais par fenêtre de 15 minutes.
 var AdminAttempts = limiter.Rule{Limit: 5, Window: 15 * time.Minute}
 
+// AdminGroupAttempts plafonne les échecs de connexion administrateur d'un
+// groupe toutes adresses confondues : 50 par fenêtre de 15 minutes. Bien plus
+// large que AdminAttempts pour qu'un tiers ne verrouille pas l'organisateur
+// avec quelques essais ; un deviseur réparti sur plus de 50 essais peut
+// encore bloquer ce seau commun (compromis assumé).
+var AdminGroupAttempts = limiter.Rule{Limit: 50, Window: 15 * time.Minute}
+
 // Options rassemble les dépendances.
 type Options struct {
 	Groups      Groups
@@ -71,7 +78,10 @@ type Options struct {
 
 	// Facultatifs.
 	CodeLimiter  *limiter.Limiter // défaut : limiter.CodeAttempts
-	AdminLimiter *limiter.Limiter // défaut : AdminAttempts
+	AdminLimiter *limiter.Limiter // défaut : AdminAttempts (par adresse)
+	// AdminGroupLimiter compte les échecs du groupe entier (défaut :
+	// AdminGroupAttempts).
+	AdminGroupLimiter *limiter.Limiter
 	// ClientIP renvoie l'adresse du client (défaut : hôte de RemoteAddr ;
 	// l'orchestrateur la remplace derrière un mandataire de confiance).
 	ClientIP func(*http.Request) string
@@ -87,6 +97,7 @@ type Pages struct {
 	tpl   map[string]*template.Template
 	codeL *limiter.Limiter
 	admL  *limiter.Limiter
+	admG  *limiter.Limiter
 }
 
 // Noms des gabarits (un fichier par page dans web/templates/access).
@@ -110,6 +121,10 @@ func New(o Options) (*Pages, error) {
 	p.admL = o.AdminLimiter
 	if p.admL == nil {
 		p.admL = limiter.New(o.Clock, AdminAttempts)
+	}
+	p.admG = o.AdminGroupLimiter
+	if p.admG == nil {
+		p.admG = limiter.New(o.Clock, AdminGroupAttempts)
 	}
 	if p.o.ClientIP == nil {
 		p.o.ClientIP = remoteHost
@@ -409,8 +424,8 @@ func (p *Pages) AdminPage() http.Handler {
 // AdminLogin vérifie le secret d'administration (POST /{slug}/admin/connexion)
 // par VerifyAdminSecret et ouvre la session administrateur. Un mauvais
 // secret, celui d'un autre groupe et un groupe inconnu reçoivent la même
-// réponse (401, page sans nom de groupe) ; au-delà de 5 essais par fenêtre de
-// 15 minutes, 429.
+// réponse (401, page sans nom de groupe) ; seuls les échecs comptent : au-delà
+// de 5 échecs par adresse (ou 50 par groupe) et par fenêtre de 15 minutes, 429.
 func (p *Pages) AdminLogin() http.Handler {
 	return websec.RequireUnsafeMethod(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue(pathParamSlug)
@@ -424,14 +439,19 @@ func (p *Pages) AdminLogin() http.Handler {
 			p.render(w, r, http.StatusUnauthorized, tplAdmin, d)
 			return
 		}
-		dec := p.admL.Allow(limiter.IPKey(group, p.o.ClientIP(r)), limiter.TargetKey(group, "admin"))
-		if !dec.Allowed {
+		// Seuls les échecs consomment le budget : on regarde sans compter avant
+		// de vérifier, on compte après un échec.
+		ipKey := limiter.IPKey(group, p.o.ClientIP(r))
+		grpKey := limiter.TargetKey(group, "admin")
+		if !p.admL.Peek(ipKey).Allowed || !p.admG.Peek(grpKey).Allowed {
 			d.ErrorKey = keyLimited
 			p.render(w, r, http.StatusTooManyRequests, tplAdmin, d)
 			return
 		}
 		id, err := p.o.Groups.VerifyAdminSecret(r.Context(), slug, r.PostForm.Get(formSecret))
 		if err != nil || id == 0 || id != group {
+			p.admL.Hit(ipKey)
+			p.admG.Hit(grpKey)
 			d.ErrorKey = keyAdminInvalid
 			p.render(w, r, http.StatusUnauthorized, tplAdmin, d)
 			return

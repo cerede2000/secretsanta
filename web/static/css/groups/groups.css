@@ -25,6 +25,9 @@
 .groups-check input { flex: none; width: 24px; height: 24px; margin: 2px 0 0; accent-color: var(--red); }
 .groups-check label { font-size: 15px; line-height: 1.4; font-weight: 700; }
 .groups-alert { display: block; padding: 8px 10px; border-radius: 10px; background: var(--danger-bg); color: var(--danger); font-size: 13px; font-weight: 700; line-height: 1.4; }
+.groups-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.groups-field-error { display: flex; gap: 8px; align-items: flex-start; }
+.groups-field-error svg { flex: none; margin-top: 1px; }
 .groups-note { padding: 10px 12px; border-radius: 10px; background: var(--frost); color: var(--warn-ink); font-size: 13px; font-weight: 700; line-height: 1.45; }
 .groups-submit { width: 100%; min-height: 54px; font-size: 17px; }
 

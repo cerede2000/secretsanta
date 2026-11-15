@@ -165,6 +165,58 @@ func (l *Limiter) Allow(keys ...Key) Decision {
 	return Decision{Allowed: true}
 }
 
+// Peek décide d'une demande sans rien compter : le refus est celui qu'Allow
+// prononcerait, mais une demande autorisée ne consomme aucune place. Une
+// demande sans clé est refusée.
+func (l *Limiter) Peek(keys ...Key) Decision {
+	if len(keys) == 0 {
+		return Decision{Allowed: false, RetryAfter: l.rule.Window}
+	}
+	now := l.clk.Now()
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.sweep(now)
+	var wait time.Duration
+	for _, k := range keys {
+		b := l.buckets[k]
+		if b == nil || !now.Before(b.start.Add(l.rule.Window)) {
+			continue
+		}
+		if b.count >= l.rule.Limit {
+			if w := b.start.Add(l.rule.Window).Sub(now); w > wait {
+				wait = w
+			}
+		}
+	}
+	if wait > 0 {
+		return Decision{Allowed: false, RetryAfter: wait}
+	}
+	return Decision{Allowed: true}
+}
+
+// Hit compte une demande dans chacun des seaux donnés sans rien refuser
+// (un seau déjà plein reste plein). Associé à Peek, il permet de ne compter
+// que les échecs : Peek avant l'épreuve, Hit si elle échoue.
+func (l *Limiter) Hit(keys ...Key) {
+	now := l.clk.Now()
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.sweep(now)
+	seen := make(map[Key]struct{}, len(keys))
+	for _, k := range keys {
+		if _, dup := seen[k]; dup {
+			continue
+		}
+		seen[k] = struct{}{}
+		b := l.buckets[k]
+		if b == nil || !now.Before(b.start.Add(l.rule.Window)) {
+			l.buckets[k] = &bucket{start: now, count: 1}
+			continue
+		}
+		b.count++
+	}
+}
+
 // Len renvoie le nombre de seaux en mémoire.
 func (l *Limiter) Len() int {
 	l.mu.Lock()
