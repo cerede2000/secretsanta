@@ -12,6 +12,7 @@ import (
 	"mime/quotedprintable"
 	"net/textproto"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 	"unicode/utf8"
@@ -130,9 +131,14 @@ type Message struct {
 	// Subject est l'objet, contrôlé par LintSubject.
 	Subject string
 	// Text est la version texte ; HTML la version HTML (fragment de corps ou
-	// document complet en lang="fr"). Les deux doivent être équivalentes.
+	// document complet dont la langue déclarée correspond à Lang). Les deux
+	// doivent être équivalentes.
 	Text string
 	HTML string
+	// Lang est la langue du message (code BCP 47 simple : « fr », « en »,
+	// « pt-BR »). Vide : « fr ». Elle fixe l'en-tête Content-Language et la
+	// balise <html lang> d'un fragment enveloppé.
+	Lang string
 	// Essential marque un courriel qu'aucune préférence ne coupe : il ne
 	// porte jamais d'en-tête List-Unsubscribe.
 	Essential bool
@@ -185,7 +191,12 @@ func (b *Builder) Build(m Message) (*Built, error) {
 	if !utf8.ValidString(m.Text) || !utf8.ValidString(m.HTML) {
 		return nil, fail(ErrBody, "Le corps du courriel n'est pas en UTF-8 valide.")
 	}
+	lang, err := normalizeLang(m.Lang)
+	if err != nil {
+		return nil, err
+	}
 	p := b.Policy(m)
+	p.Lang = lang
 	if err := LintText(m.Text, p); err != nil {
 		return nil, err
 	}
@@ -217,7 +228,7 @@ func (b *Builder) Build(m Message) (*Built, error) {
 		header{"Date", b.clock.Now().Format(time.RFC1123Z)},
 		header{"Message-ID", messageID},
 		header{"MIME-Version", "1.0"},
-		header{"Content-Language", "fr"},
+		header{"Content-Language", lang},
 		header{"Auto-Submitted", "auto-generated"},
 		header{"X-Auto-Response-Suppress", AutoResponseSuppress},
 	)
@@ -246,7 +257,7 @@ func (b *Builder) Build(m Message) (*Built, error) {
 	if err := writePart(mw, "text/plain", m.Text); err != nil {
 		return nil, err
 	}
-	if err := writePart(mw, "text/html", wrapHTML(m.HTML, subject)); err != nil {
+	if err := writePart(mw, "text/html", wrapHTML(m.HTML, subject, lang)); err != nil {
 		return nil, err
 	}
 	if err := mw.Close(); err != nil {
@@ -306,13 +317,33 @@ func writePart(mw *multipart.Writer, mediaType, body string) error {
 	return qp.Close()
 }
 
-// wrapHTML enveloppe un fragment dans un document complet en lang="fr" ;
+// DefaultLang est la langue d'un message dont Lang est vide.
+const DefaultLang = "fr"
+
+// langPattern est un code de langue BCP 47 simple : une langue de 2 ou 3
+// lettres puis des sous-étiquettes alphanumériques de 2 à 8 caractères
+// (script, région, variante).
+var langPattern = regexp.MustCompile(`^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$`)
+
+// normalizeLang renvoie la langue du message : DefaultLang si vide, sinon le
+// code validé ; un code invalide est refusé (il finirait dans un en-tête).
+func normalizeLang(lang string) (string, error) {
+	if lang == "" {
+		return DefaultLang, nil
+	}
+	if len(lang) > 35 || !langPattern.MatchString(lang) {
+		return "", fail(ErrLang, "La langue du message doit être un code de langue valide (par exemple fr ou en).")
+	}
+	return lang, nil
+}
+
+// wrapHTML enveloppe un fragment dans un document complet en lang=<lang> ;
 // un document complet est laissé tel quel.
-func wrapHTML(src, subject string) string {
+func wrapHTML(src, subject, lang string) string {
 	if hasHTMLElement(src) {
 		return src
 	}
-	return "<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"utf-8\">\n" +
+	return "<!DOCTYPE html>\n<html lang=\"" + lang + "\">\n<head>\n<meta charset=\"utf-8\">\n" +
 		"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
 		"<title>" + html.EscapeString(subject) + "</title>\n</head>\n<body>\n" +
 		src + "\n</body>\n</html>\n"

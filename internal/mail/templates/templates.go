@@ -308,6 +308,7 @@ func Render(cat *catalog.Catalog, k Kind, d Data) (mailmsg.Message, error) {
 		Text:      strings.TrimRight(text.String(), "\n") + "\n",
 		HTML:      strings.TrimRight(htm.String(), "\n"),
 		Essential: s.info.Essential,
+		Lang:      lang,
 	}
 	if !s.info.Essential {
 		m.UnsubscribeURL = d.UnsubscribeURL

@@ -36,6 +36,8 @@ var (
 	ErrParity = errors.New("mailmsg: texte et HTML non équivalents")
 	// ErrBody : corps vide ou UTF-8 invalide.
 	ErrBody = errors.New("mailmsg: corps invalide")
+	// ErrLang : langue du message invalide.
+	ErrLang = errors.New("mailmsg: langue invalide")
 	// ErrConfig : configuration du constructeur invalide.
 	ErrConfig = errors.New("mailmsg: configuration invalide")
 )

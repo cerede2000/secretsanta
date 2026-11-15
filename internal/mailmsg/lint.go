@@ -27,6 +27,9 @@ type Policy struct {
 	// UnsubscribeMailto est l'adresse mailto: de désinscription déclarée
 	// (seul mailto autorisé), ou "".
 	UnsubscribeMailto string
+	// Lang est la langue que doit déclarer un document HTML complet ; vide :
+	// DefaultLang. Une déclaration « <Lang>-… » est acceptée.
+	Lang string
 }
 
 // shorteners liste les raccourcisseurs d'adresse refusés (et leurs
@@ -186,7 +189,7 @@ func tinySize(v string) bool {
 // bien formée, aucun script, gestionnaire d'événement, feuille de style
 // externe, cadre ou objet ; images seulement embarquées (data:image/…) avec un
 // attribut alt et jamais réduites à un pixel ; liens conformes à la politique.
-// Un document complet doit déclarer lang="fr".
+// Un document complet doit déclarer la langue de Policy.Lang (« fr » si vide).
 func LintHTML(src string, p Policy) error {
 	z := html.NewTokenizer(strings.NewReader(src))
 	var stack []string
@@ -291,10 +294,14 @@ func lintElement(name string, attrs []html.Attribute, p Policy) error {
 	}
 	switch name {
 	case "html":
+		want := strings.ToLower(p.Lang)
+		if want == "" {
+			want = DefaultLang
+		}
 		lang, _ := get("lang")
 		lang = strings.ToLower(lang)
-		if lang != "fr" && !strings.HasPrefix(lang, "fr-") {
-			return fail(ErrHTML, "Le document HTML doit déclarer lang=\"fr\".")
+		if lang != want && !strings.HasPrefix(lang, want+"-") {
+			return fail(ErrHTML, fmt.Sprintf("Le document HTML doit déclarer lang=\"%s\".", want))
 		}
 	case "img":
 		src, _ := get("src")

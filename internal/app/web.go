@@ -155,8 +155,9 @@ func serviceWorker() (http.Handler, error) {
 	}), nil
 }
 
-// registerWeb branche /static/, la page d'accueil et, en bouclage seulement,
-// la page squelette d'administration.
+// registerWeb branche /static/, /sw.js, /langue, /images/, la page d'accueil
+// et, en bouclage seulement, la page squelette d'administration : toutes sur
+// Mux (routes à chemin fixe).
 func registerWeb(a *App) error {
 	pg, err := newPages(a.Cat)
 	if err != nil {
@@ -174,11 +175,12 @@ func registerWeb(a *App) error {
 	a.Mux.Handle("GET /sw.js", sw)
 	a.Mux.Handle("HEAD /sw.js", sw)
 	// Changement de langue : POST seulement, jeton CSRF exigé par la chaîne.
-	// Participants reste nil : ancre documentée (port ParticipantLocale, vague
-	// des pages participant).
+	// La langue choisie est aussi enregistrée pour le participant connecté
+	// (participantLocale).
 	a.Mux.Handle("POST "+i18nweb.Route, (&i18nweb.Selector{
 		Cat: a.Cat, Secure: strings.HasPrefix(a.Cfg.PublicURL, "https://"),
-		Participants: nil, Logger: slog.Default(),
+		Participants: participantLocale{groups: a.Groups, parts: a.Participants},
+		Logger:       slog.Default(),
 	}).Handler())
 	// Copies locales d'images : lecture seule, sans CSRF.
 	images := http.StripPrefix("/images", a.Images.Handler())

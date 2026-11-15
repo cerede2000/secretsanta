@@ -7,9 +7,13 @@ import (
 	"secretsanta/internal/access/magic"
 	accessmig "secretsanta/internal/access/migrations"
 	"secretsanta/internal/db"
+	"secretsanta/internal/draw"
 	"secretsanta/internal/groups"
+	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/letter"
+	mailmig "secretsanta/internal/mail/migrations"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/websec"
 )
@@ -37,6 +41,13 @@ var migrationSources = []struct {
 	{accessmig.Module, accessmig.Migrations},
 	// letter référence groups et participants : après eux.
 	{letter.Module, letter.Migrations},
+	// Vague 5. groupsettings, rulechange et draw ne référencent que groups
+	// (et leurs propres tables) ; mail (file d'envoi) ne référence aucune autre
+	// table. Tous après groups, participants et rules.
+	{groupsettings.Module, groupsettings.Migrations},
+	{rulechange.Module, rulechange.Migrations},
+	{draw.Module, draw.Migrations},
+	{mailmig.Module, mailmig.Migrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.

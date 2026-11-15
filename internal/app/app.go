@@ -18,16 +18,24 @@ import (
 	"sync"
 	"time"
 
+	"secretsanta/internal/access/magic"
 	"secretsanta/internal/access/token"
+	"secretsanta/internal/accesspages"
 	"secretsanta/internal/config"
+	"secretsanta/internal/draw"
+	"secretsanta/internal/enrolment"
+	"secretsanta/internal/grouppages"
 	"secretsanta/internal/groups"
+	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/health"
 	"secretsanta/internal/i18n/catalog"
 	"secretsanta/internal/i18n/negotiate"
 	"secretsanta/internal/letter"
+	"secretsanta/internal/mail/queue"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/shared/clock"
 	"secretsanta/internal/shared/ports"
@@ -40,6 +48,9 @@ import (
 // purgeInterval est la période des purges (sessions, liens expirés).
 const purgeInterval = 15 * time.Minute
 
+// mailTickEvery est la période de passage de la file d'envoi.
+const mailTickEvery = 5 * time.Second
+
 // App est le serveur assemblé.
 type App struct {
 	Cfg   config.Config
@@ -51,10 +62,29 @@ type App struct {
 	Policy   websec.Policy
 	Sessions *websec.Sessions
 	Groups   *groups.Service
-	// Services des vagues intégrées (aucune route métier encore).
+	// Services des vagues intégrées.
 	Participants *participants.Service
 	Rules        *rules.Service
 	Tokens       *token.Service
+	// GroupSettings porte les réglages d'un groupe (langue par défaut).
+	GroupSettings *groupsettings.Service
+	// DrawState est le port DrawState réel (construit avant participants) ;
+	// Draw est le service du tirage (aucune route encore).
+	DrawState *draw.State
+	Draw      *draw.Service
+	// Enrolment crée les participants vérifiés (aucune route encore).
+	Enrolment *enrolment.Service
+	// RuleChange modifie règles et rôles (aucune route encore).
+	RuleChange *rulechange.Service
+	// Magic porte le lien magique de connexion.
+	Magic *magic.Service
+	// MailQueue est la file d'envoi ; nil sans adresse d'expédition. Elle ne
+	// tourne que si un transport est fourni (voir mailTransport).
+	MailQueue *queue.Service
+	// GroupPages et AccessPages portent les pages publiques des groupes et de
+	// connexion.
+	GroupPages  *grouppages.Pages
+	AccessPages *accesspages.Pages
 	// Bus est le bus d'événements (en mémoire, synchrone).
 	Bus ports.EventBus
 	// SSRF est la garde de récupération externe (aucune route de recherche encore).
@@ -67,13 +97,27 @@ type App struct {
 	Mail *mailmsg.Builder
 	// DKIM est toujours non nil ; Enabled() dit s'il signe.
 	DKIM *maildkim.Signer
-	// Mux reçoit les routes des fonctionnalités (derrière la chaîne de middlewares).
+	// Mux reçoit les routes à chemin fixe (/health, /static/, /images/, /sw.js,
+	// /langue, /, ...), derrière la chaîne de middlewares. Il est consulté en
+	// premier : aucune route par groupe ne peut masquer l'une d'elles.
 	Mux *http.ServeMux
+	// Slugs reçoit les routes dont le premier segment est l'adresse d'un
+	// groupe (/creer, /{slug}, /{slug}/connexion, ...). Séparé de Mux parce que
+	// le multiplexeur refuse qu'un joker de premier segment cohabite avec
+	// /static/ ou /images/ ; il n'est consulté que si Mux n'a aucune route.
+	Slugs *http.ServeMux
 
-	handler http.Handler
-	sched   *scheduler.Scheduler
-	mu      sync.Mutex
-	closers []func()
+	// mail est l'expéditeur de courriels des fonctionnalités (la file si elle
+	// tourne, sinon un refus net : voir mailOutbox).
+	mail mailOutbox
+
+	handler  http.Handler
+	sched    *scheduler.Scheduler
+	mu       sync.Mutex
+	closers  []func()
+	starters []func(context.Context)
+	runWG    sync.WaitGroup
+	stop     context.CancelFunc
 }
 
 // New migre la base, construit les services et la chaîne de middlewares.
@@ -96,7 +140,7 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 	}
 	a := &App{
 		Cfg: cfg, DB: database, Clock: clk, Cat: cat, Version: version,
-		Policy: policy, Mux: http.NewServeMux(), sched: scheduler.New(clk),
+		Policy: policy, Mux: http.NewServeMux(), Slugs: http.NewServeMux(), sched: scheduler.New(clk),
 	}
 	a.Sessions = websec.NewSessions(database, clk, policy, websec.SessionOptions{})
 	a.Every("websec.purge_sessions", purgeInterval, func(ctx context.Context) error {
@@ -119,12 +163,24 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 			_, _ = w.Write([]byte(cat.T(negotiate.Lang(r.Context(), cfg.DefaultLang), "core.csrf.reject", nil) + "\n"))
 		},
 	})
-	// Ordre : en-têtes, CSRF, sessions, négociation de langue, mux. Les ports
-	// GroupLanguage (nil) et ParticipantLocale (nil) sont des ancres : les
-	// pages de groupe et de participant les fourniront.
-	lang := negotiate.Middleware(cat, cfg.DefaultLang, nil)
-	a.handler = websec.SecurityHeaders(policy)(csrf.Middleware(a.Sessions.Middleware(lang(a.Mux))))
+	// Ordre : en-têtes, CSRF, sessions, négociation de langue, routes. La
+	// langue par défaut du groupe (groupsettings) sert en dernier recours.
+	lang := negotiate.Middleware(cat, cfg.DefaultLang, a.GroupSettings)
+	a.handler = websec.SecurityHeaders(policy)(csrf.Middleware(a.Sessions.Middleware(lang(a.routes()))))
 	return a, nil
+}
+
+// routes aiguille une requête : les routes à chemin fixe (Mux) d'abord, les
+// routes par groupe (Slugs) ensuite. Une requête qu'aucune route fixe ne
+// retient va aux routes par groupe, qui répondent 404 pour tout le reste.
+func (a *App) routes() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, pattern := a.Mux.Handler(r); pattern != "" {
+			a.Mux.ServeHTTP(w, r)
+			return
+		}
+		a.Slugs.ServeHTTP(w, r)
+	})
 }
 
 // Handler renvoie le gestionnaire HTTP complet.
@@ -152,17 +208,44 @@ func (a *App) Every(name string, every time.Duration, task scheduler.Task) {
 	a.sched.At(a.Clock.Now().Add(every), run)
 }
 
-// Start lance l'ordonnanceur ; il s'arrête avec ctx.
-func (a *App) Start(ctx context.Context) {
-	go a.sched.Run(ctx, time.Minute)
+// OnStart enregistre une tâche de fond lancée par Start ; elle doit rendre la
+// main quand son contexte est annulé (Close l'annule puis l'attend).
+func (a *App) OnStart(f func(ctx context.Context)) {
+	a.mu.Lock()
+	a.starters = append(a.starters, f)
+	a.mu.Unlock()
 }
 
-// Close exécute les arrêts enregistrés (attente des envois en cours, etc.).
+// Start lance l'ordonnanceur et les tâches de fond ; ils s'arrêtent avec ctx.
+func (a *App) Start(ctx context.Context) {
+	ctx, cancel := context.WithCancel(ctx)
+	a.mu.Lock()
+	a.stop = cancel
+	fs := make([]func(context.Context), len(a.starters))
+	copy(fs, a.starters)
+	a.mu.Unlock()
+	go a.sched.Run(ctx, time.Minute)
+	for _, f := range fs {
+		a.runWG.Add(1)
+		go func() {
+			defer a.runWG.Done()
+			f(ctx)
+		}()
+	}
+}
+
+// Close annule les tâches de fond, les attend, puis exécute les arrêts
+// enregistrés (attente des envois en cours, etc.).
 func (a *App) Close() {
 	a.mu.Lock()
+	cancel := a.stop
 	cs := a.closers
 	a.closers = nil
 	a.mu.Unlock()
+	if cancel != nil {
+		cancel()
+	}
+	a.runWG.Wait()
 	for i := len(cs) - 1; i >= 0; i-- {
 		cs[i]()
 	}
