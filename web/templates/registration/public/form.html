@@ -44,8 +44,8 @@
 {{if .RoleChoice}}<fieldset class="reg-roles"{{if .RoleErr}} aria-describedby="reg-role-err"{{else}} aria-describedby="reg-role-intro"{{end}} data-reg-roles>
 <legend class="reg-label">{{t "registration.public.form.role.title"}} <span class="reg-opt">{{t "registration.public.form.role.optional"}}</span></legend>
 <div id="reg-role-intro" class="reg-role-intro">{{t "registration.public.form.role.intro"}}</div>
-<label class="reg-role" for="reg-role-recv"><input id="reg-role-recv" class="reg-role-box" type="checkbox" name="role" value="reception_seule"{{if .RoleRecv}} checked{{end}}><span>{{t "registration.public.form.role.recv"}}<span class="reg-role-sub">{{t "registration.public.form.role.recv_sub"}}</span></span></label>
-<label class="reg-role" for="reg-role-extra"><input id="reg-role-extra" class="reg-role-box" type="checkbox" name="role" value="offre_plus"{{if .RoleExtra}} checked{{end}}><span>{{t "registration.public.form.role.extra"}}<span class="reg-role-sub">{{t "registration.public.form.role.extra_sub"}}</span></span></label>
+<label class="reg-role" for="reg-role-recv"><input id="reg-role-recv" class="reg-role-box" type="checkbox" name="role" value="{{.RecvValue}}"{{if .RoleRecv}} checked{{end}}><span>{{t "registration.public.form.role.recv"}}<span class="reg-role-sub">{{t "registration.public.form.role.recv_sub"}}</span></span></label>
+<label class="reg-role" for="reg-role-extra"><input id="reg-role-extra" class="reg-role-box" type="checkbox" name="role" value="{{.ExtraValue}}"{{if .RoleExtra}} checked{{end}}><span>{{t "registration.public.form.role.extra"}}<span class="reg-role-sub">{{t "registration.public.form.role.extra_sub"}}</span></span></label>
 {{if .RoleErr}}<div id="reg-role-err" class="reg-msg reg-msg-error" role="alert"><svg class="reg-msg-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4.5M9 12.5v.1"/></svg><span>{{t .RoleErr}}</span></div>{{end}}
 </fieldset>
 <div class="reg-hint">{{t "registration.public.form.role.foot"}}</div>

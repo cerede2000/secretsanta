@@ -18,7 +18,7 @@ test('page : lien, QR code, compteurs, liste en attente, sans debordement ni cib
   await loginAdmin(page, g);
   await open(page, `/${g.slug}/admin/inscriptions`);
   await expect(page.locator('h1')).toHaveText(/Inscriptions par lien/);
-  await expect(page.locator('.regadm-switch')).toHaveAttribute('aria-checked', 'true');
+  await expect(page.locator('.regadm-switch:not(.regadm-role-switch)')).toHaveAttribute('aria-checked', 'true');
   await expect(page.locator('#regadm-link')).toHaveValue(new RegExp(`${g.invitePath}$`));
   // Le QR code est une vraie image servie par une route de meme origine.
   const qr = page.locator('img.regadm-qrimg');
@@ -71,13 +71,13 @@ test('interrupteur et limites : fermer, rouvrir, fixer puis retirer le plafond d
   const dialogs = trackDialogs(page);
   await loginAdmin(page, g);
   await open(page, `/${g.slug}/admin/inscriptions`);
-  const sw = page.locator('.regadm-switch');
+  const sw = page.locator('.regadm-switch:not(.regadm-role-switch)');
   await expect(sw).toHaveAttribute('aria-checked', 'true');
   await sw.click();
-  await expect(page.locator('.regadm-switch')).toHaveAttribute('aria-checked', 'false');
+  await expect(page.locator('.regadm-switch:not(.regadm-role-switch)')).toHaveAttribute('aria-checked', 'false');
   await expectCleanAdminPage(page, dialogs);
-  await page.locator('.regadm-switch').click();
-  await expect(page.locator('.regadm-switch')).toHaveAttribute('aria-checked', 'true');
+  await page.locator('.regadm-switch:not(.regadm-role-switch)').click();
+  await expect(page.locator('.regadm-switch:not(.regadm-role-switch)')).toHaveAttribute('aria-checked', 'true');
 
   await page.locator('#regadm-cap').fill('50');
   await page.locator('form[action$="/limites"] button[type="submit"]').click();

@@ -197,6 +197,9 @@ type page struct {
 	RoleRecv   bool
 	RoleExtra  bool
 	RoleErr    string
+	// Valeurs des deux cases (jamais du texte de gabarit).
+	RecvValue  string
+	ExtraValue string
 
 	// Code, erreur.
 	ErrorKey string
@@ -342,7 +345,7 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request, inv *invite.Invit
 // l'adresse d'une autre inscription.
 func (p *Pages) renderForm(w http.ResponseWriter, r *http.Request, status int, inv *invite.Invite, res *invite.Result) {
 	d := page{TitleKey: "registration.title.form", Slug: inv.Slug, GroupName: inv.Name, Action: r.URL.Path, CodeLen: code.Length,
-		RoleChoice: inv.RoleChoice}
+		RoleChoice: inv.RoleChoice, RecvValue: string(participants.RoleReceptionSeule), ExtraValue: string(participants.RoleOffrePlus)}
 	if inv.Closed != "" {
 		key, _ := inv.Closed.Message()
 		d.Closed = key
