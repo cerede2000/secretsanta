@@ -1,0 +1,69 @@
+From: =?UTF-8?Q?P=C3=A8re_No=C3=ABl_secret?= <pere-noel@example.org>
+To: =?UTF-8?Q?L=C3=A9a?= <lea@example.net>
+Subject: =?UTF-8?Q?Ton_code_de_v=C3=A9rification?=
+Date: Tue, 01 Dec 2026 09:30:15 +0000
+Message-ID: <0e42d4cae8864908e0b8c7520e360aa4@example.org>
+MIME-Version: 1.0
+Content-Language: fr
+Auto-Submitted: auto-generated
+X-Auto-Response-Suppress: All
+Content-Type: multipart/alternative;
+ boundary="=_04427c9053d9a667be544c14e69fa482"
+
+--=_04427c9053d9a667be544c14e69fa482
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Bonjour L=C3=A9a,
+
+Pour finaliser ton inscription =C3=A0 l'=C3=A9change =C2=AB Famille Martin =
+=C2=BB, confirme ton adresse.
+
+Ton code de v=C3=A9rification : A1B2C3
+
+Tu peux aussi confirmer en un clic :
+
+https://noel.example.org/famille/inscription/confirmer/zz99yy88
+
+Le code et le lien sont valables 15 minutes.
+
+--
+Tu re=C3=A7ois ce message parce que ton adresse a =C3=A9t=C3=A9 utilis=C3=
+=A9e pour te connecter ou t'inscrire =C3=A0 l'=C3=A9change de cadeaux =C2=
+=AB Famille Martin =C2=BB.
+
+Ce message est envoy=C3=A9 automatiquement par l'application P=C3=A8re No=
+=C3=ABl secret, au nom du groupe =C2=AB Famille Martin =C2=BB.
+
+--=_04427c9053d9a667be544c14e69fa482
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+<!DOCTYPE html>
+<html lang=3D"fr">
+<head>
+<meta charset=3D"utf-8">
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1"=
+>
+<title>Ton code de v=C3=A9rification</title>
+</head>
+<body>
+<p>Bonjour L=C3=A9a,</p>
+<p>Pour finaliser ton inscription =C3=A0 l&#39;=C3=A9change =C2=AB Famille =
+Martin =C2=BB, confirme ton adresse.</p>
+<p>Ton code de v=C3=A9rification : A1B2C3</p>
+<p>Tu peux aussi confirmer en un clic :</p>
+<p><a href=3D"https://noel.example.org/famille/inscription/confirmer/zz99yy=
+88">https://noel.example.org/famille/inscription/confirmer/zz99yy88</a></p>
+<p>Le code et le lien sont valables 15 minutes.</p>
+<hr>
+<p>Tu re=C3=A7ois ce message parce que ton adresse a =C3=A9t=C3=A9 utilis=
+=C3=A9e pour te connecter ou t&#39;inscrire =C3=A0 l&#39;=C3=A9change de ca=
+deaux =C2=AB Famille Martin =C2=BB.</p>
+<p>Ce message est envoy=C3=A9 automatiquement par l&#39;application P=C3=A8=
+re No=C3=ABl secret, au nom du groupe =C2=AB Famille Martin =C2=BB.</p>
+</body>
+</html>
+
+--=_04427c9053d9a667be544c14e69fa482--
+
