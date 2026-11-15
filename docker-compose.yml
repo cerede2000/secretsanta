@@ -1,0 +1,28 @@
+# Exemple de déploiement. Les secrets viennent de l'environnement (fichier
+# .env copié depuis .env.example) : aucune valeur par défaut n'existe, le
+# démarrage échoue tant qu'ils ne sont pas fournis.
+services:
+  secretsanta:
+    image: ghcr.io/cerede2000/secretsanta:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      INSTANCE_PASSWORD: ${INSTANCE_PASSWORD:?définir INSTANCE_PASSWORD}
+      SIGNING_SECRET: ${SIGNING_SECRET:?définir SIGNING_SECRET}
+      # Courrier SMTP (facultatif) :
+      # SMTP_HOST: ${SMTP_HOST}
+      # SMTP_PORT: ${SMTP_PORT}
+      # SMTP_USER: ${SMTP_USER}
+      # SMTP_PASSWORD: ${SMTP_PASSWORD}
+      # MAIL_FROM: ${MAIL_FROM}
+      # Dossier de langues supplémentaires (facultatif, voir volume ci-dessous) :
+      # I18N_DIR: /i18n
+    volumes:
+      - secretsanta-data:/data
+      # Facultatif : ajouter une langue sans reconstruire l'image.
+      # - ./i18n:/i18n
+
+volumes:
+  secretsanta-data:
