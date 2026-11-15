@@ -12,7 +12,9 @@ import (
 	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/letter"
 	mailmig "secretsanta/internal/mail/migrations"
+	unsubmig "secretsanta/internal/mailunsub/migrations"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/websec"
@@ -48,6 +50,10 @@ var migrationSources = []struct {
 	{rulechange.Module, rulechange.Migrations},
 	{draw.Module, draw.Migrations},
 	{mailmig.Module, mailmig.Migrations},
+	// Vague 6. mail_unsub ne référence aucune autre table ; reveal référence
+	// groups, draws et draw_pairs : après draw.
+	{unsubmig.Module, unsubmig.Migrations},
+	{reveal.Module, reveal.Migrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.

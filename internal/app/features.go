@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"path/filepath"
 	"strings"
 
@@ -10,17 +11,22 @@ import (
 	"secretsanta/internal/access/sqlstore"
 	"secretsanta/internal/access/token"
 	"secretsanta/internal/draw"
+	"secretsanta/internal/enrich"
 	"secretsanta/internal/enrolment"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/letter"
 	"secretsanta/internal/mail/queue"
+	"secretsanta/internal/mail/transport"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
+	"secretsanta/internal/mailunsub"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/shared/ports"
+	"secretsanta/internal/sources"
 	"secretsanta/internal/ssrf"
 )
 
@@ -28,7 +34,7 @@ import (
 // l'ordre des dépendances (le port DrawState avant participants, le bus avant
 // groupsettings, le service de jetons avant l'inscription et les pages).
 // Adaptateurs encore temporaires : voir adapters.go (inscriptions en attente,
-// réparation du tirage) et mailTransport (envoi SMTP).
+// réparation du tirage).
 var features = []func(*App) error{
 	registerBus,
 	registerGroups,
@@ -42,12 +48,16 @@ var features = []func(*App) error{
 	registerEnrolment,
 	registerMail,
 	registerMailQueue,
+	registerMailUnsub,
+	registerReveal,
 	registerMagic,
 	registerImages,
+	registerSuggestions,
 	registerLetter,
 	registerWeb,
 	registerGroupPages,
 	registerAccessPages,
+	registerRevealPages,
 }
 
 // publicBase renvoie PUBLIC_URL sans barre finale.
@@ -100,10 +110,12 @@ func registerRules(a *App) error {
 
 // registerDraw construit le service du tirage. Les inscriptions en attente
 // viennent de l'adaptateur temporaire noPendingRegistrations ; la porte de
-// révélation est celle par défaut (date de révélation du groupe).
+// révélation est celle du paquet reveal (ouverture enregistrée, absence de
+// date ou date atteinte). Elle ne dépend que de la base et de l'horloge, donc
+// elle précède le service de révélation, qui a besoin du service du tirage.
 func registerDraw(a *App) error {
 	a.Draw = draw.NewService(a.DB, a.Clock, a.Groups, a.Participants, a.Rules,
-		noPendingRegistrations{}, draw.Options{Location: a.Cfg.Location})
+		noPendingRegistrations{}, draw.Options{Location: a.Cfg.Location, Gate: reveal.NewGate(a.DB, a.Clock)})
 	return nil
 }
 
@@ -155,12 +167,15 @@ func registerMail(a *App) error {
 	return nil
 }
 
-// mailTransport fournit le transport d'envoi de la file. POINT D'ANCRAGE : la
-// fonctionnalité d'envoi SMTP remplace cette fonction (ou l'affecte, en test)
-// par une qui renvoie un queue.Transport construit sur la configuration SMTP.
-// Tant qu'elle renvoie nil, la file ne démarre pas et l'envoi est désactivé :
-// mailOutbox refuse tout message (ErrMailDisabled) au lieu de l'empiler.
-var mailTransport = func(*App) (queue.Transport, error) { return nil, nil }
+// mailTransport fournit le transport d'envoi de la file : le transport SMTP
+// construit sur la configuration (SMTP_HOST...). Sans SMTP_HOST il renvoie nil,
+// la file ne démarre pas et l'envoi est désactivé : mailOutbox refuse tout
+// message (ErrMailDisabled) au lieu de l'empiler. Variable de paquet pour que
+// les tests y mettent un faux transport. La signature DKIM est faite par la
+// file (a.DKIM), pas ici.
+var mailTransport = func(a *App) (queue.Transport, error) {
+	return transport.FromConfig(&a.Cfg, nil, a.Clock)
+}
 
 // registerMailQueue construit la file d'envoi quand un constructeur de messages
 // existe (adresse d'expédition configurée) ; elle ne tourne que si
@@ -236,5 +251,37 @@ func registerImages(a *App) error {
 // DATA_DIR/letter-images). Aucune route : les pages viennent plus tard.
 func registerLetter(a *App) error {
 	a.Letter = letter.NewService(a.DB, a.Clock, a.Bus, filepath.Join(a.Cfg.DataDir, "letter-images"))
+	return nil
+}
+
+// registerMailUnsub construit le service de désinscription par type de courriel
+// (liens signés par SIGNING_SECRET, base PUBLIC_URL) et monte ses routes
+// GET/POST /desinscription/{jeton} sur Mux. Le POST « un clic » n'a pas de
+// jeton CSRF : la chaîne l'exempte par mailunsub.IsOneClickPath (voir New), la
+// signature du jeton tenant lieu de preuve.
+func registerMailUnsub(a *App) error {
+	s, err := mailunsub.NewService(mailunsub.Options{
+		DB: a.DB, Clock: a.Clock, SigningKey: []byte(a.Cfg.SigningKey.Reveal()), PublicURL: a.Cfg.PublicURL,
+	})
+	if err != nil {
+		return fmt.Errorf("désinscription : %w", err)
+	}
+	p, err := mailunsub.New(mailunsub.PageOptions{Service: s, Groups: a.Groups, Translator: a.Cat})
+	if err != nil {
+		return fmt.Errorf("pages de désinscription : %w", err)
+	}
+	p.Register(a.Mux)
+	a.Unsub = s
+	return nil
+}
+
+// registerSuggestions construit la chaîne de sources de suggestions et
+// l'enrichissement des liens Amazon. Les deux passent par le client de la garde
+// SSRF (ssrf.Guard.Client, bâti par outbound.New) : aucun appel sortant ne
+// contourne la garde. Services seulement, aucune page : elle viendra avec la
+// lettre. Elle doit suivre registerImages (garde et magasin d'images).
+func registerSuggestions(a *App) error {
+	a.Sources = sources.FromConfig(a.Cfg.Sources, a.SSRF.Client(), slog.Default())
+	a.Enrich = &enrich.Amazon{Fetcher: a.SSRF, Images: a.Images, Logger: slog.Default()}
 	return nil
 }

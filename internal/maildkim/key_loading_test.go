@@ -137,7 +137,18 @@ func TestSignerNeverPrintsKey(t *testing.T) {
 	for _, kc := range keyCases(t) {
 		t.Run(kc.alg, func(t *testing.T) {
 			pemBytes := pkcs8PEM(t, kc.priv)
-			path := writeFile(t, pemBytes)
+			// Dossier à nom sentinelle : le nom d'un dossier temporaire ("001")
+			// peut apparaître par hasard dans un horodatage de journal et
+			// rendrait le test instable.
+			const sentinelDir = "dossier-sentinelle-zq7x-cle"
+			dir := filepath.Join(t.TempDir(), sentinelDir)
+			if err := os.Mkdir(dir, 0o700); err != nil {
+				t.Fatal(err)
+			}
+			path := filepath.Join(dir, "dkim.pem")
+			if err := os.WriteFile(path, pemBytes, 0o600); err != nil {
+				t.Fatal(err)
+			}
 			s, err := New(dkimConfig(path, kc.alg))
 			if err != nil {
 				t.Fatal(err)
@@ -156,7 +167,7 @@ func TestSignerNeverPrintsKey(t *testing.T) {
 			if !strings.Contains(all, "example.org") {
 				t.Fatalf("les paramètres publics devraient rester visibles : %s", all)
 			}
-			if strings.Contains(all, path) || strings.Contains(all, filepath.Base(filepath.Dir(path))) {
+			if strings.Contains(all, path) || strings.Contains(all, sentinelDir) {
 				t.Fatalf("le chemin de la clé apparaît : %s", all)
 			}
 			for _, sec := range secrets {

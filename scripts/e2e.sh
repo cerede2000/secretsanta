@@ -64,17 +64,17 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Le Dockerfile du dépôt cible linux/amd64 (image publiée par la CI). Pour la
-# recette locale on le réécrit à la volée vers l'architecture du démon Docker
-# (arm64 sous colima) ; le fichier du dépôt n'est pas modifié.
+# Le Dockerfile du dépôt prend son architecture de TARGETARCH (la CI construit
+# linux/amd64). Pour la recette locale on construit pour l'architecture du
+# démon Docker (arm64 sous colima) avec --platform ; le Dockerfile n'est pas
+# modifié.
 case "$(docker info --format '{{.Architecture}}')" in
   aarch64|arm64) goarch=arm64 ;;
   x86_64|amd64) goarch=amd64 ;;
   *) echo "architecture du démon non prise en charge" >&2; exit 2 ;;
 esac
 echo "== construction de l'image ($image, linux/$goarch ; la recette locale ne vérifie pas l'image amd64 de la CI)"
-sed "s/GOARCH=amd64/GOARCH=$goarch/" Dockerfile \
-  | docker build -f - --build-arg "VERSION=$(cat VERSION)-recette" -t "$image" .
+docker build --platform "linux/$goarch" --build-arg "VERSION=$(cat VERSION)-recette" -t "$image" .
 
 echo "== démarrage (application + serveur SMTP factice), attente du healthcheck"
 "${compose[@]}" up -d --wait --wait-timeout 120

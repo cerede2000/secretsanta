@@ -23,6 +23,7 @@ import (
 	"secretsanta/internal/accesspages"
 	"secretsanta/internal/config"
 	"secretsanta/internal/draw"
+	"secretsanta/internal/enrich"
 	"secretsanta/internal/enrolment"
 	"secretsanta/internal/grouppages"
 	"secretsanta/internal/groups"
@@ -34,12 +35,15 @@ import (
 	"secretsanta/internal/mail/queue"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
+	"secretsanta/internal/mailunsub"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/shared/clock"
 	"secretsanta/internal/shared/ports"
 	"secretsanta/internal/shared/scheduler"
+	"secretsanta/internal/sources"
 	"secretsanta/internal/ssrf"
 	"secretsanta/internal/websec"
 	"secretsanta/web"
@@ -78,6 +82,19 @@ type App struct {
 	RuleChange *rulechange.Service
 	// Magic porte le lien magique de connexion.
 	Magic *magic.Service
+	// Unsub porte les préférences de désinscription (routes
+	// /desinscription/{jeton} montées sur Mux).
+	Unsub *mailunsub.Service
+	// Reveal fait vivre la révélation : porte, date, ouverture planifiée, avis
+	// « tirage prêt ». Drawing enchaîne tirage et révélation : un tirage, un
+	// nouveau tirage ou un ajustement passent par lui pour que la révélation
+	// suive.
+	Reveal  *reveal.Service
+	Drawing *Drawing
+	// Sources et Enrich sont les services de suggestions (aucune page encore) ;
+	// leurs requêtes sortantes passent par la garde SSRF.
+	Sources *sources.Chain
+	Enrich  *enrich.Amazon
 	// MailQueue est la file d'envoi ; nil sans adresse d'expédition. Elle ne
 	// tourne que si un transport est fourni (voir mailTransport).
 	MailQueue *queue.Service
@@ -156,6 +173,9 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 	}
 
 	csrf := websec.NewCSRF(policy, websec.CSRFOptions{
+		// Seule dispense : le POST « un clic » de désinscription, protégé par
+		// la signature de son jeton.
+		Exempt: mailunsub.IsOneClickPath,
 		OnReject: func(w http.ResponseWriter, r *http.Request, _ error) {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			w.Header().Set("Cache-Control", "no-store")

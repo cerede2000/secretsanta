@@ -15,7 +15,9 @@ import (
 	"secretsanta/internal/i18n/cli"
 	"secretsanta/internal/letter"
 	mailmig "secretsanta/internal/mail/migrations"
+	unsubmig "secretsanta/internal/mailunsub/migrations"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/websec"
@@ -38,7 +40,7 @@ func TestRegistryOrderAndEveryModuleApplied(t *testing.T) {
 		got = append(got, m.Module)
 	}
 	want := []string{groups.Module, websec.MigrationModule, magic.Module, participants.Module, rules.Module, accessmig.Module, letter.Module,
-		groupsettings.Module, rulechange.Module, draw.Module, mailmig.Module}
+		groupsettings.Module, rulechange.Module, draw.Module, mailmig.Module, unsubmig.Module, reveal.Module}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("ordre %v, attendu %v", got, want)
 	}
