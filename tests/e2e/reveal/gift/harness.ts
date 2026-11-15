@@ -30,6 +30,8 @@ function render(file: string, lang: string, data: Record<string, string>, define
   const cat = { ...coreCatalog(lang), ...giftCatalog(lang) };
   let out = fs.readFileSync(file, 'utf8');
   out = out.replace(/\{\{\/\*[\s\S]*?\*\/\}\}/g, '');
+  // Fragments des styles (enveloppe, cadeau) : les bancs d'essai les ajoutent eux-mêmes.
+  out = out.replace(/\{\{template "[^"]+" \.\}\}\s*/g, '');
   out = out.replace(/\{\{if \.(\w+)\}\}([\s\S]*?)\{\{end\}\}/g, (_m, k, inner) => (data[k] ? inner : ''));
   out = out.replace(new RegExp(`\\{\\{define "${defineName}"\\}\\}`), '').replace(/\{\{end\}\}\s*$/, '');
   out = out.replace(/\{\{t "([^"]+)"((?: "[^"]*")*)\}\}/g, (_m, key, rest) => {

@@ -33,10 +33,13 @@ import (
 	"secretsanta/internal/i18n/negotiate"
 	"secretsanta/internal/letter"
 	"secretsanta/internal/mail/queue"
+	"secretsanta/internal/maildiag"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
+	"secretsanta/internal/mailsuppress"
 	"secretsanta/internal/mailunsub"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
@@ -101,6 +104,12 @@ type App struct {
 	// MailQueue est la file d'envoi ; nil sans adresse d'expédition. Elle ne
 	// tourne que si un transport est fourni (voir mailTransport).
 	MailQueue *queue.Service
+	// Suppress est la liste des adresses refusées définitivement (consultée
+	// par la file d'envoi) ; MailDiag le diagnostic de délivrabilité ;
+	// ReminderRules les règles de relance. Aucune page encore.
+	Suppress      *mailsuppress.Store
+	MailDiag      *maildiag.Diagnostic
+	ReminderRules *reminderrules.Service
 	// GroupPages et AccessPages portent les pages publiques des groupes et de
 	// connexion.
 	GroupPages  *grouppages.Pages

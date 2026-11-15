@@ -40,6 +40,8 @@ export function renderTemplate(lang: string, data: Record<string, string>): stri
   const cat = catalog(lang);
   let out = fs.readFileSync(TEMPLATE, 'utf8');
   out = out.replace(/\{\{\/\*[\s\S]*?\*\/\}\}/g, '');
+  // Fragments des styles (enveloppe, cadeau) : les bancs d'essai les ajoutent eux-mêmes.
+  out = out.replace(/\{\{template "[^"]+" \.\}\}\s*/g, '');
   out = out.replace(/\{\{if \.(\w+)\}\}([\s\S]*?)\{\{end\}\}/g, (_m, k, inner) => (data[k] ? inner : ''));
   out = out.replace(/\{\{define "layout\/content"\}\}/, '').replace(/\{\{end\}\}\s*$/, '');
   out = out.replace(/\{\{t "([^"]+)"((?: "[^"]*")*)\}\}/g, (_m, key, rest) => {

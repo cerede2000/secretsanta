@@ -18,10 +18,13 @@ import (
 	"secretsanta/internal/letter"
 	"secretsanta/internal/mail/queue"
 	"secretsanta/internal/mail/transport"
+	"secretsanta/internal/maildiag"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
+	"secretsanta/internal/mailsuppress"
 	"secretsanta/internal/mailunsub"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
@@ -47,7 +50,10 @@ var features = []func(*App) error{
 	registerTokens,
 	registerEnrolment,
 	registerMail,
+	registerSuppression,
 	registerMailQueue,
+	registerMailDiag,
+	registerReminderRules,
 	registerMailUnsub,
 	registerReveal,
 	registerMagic,
@@ -177,6 +183,27 @@ var mailTransport = func(a *App) (queue.Transport, error) {
 	return transport.FromConfig(&a.Cfg, nil, a.Clock)
 }
 
+// registerSuppression construit la liste des adresses refusées définitivement
+// (SMTP 5xx), par groupe ; elle précède la file d'envoi qui la consulte.
+func registerSuppression(a *App) error {
+	a.Suppress = mailsuppress.New(a.DB, a.Clock)
+	return nil
+}
+
+// registerMailDiag construit le diagnostic de délivrabilité (DNS, SPF, DKIM,
+// DMARC, TLS) sur la configuration ; aucune page encore.
+func registerMailDiag(a *App) error {
+	a.MailDiag = maildiag.New(maildiag.Options{Config: &a.Cfg, Clock: a.Clock})
+	return nil
+}
+
+// registerReminderRules construit les règles de relance (fenêtre d'envoi dans
+// le fuseau APP_TIMEZONE) ; aucune route encore.
+func registerReminderRules(a *App) error {
+	a.ReminderRules = reminderrules.NewService(a.DB, a.Clock, a.Cfg.Location)
+	return nil
+}
+
 // registerMailQueue construit la file d'envoi quand un constructeur de messages
 // existe (adresse d'expédition configurée) ; elle ne tourne que si
 // mailTransport fournit un transport. Elle s'arrête avec l'application.
@@ -191,7 +218,7 @@ func registerMailQueue(a *App) error {
 	}
 	q, err := queue.New(queue.Options{
 		DB: a.DB, Clock: a.Clock, Builder: a.Mail, Transport: tr, Signer: a.DKIM,
-		MaxPerMinute: a.Cfg.Mail.MaxPerMinute,
+		MaxPerMinute: a.Cfg.Mail.MaxPerMinute, Suppression: a.Suppress,
 	})
 	if err != nil {
 		return fmt.Errorf("file d'envoi : %w", err)

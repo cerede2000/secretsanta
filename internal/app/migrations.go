@@ -12,8 +12,10 @@ import (
 	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/letter"
 	mailmig "secretsanta/internal/mail/migrations"
+	"secretsanta/internal/mailsuppress"
 	unsubmig "secretsanta/internal/mailunsub/migrations"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
@@ -54,6 +56,10 @@ var migrationSources = []struct {
 	// groups, draws et draw_pairs : après draw.
 	{unsubmig.Module, unsubmig.Migrations},
 	{reveal.Module, reveal.Migrations},
+	// Vague 7. reminderrules référence groups ; mail_suppression est
+	// indépendante (adresse et groupe seulement). Après groups.
+	{reminderrules.Module, reminderrules.Migrations},
+	{mailsuppress.Module, mailsuppress.Migrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.

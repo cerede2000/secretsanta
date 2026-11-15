@@ -220,7 +220,7 @@ type revealPages struct {
 // registerRevealPages monte les routes de découverte sur Slugs. Elles suivent
 // registerAccessPages (même famille de routes /{slug}/...).
 func registerRevealPages(a *App) error {
-	page, err := newTemplateSet(a.Cat, "reveal")
+	page, err := newTemplateSet(a.Cat, "reveal", "reveal/envelope", "reveal/gift")
 	if err != nil {
 		return err
 	}
