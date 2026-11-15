@@ -134,6 +134,8 @@ type Settings struct {
 	HasToken bool
 	Capacity int
 	ClosesAt *time.Time
+	// RoleChoice : les inscrits choisissent leur rôle (F11d).
+	RoleChoice bool
 }
 
 // Messages français.
@@ -206,7 +208,8 @@ func (s *Service) Settings(ctx context.Context, a participants.Actor, groupID in
 	if err != nil {
 		return Settings{}, err
 	}
-	return Settings{Enabled: inv.Enabled, HasToken: len(inv.TokenHash) > 0, Capacity: inv.Capacity, ClosesAt: inv.ClosesAt}, nil
+	return Settings{Enabled: inv.Enabled, HasToken: len(inv.TokenHash) > 0, Capacity: inv.Capacity, ClosesAt: inv.ClosesAt,
+		RoleChoice: inv.RoleChoice}, nil
 }
 
 // Enable active le mode et émet un nouveau jeton (l'ancien, s'il existe, ne
@@ -297,6 +300,27 @@ func (s *Service) SetLimits(ctx context.Context, a participants.Actor, groupID i
 	return s.cfg.Store.SaveInvitation(ctx, inv)
 }
 
+// SetRoleChoice active ou désactive l'option « Proposer aux inscrits de
+// choisir leur rôle » (F11d). Modifiable à tout moment, mode actif ou non,
+// avant comme après le tirage ; les inscriptions déjà en attente gardent le
+// rôle retenu à leur soumission. Désactivée, toute valeur de rôle envoyée est
+// ignorée et le rôle vaut normal.
+func (s *Service) SetRoleChoice(ctx context.Context, a participants.Actor, groupID int64, enabled bool) error {
+	if err := requireAdmin(a, groupID); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	inv, err := s.cfg.Store.Invitation(ctx, groupID)
+	if err != nil {
+		return err
+	}
+	inv.GroupID = groupID
+	inv.RoleChoice = enabled
+	inv.UpdatedAt = s.cfg.Clock.Now().UTC()
+	return s.cfg.Store.SaveInvitation(ctx, inv)
+}
+
 // PendingView est une inscription en attente vue par l'administrateur.
 type PendingView struct {
 	ID        int64
@@ -335,6 +359,8 @@ type Invite struct {
 	Name    string
 	// Closed est vide si les inscriptions sont ouvertes.
 	Closed ClosedReason
+	// RoleChoice : le formulaire propose le choix du rôle (F11d).
+	RoleChoice bool
 }
 
 // resolve vérifie le slug, le mode et le jeton ; ErrNeutral dans tous les cas
@@ -406,7 +432,7 @@ func (s *Service) Open(ctx context.Context, slug, token string) (*Invite, error)
 	if err != nil {
 		return nil, err
 	}
-	return &Invite{GroupID: g.ID, Slug: g.Slug, Name: g.Name, Closed: c}, nil
+	return &Invite{GroupID: g.ID, Slug: g.Slug, Name: g.Name, Closed: c, RoleChoice: inv.RoleChoice}, nil
 }
 
 // VerificationAllowed dit si une inscription en attente du groupe peut encore

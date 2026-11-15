@@ -129,6 +129,7 @@ func (h *Handlers) submit(w http.ResponseWriter, r *http.Request, inv *Invite, s
 		Email:         r.PostFormValue(FieldEmail),
 		Honeypot:      r.PostFormValue(FieldHoneypot),
 		ConfirmShared: r.PostFormValue(FieldConfirmShared) == "1",
+		Roles:         r.PostForm[FieldRole],
 		IP:            h.clientIP(r),
 	}
 	res, err := h.Service.Submit(r.Context(), slug, token, sub)

@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"secretsanta/internal/participants"
 	"secretsanta/internal/shared/errs"
 )
 
@@ -22,8 +23,11 @@ type Invitation struct {
 	// attente non expirées) ; 0 = aucun plafond.
 	Capacity int
 	// ClosesAt est la date de clôture (UTC) ; nil = aucune.
-	ClosesAt  *time.Time
-	UpdatedAt time.Time
+	ClosesAt *time.Time
+	// RoleChoice : « Proposer aux inscrits de choisir leur rôle » (F11d) ;
+	// false par défaut, modifiable à tout moment par l'administrateur.
+	RoleChoice bool
+	UpdatedAt  time.Time
 }
 
 // Pending est une inscription en attente de vérification. Ce n'est pas un
@@ -44,8 +48,12 @@ type Pending struct {
 	// SharedAddress vaut true si la personne a confirmé partager l'adresse.
 	SharedAddress bool
 	Lang          string
-	CreatedAt     time.Time
-	ExpiresAt     time.Time
+	// Role est le rôle choisi à l'inscription (F11d), transmis à
+	// CreateVerified : normal, reception_seule ou offre_plus, jamais un_seul.
+	// Il vaut normal quand l'option de choix est désactivée.
+	Role      participants.DrawRole
+	CreatedAt time.Time
+	ExpiresAt time.Time
 }
 
 // Store persiste l'invitation et les inscriptions en attente. Toute lecture

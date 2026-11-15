@@ -22,6 +22,9 @@ const (
 	// FieldConfirmShared vaut "1" quand la personne confirme partager
 	// l'adresse avec un proche.
 	FieldConfirmShared = "adresse_partagee"
+	// FieldRole porte le rôle choisi (F11d) : normal, reception_seule ou
+	// offre_plus. Lu seulement quand l'option de choix est active.
+	FieldRole = "role"
 )
 
 // Bornes des saisies : celles de F3.
@@ -39,6 +42,9 @@ type Submission struct {
 	Honeypot  string
 	// ConfirmShared : « Cette adresse est partagée avec un proche ».
 	ConfirmShared bool
+	// Roles : toutes les valeurs reçues pour FieldRole (F11d), dans l'ordre.
+	// Ignorées quand l'option de choix du rôle est désactivée.
+	Roles []string
 	// IP est l'adresse du client (plafonds de F11.3) ; Lang sa langue.
 	IP   string
 	Lang string
@@ -91,6 +97,9 @@ type Values struct {
 	FirstName string
 	Name      string
 	Email     string
+	// Role est le rôle retenu (vide si l'option est désactivée ou si le choix
+	// est refusé).
+	Role participants.DrawRole
 }
 
 // Result est la réponse à une soumission. Il ne contient jamais le nom ni
@@ -123,6 +132,8 @@ const (
 	msgEmailRequired = "L'adresse mail est obligatoire."
 	msgEmailTooLong  = "L'adresse mail ne doit pas dépasser 254 caractères."
 	msgEmailInvalid  = "L'adresse mail n'est pas valide."
+	msgRoleInvalid   = "Ce choix de rôle n'est pas proposé : choisissez offrir et recevoir, seulement recevoir ou offrir plus."
+	msgRoleExclusive = "Choisissez seulement recevoir ou offrir plus, pas les deux."
 
 	codeCodeSent      = "registration.code_sent"
 	codeInvalid       = "registration.invalid"
@@ -137,6 +148,8 @@ const (
 	codeEmailRequired = "registration.email_required"
 	codeEmailTooLong  = "registration.email_too_long"
 	codeEmailInvalid  = "registration.email_invalid"
+	codeRoleInvalid   = "registration.role_invalid"
+	codeRoleExclusive = "registration.role_exclusive"
 )
 
 // cleanField nettoie une saisie d'une ligne (sanitize de F1) et borne sa
@@ -165,7 +178,42 @@ func validEmail(s string) bool {
 	return strings.Contains(dom, ".") && !strings.HasPrefix(dom, ".") && !strings.HasSuffix(dom, ".")
 }
 
-func validate(sub Submission) (Values, map[string]Problem) {
+// chooseRole valide le choix du rôle (F11d). Option désactivée : toute
+// valeur est ignorée, le rôle vaut normal. Option active : un champ absent
+// (ou vide) donne normal ; seules normal, reception_seule et offre_plus sont
+// acceptées ; un_seul et toute valeur inconnue sont refusés ; les deux choix
+// exclusifs reception_seule et offre_plus ensemble sont refusés, comme toute
+// autre combinaison de rôles différents.
+func chooseRole(enabled bool, raw []string) (participants.DrawRole, *Problem) {
+	if !enabled {
+		return participants.RoleNormal, nil
+	}
+	seen := map[participants.DrawRole]bool{}
+	invalid := false
+	for _, r := range raw {
+		if r == "" {
+			continue
+		}
+		switch role := participants.DrawRole(r); role {
+		case participants.RoleNormal, participants.RoleReceptionSeule, participants.RoleOffrePlus:
+			seen[role] = true
+		default:
+			invalid = true
+		}
+	}
+	if seen[participants.RoleReceptionSeule] && seen[participants.RoleOffrePlus] {
+		return "", &Problem{codeRoleExclusive, msgRoleExclusive}
+	}
+	if invalid || len(seen) > 1 {
+		return "", &Problem{codeRoleInvalid, msgRoleInvalid}
+	}
+	for role := range seen {
+		return role, nil
+	}
+	return participants.RoleNormal, nil
+}
+
+func validate(sub Submission, roleChoice bool) (Values, map[string]Problem) {
 	var v Values
 	fields := map[string]Problem{}
 	var p *Problem
@@ -182,6 +230,13 @@ func validate(sub Submission) (Values, map[string]Problem) {
 		fields[FieldEmail] = *p
 	} else if !validEmail(v.Email) {
 		fields[FieldEmail] = Problem{codeEmailInvalid, msgEmailInvalid}
+	}
+	if v.Role, p = chooseRole(roleChoice, sub.Roles); p != nil {
+		fields[FieldRole] = *p
+	}
+	if !roleChoice {
+		// Option désactivée : le rôle n'est pas affiché ni renvoyé.
+		v.Role = ""
 	}
 	return v, fields
 }
@@ -229,7 +284,7 @@ func (s *Service) Submit(ctx context.Context, slug, token string, sub Submission
 		return &Result{Outcome: OutcomeClosed, Closed: closed, Problem: Problem{code, msg}}, nil
 	}
 
-	v, fields := validate(sub)
+	v, fields := validate(sub, inv.RoleChoice)
 	if len(fields) > 0 {
 		return &Result{Outcome: OutcomeInvalid, Problem: Problem{codeInvalid, msgInvalid}, Fields: fields, Values: v}, nil
 	}
@@ -289,13 +344,17 @@ func (s *Service) Submit(ctx context.Context, slug, token string, sub Submission
 	if err != nil {
 		return nil, errs.Internal(err)
 	}
+	role := v.Role
+	if role == "" {
+		role = participants.RoleNormal
+	}
 	lang := sub.Lang
 	if utf8.RuneCountInString(lang) > participants.LocaleMaxLen || (lang != "" && !participants.ValidLocale(lang)) {
 		lang = ""
 	}
 	p, err := s.cfg.Store.AddPending(ctx, Pending{
 		GroupID: g.ID, Ref: ref, FirstName: v.FirstName, Name: v.Name, NameKey: key,
-		Email: v.Email, EmailKey: ekey, SharedAddress: known, Lang: lang,
+		Email: v.Email, EmailKey: ekey, SharedAddress: known, Lang: lang, Role: role,
 		CreatedAt: now, ExpiresAt: now.Add(PendingTTL),
 	})
 	if err != nil {

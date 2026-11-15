@@ -350,6 +350,7 @@ func (s *Service) complete(ctx context.Context, p invite.Pending, at time.Time, 
 	}
 	created, err := s.cfg.Enrol.CreateVerified(ctx, p.GroupID, participants.Input{
 		FirstName: p.FirstName, Name: p.Name, Email: p.Email, Locale: p.Lang,
+		Role: p.Role,
 	}, at)
 	if err != nil {
 		return nil, err
