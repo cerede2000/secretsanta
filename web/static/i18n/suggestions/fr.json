@@ -28,7 +28,7 @@
   "suggestions.free.error.max": "Le prix maximum n'est pas valide : écris un nombre en euros, par exemple 40 ou 29,90.",
   "suggestions.free.error.order": "Le prix minimum doit rester inférieur ou égal au prix maximum.",
   "suggestions.refresh": "Actualiser les idées",
-  "suggestions.notice.throttled": "Beaucoup de recherches ont déjà été faites : voici les dernières idées gardées en mémoire.",
+  "suggestions.notice.throttled": "La recherche est très sollicitée : voici les dernières idées gardées en mémoire.",
   "suggestions.unavailable.title": "Aucune source de suggestions n'est disponible",
   "suggestions.unavailable.text": "Les sources d'idées ne répondent pas pour le moment. Réessaie un peu plus tard ou relis sa lettre.",
   "suggestions.empty.title": "Aucune idée dans cette fourchette",
