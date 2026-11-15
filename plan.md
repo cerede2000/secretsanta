@@ -231,17 +231,6 @@ rationale: "foyers, exclusions, forçages et détection de conflits"
 ```
 
 ```yaml phase
-id: P5-letter
-spec: F5
-steps: [F5.1, F5.2, F5.3, F5.4]
-owns: [internal/letter/**]
-depends_on: [P1b-db, P1b-sh1, P1b-sh2]
-model: sonnet
-score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
-rationale: "modèle, services d'écriture, image locale, événement de regroupement et lettre des personnes en réception seule : un seul paquet cohérent"
-```
-
-```yaml phase
 id: P4-engine2
 spec: F4
 steps: [F4.4, F4.5]
@@ -275,6 +264,28 @@ rationale: "signature DKIM rsa et ed25519, clé par fichier, vérification indé
 ```
 
 ```yaml phase
+id: P2b-store
+spec: F2b
+steps: [F2b.3, F2b.4]
+owns: [internal/access/migrations/**, internal/access/sqlstore/**, internal/access/token/**]
+depends_on: [P2b-a, P2b-b, P1b-db]
+model: opus
+score: {scope: 2, ambiguity: 1, risk: 2, reasoning: 2}
+rationale: "migrations et magasin SQL des jetons et codes courts (token.Store), puis hachage à clé HMAC-SHA-256 avec la clé de signature : sécurité, force opus"
+```
+
+```yaml phase
+id: P5-letter
+spec: F5
+steps: [F5.1, F5.2, F5.3, F5.4]
+owns: [internal/letter/**]
+depends_on: [P1b-db, P1b-sh1, P1b-sh2]
+model: sonnet
+score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
+rationale: "modèle, services d'écriture, image locale, événement de regroupement et lettre des personnes en réception seule : un seul paquet cohérent"
+```
+
+```yaml phase
 id: P8-ssrf
 spec: F8
 steps: [F8.1, F8.2]
@@ -289,7 +300,7 @@ rationale: "garde SSRF : sécurité, force opus"
 id: P6-queue
 spec: F6
 steps: [F6.2]
-owns: [internal/mail/queue/**]
+owns: [internal/mail/queue/**, internal/mail/migrations/**]
 depends_on: [P1b-db, P1b-sh1, P1b-sh2]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
@@ -338,17 +349,6 @@ depends_on: [P1c-infra, P1c-layout]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 0, reasoning: 1}
 rationale: "thème, neige, police locale et manifeste web"
-```
-
-```yaml phase
-id: P12a-bench
-spec: F12a
-steps: [F12a.1, F12a.3]
-owns: [docker-compose.test.yml, scripts/e2e.sh, scripts/check-no-test-secrets.sh, tests/e2e/mail-sink/**, scripts/spamcheck.sh, tests/e2e/spamassassin/**]
-depends_on: [P1c-docker, P1c-infra]
-model: sonnet
-score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
-rationale: "banc de recette Docker avec serveur SMTP factice, SpamAssassin et scripts e2e"
 ```
 
 ```yaml phase
@@ -451,6 +451,17 @@ rationale: "extraction de page en meilleur effort"
 ```
 
 ```yaml phase
+id: P12a-bench
+spec: F12a
+steps: [F12a.1, F12a.3]
+owns: [docker-compose.test.yml, scripts/e2e.sh, scripts/check-no-test-secrets.sh, tests/e2e/mail-sink/**, scripts/spamcheck.sh, tests/e2e/spamassassin/**]
+depends_on: [P1c-docker, P1c-infra]
+model: sonnet
+score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
+rationale: "banc de recette Docker avec serveur SMTP factice, SpamAssassin et scripts e2e"
+```
+
+```yaml phase
 id: P4b-reveal
 spec: F4b
 steps: [F4b.2]
@@ -495,17 +506,6 @@ rationale: "module commun d'animation et sélecteur aléatoire"
 ```
 
 ```yaml phase
-id: P12a-docs
-spec: F12a
-steps: [F12a.2, F12a.4]
-owns: [docs/guide/**, README.md, scripts/check-docs.sh, scripts/check-docs-env.sh]
-depends_on: [P1a]
-model: sonnet
-score: {scope: 2, ambiguity: 1, risk: 0, reasoning: 1}
-rationale: "README et guide en français (dont délivrabilité), exemple Compose et contrôles de documentation"
-```
-
-```yaml phase
 id: P3d-roles
 spec: F3d
 steps: [F3d.3]
@@ -536,6 +536,17 @@ depends_on: [P1b-db, P1b-sh2]
 model: sonnet
 score: {scope: 1, ambiguity: 1, risk: 1, reasoning: 1}
 rationale: "liste de suppression par groupe, implémentation du port SuppressionList"
+```
+
+```yaml phase
+id: P12a-docs
+spec: F12a
+steps: [F12a.2, F12a.4]
+owns: [docs/guide/**, README.md, scripts/check-docs.sh, scripts/check-docs-env.sh]
+depends_on: [P1a]
+model: sonnet
+score: {scope: 2, ambiguity: 1, risk: 0, reasoning: 1}
+rationale: "README et guide en français (dont délivrabilité), exemple Compose et contrôles de documentation"
 ```
 
 ```yaml phase
@@ -638,17 +649,6 @@ rationale: "consultation de paire avec ressaisie et journal public : force opus"
 ```
 
 ```yaml phase
-id: P10b-ops
-spec: F10b
-steps: [F10b.2, F10b.3]
-owns: [internal/adminops/**, web/templates/adminops/**, tests/e2e/adminops/**]
-depends_on: [P3-core, P3-rules, P2-groups, P2c-websec, P1b-db, P1c-layout]
-model: opus
-score: {scope: 2, ambiguity: 1, risk: 2, reasoning: 1}
-rationale: "export et import JSON atomiques, sauvegarde, réinitialisation et duplication de groupe avec le rôle dans le tirage : données, force opus"
-```
-
-```yaml phase
 id: P11-verify
 spec: F11
 steps: [F11.4]
@@ -701,6 +701,28 @@ depends_on: [P8b-sources, P8b-enrich, P2-groups, P3-core, P4b-core, P5-letter]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
 rationale: "service de suggestions, cache et filtrage des données personnelles"
+```
+
+```yaml phase
+id: P11-store
+spec: F11
+steps: [F11.6]
+owns: [internal/registration/migrations/**, internal/registration/sqlstore/**]
+depends_on: [P11-invite, P11-code, P1b-db]
+model: opus
+score: {scope: 2, ambiguity: 1, risk: 2, reasoning: 1}
+rationale: "migrations et magasins SQL de l'invitation, des inscriptions en attente et des codes (hachés, purge à 48 h) : sécurité et données, force opus"
+```
+
+```yaml phase
+id: P10b-ops
+spec: F10b
+steps: [F10b.2, F10b.3]
+owns: [internal/adminops/**, web/templates/adminops/**, tests/e2e/adminops/**]
+depends_on: [P3-core, P3-rules, P2-groups, P2c-websec, P1b-db, P1c-layout]
+model: opus
+score: {scope: 2, ambiguity: 1, risk: 2, reasoning: 1}
+rationale: "export et import JSON atomiques, sauvegarde, réinitialisation et duplication de groupe avec le rôle dans le tirage : données, force opus"
 ```
 
 ```yaml phase
@@ -770,17 +792,6 @@ rationale: "page des suggestions et test de confidentialité des requêtes sorta
 ```
 
 ```yaml phase
-id: P4d-roles
-spec: F4d
-steps: [F4d.3]
-owns: [internal/targetpage/**, web/templates/draw/**, web/static/js/draw/**, web/static/css/draw/**, tests/e2e/draw/**]
-depends_on: [P4d-pages, P4b-multi, P3-roles]
-model: sonnet
-score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
-rationale: "préférence un seul cadeau, carte de cible à une ou deux cibles, accueil réception seule"
-```
-
-```yaml phase
 id: P11-roleopt
 spec: F11
 steps: [F11.5]
@@ -789,6 +800,17 @@ depends_on: [P11-invite, P11-verify, P3d-roles]
 model: opus
 score: {scope: 1, ambiguity: 1, risk: 2, reasoning: 1}
 rationale: "option de choix de rôle, validation des valeurs, transmission à CreateVerified : sécurité et données, force opus"
+```
+
+```yaml phase
+id: P4d-roles
+spec: F4d
+steps: [F4d.3]
+owns: [internal/targetpage/**, web/templates/draw/**, web/static/js/draw/**, web/static/css/draw/**, tests/e2e/draw/**]
+depends_on: [P4d-pages, P4b-multi, P3-roles]
+model: sonnet
+score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
+rationale: "préférence un seul cadeau, carte de cible à une ou deux cibles, accueil réception seule"
 ```
 
 ```yaml phase
@@ -839,7 +861,7 @@ rationale: "suggestions par cadeau pour deux cibles"
 id: P10-dash
 spec: F10
 steps: [F10.1]
-owns: [internal/admin/dashboard/**, internal/admin/audit/**, web/templates/admin/dashboard/**, web/static/js/admin/dashboard/**, web/static/css/admin/dashboard/**, tests/e2e/admin/dashboard/**]
+owns: [internal/admin/dashboard/**, internal/admin/audit/**, web/templates/admin/dashboard/**, web/static/js/admin/dashboard/**, web/static/css/admin/dashboard/**, tests/e2e/admin/dashboard/**, internal/admin/migrations/**]
 depends_on: [P2-groups, P2c-websec, P4b-core, P4b-reveal, P6-queue, P1b-sh2, P1c-layout, P9-theme]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
@@ -971,8 +993,8 @@ rationale: "parcours Playwright 07 (rôles et deux cibles) et 08 (délivrabilit�
 id: P12b-zza
 spec: F12b
 steps: [F12b.4]
-owns: [internal/config/zz_coverage_*_test.go, internal/db/zz_coverage_*_test.go, internal/shared/clock/zz_coverage_*_test.go, internal/shared/scheduler/zz_coverage_*_test.go, internal/shared/random/zz_coverage_*_test.go, internal/shared/sanitize/zz_coverage_*_test.go, internal/shared/errs/zz_coverage_*_test.go, internal/shared/ports/zz_coverage_*_test.go, internal/shared/outbound/zz_coverage_*_test.go, internal/shared/adminnav/zz_coverage_*_test.go, internal/health/zz_coverage_*_test.go, internal/groups/zz_coverage_*_test.go, internal/access/token/zz_coverage_*_test.go, internal/access/magic/zz_coverage_*_test.go, internal/access/limiter/zz_coverage_*_test.go, internal/websec/zz_coverage_*_test.go, internal/groupsettings/zz_coverage_*_test.go, internal/participants/zz_coverage_*_test.go, internal/rules/zz_coverage_*_test.go, internal/enrolment/zz_coverage_*_test.go, internal/rulechange/zz_coverage_*_test.go, internal/mail/transport/zz_coverage_*_test.go, internal/mail/queue/zz_coverage_*_test.go, internal/mail/templates/zz_coverage_*_test.go, internal/mailunsub/zz_coverage_*_test.go, internal/ssrf/zz_coverage_*_test.go, internal/sources/zz_coverage_*_test.go, internal/enrich/zz_coverage_*_test.go]
-depends_on: [P12b-cov]
+owns: [internal/config/zz_coverage_*_test.go, internal/db/zz_coverage_*_test.go, internal/shared/clock/zz_coverage_*_test.go, internal/shared/scheduler/zz_coverage_*_test.go, internal/shared/random/zz_coverage_*_test.go, internal/shared/sanitize/zz_coverage_*_test.go, internal/shared/errs/zz_coverage_*_test.go, internal/shared/ports/zz_coverage_*_test.go, internal/shared/outbound/zz_coverage_*_test.go, internal/shared/adminnav/zz_coverage_*_test.go, internal/health/zz_coverage_*_test.go, internal/groups/zz_coverage_*_test.go, internal/access/token/zz_coverage_*_test.go, internal/access/magic/zz_coverage_*_test.go, internal/access/limiter/zz_coverage_*_test.go, internal/websec/zz_coverage_*_test.go, internal/groupsettings/zz_coverage_*_test.go, internal/participants/zz_coverage_*_test.go, internal/rules/zz_coverage_*_test.go, internal/enrolment/zz_coverage_*_test.go, internal/rulechange/zz_coverage_*_test.go, internal/mail/transport/zz_coverage_*_test.go, internal/mail/queue/zz_coverage_*_test.go, internal/mail/templates/zz_coverage_*_test.go, internal/mailunsub/zz_coverage_*_test.go, internal/ssrf/zz_coverage_*_test.go, internal/sources/zz_coverage_*_test.go, internal/enrich/zz_coverage_*_test.go, internal/access/sqlstore/zz_coverage_*_test.go]
+depends_on: [P12b-cov, P2b-store]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 0, reasoning: 1}
 rationale: "tests de comblement de couverture : socle et services"
@@ -982,8 +1004,8 @@ rationale: "tests de comblement de couverture : socle et services"
 id: P12b-zzb
 spec: F12b
 steps: [F12b.5]
-owns: [internal/drawengine/zz_coverage_*_test.go, internal/draw/zz_coverage_*_test.go, internal/reveal/zz_coverage_*_test.go, internal/adjust/zz_coverage_*_test.go, internal/repair/zz_coverage_*_test.go, internal/targetpage/zz_coverage_*_test.go, internal/letter/zz_coverage_*_test.go, internal/letterread/zz_coverage_*_test.go, internal/letterpages/zz_coverage_*_test.go, internal/mailboxpage/zz_coverage_*_test.go, internal/reminders/zz_coverage_*_test.go, internal/reminderrules/zz_coverage_*_test.go, internal/givernotify/zz_coverage_*_test.go, internal/suggestions/zz_coverage_*_test.go, internal/suggestionpages/zz_coverage_*_test.go, internal/grouppages/zz_coverage_*_test.go, internal/accesspages/zz_coverage_*_test.go, internal/admin/dashboard/zz_coverage_*_test.go, internal/admin/audit/zz_coverage_*_test.go, internal/admin/menu/zz_coverage_*_test.go, internal/admin/people/zz_coverage_*_test.go, internal/admin/drawpages/zz_coverage_*_test.go, internal/admin/settingspages/zz_coverage_*_test.go, internal/adminconsult/zz_coverage_*_test.go, internal/adminops/zz_coverage_*_test.go, internal/registration/invite/zz_coverage_*_test.go, internal/registration/code/zz_coverage_*_test.go, internal/registration/verify/zz_coverage_*_test.go, internal/registrationpages/public/zz_coverage_*_test.go, internal/registrationpages/admin/zz_coverage_*_test.go]
-depends_on: [P12b-cov]
+owns: [internal/drawengine/zz_coverage_*_test.go, internal/draw/zz_coverage_*_test.go, internal/reveal/zz_coverage_*_test.go, internal/adjust/zz_coverage_*_test.go, internal/repair/zz_coverage_*_test.go, internal/targetpage/zz_coverage_*_test.go, internal/letter/zz_coverage_*_test.go, internal/letterread/zz_coverage_*_test.go, internal/letterpages/zz_coverage_*_test.go, internal/mailboxpage/zz_coverage_*_test.go, internal/reminders/zz_coverage_*_test.go, internal/reminderrules/zz_coverage_*_test.go, internal/givernotify/zz_coverage_*_test.go, internal/suggestions/zz_coverage_*_test.go, internal/suggestionpages/zz_coverage_*_test.go, internal/grouppages/zz_coverage_*_test.go, internal/accesspages/zz_coverage_*_test.go, internal/admin/dashboard/zz_coverage_*_test.go, internal/admin/audit/zz_coverage_*_test.go, internal/admin/menu/zz_coverage_*_test.go, internal/admin/people/zz_coverage_*_test.go, internal/admin/drawpages/zz_coverage_*_test.go, internal/admin/settingspages/zz_coverage_*_test.go, internal/adminconsult/zz_coverage_*_test.go, internal/adminops/zz_coverage_*_test.go, internal/registration/invite/zz_coverage_*_test.go, internal/registration/code/zz_coverage_*_test.go, internal/registration/verify/zz_coverage_*_test.go, internal/registrationpages/public/zz_coverage_*_test.go, internal/registrationpages/admin/zz_coverage_*_test.go, internal/registration/sqlstore/zz_coverage_*_test.go]
+depends_on: [P12b-cov, P11-store]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 0, reasoning: 1}
 rationale: "tests de comblement de couverture : domaine, pages et administration"
@@ -1022,17 +1044,17 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P1c-layout | P1c-infra, P1b-sh2 (+ toutes les phases de F1, F1b par la règle de fonctionnalité) |
 | P3-core | P2-groups, P1b-db, P1b-sh1 (+ toutes les phases de F2, F1b par la règle de fonctionnalité) |
 | P3-rules | P1b-db (+ toutes les phases de F2, F1b par la règle de fonctionnalité) |
-| P5-letter | P1b-db, P1b-sh1, P1b-sh2 (+ toutes les phases de F1b par la règle de fonctionnalité) |
 | P4-engine2 | P4-engine (+ toutes les phases de F1b par la règle de fonctionnalité) |
 | P6b-msg | P1a (+ toutes les phases de F1, F1b par la règle de fonctionnalité) |
 | P6b-dkim | P1a (+ toutes les phases de F1, F1b par la règle de fonctionnalité) |
+| P2b-store | P2b-a, P2b-b, P1b-db (+ toutes les phases de F1b par la règle de fonctionnalité) |
+| P5-letter | P1b-db, P1b-sh1, P1b-sh2 (+ toutes les phases de F1b par la règle de fonctionnalité) |
 | P8-ssrf | P1b-sh2 (+ toutes les phases de F1b par la règle de fonctionnalité) |
 | P6-queue | P1b-db, P1b-sh1, P1b-sh2 (+ toutes les phases de F1b, F1c, F1, F2c, F6b par la règle de fonctionnalité) |
 | P6-templates | P1b-sh2, P6b-msg (+ toutes les phases de F1b, F1c, F1, F2c, F6b par la règle de fonctionnalité) |
 | P6-transport | P1a, P1b-sh1, P6b-msg, P6b-dkim (+ toutes les phases de F1b, F1c, F1, F2c, F6b par la règle de fonctionnalité) |
 | P9-illus | P1c-infra (+ toutes les phases de F1c par la règle de fonctionnalité) |
 | P9-theme | P1c-infra, P1c-layout (+ toutes les phases de F1c par la règle de fonctionnalité) |
-| P12a-bench | P1c-docker, P1c-infra (+ toutes les phases de F1c, F1 par la règle de fonctionnalité) |
 | P3-roles | P3-core, P3-rules (+ toutes les phases de F2, F1b par la règle de fonctionnalité) |
 | P3d-enrol | P3-core, P2b-a, P1b-sh2 (+ toutes les phases de F3, F2b, F1b par la règle de fonctionnalité) |
 | P3d-rulechange | P3-rules, P1b-sh2 (+ toutes les phases de F3, F2b, F1b par la règle de fonctionnalité) |
@@ -1042,14 +1064,15 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P2e-settings | P2-groups, P1b-sh2 (+ toutes les phases de F2, F2b, F2c, F1c, F9, F1b par la règle de fonctionnalité) |
 | P6-unsub | P6-queue, P6-templates, P2c-websec, P1c-layout, P1b-sh1 (+ toutes les phases de F1b, F1c, F1, F2c, F6b par la règle de fonctionnalité) |
 | P8b-enrich | P8-ssrf (+ toutes les phases de F8, F1b, F1 par la règle de fonctionnalité) |
+| P12a-bench | P1c-docker, P1c-infra (+ toutes les phases de F1c, F1 par la règle de fonctionnalité) |
 | P4b-reveal | P4b-core, P1b-sh1, P1b-sh2 (+ toutes les phases de F3, F4, F2, F1b par la règle de fonctionnalité) |
 | P7-rules | P1a, P1b-sh1 (+ toutes les phases de F6, F3, F5, F1, F1b par la règle de fonctionnalité) |
 | P8b-sources | P8-ssrf, P1b-sh2, P1a (+ toutes les phases de F8, F1b, F1 par la règle de fonctionnalité) |
 | P9c-core | P9-theme, P1c-infra, P1c-layout (+ toutes les phases de F9, F1c par la règle de fonctionnalité) |
-| P12a-docs | P1a (+ toutes les phases de F1c, F1 par la règle de fonctionnalité) |
 | P3d-roles | P3d-enrol, P3d-rulechange, P3-roles (+ toutes les phases de F3, F2b, F1b par la règle de fonctionnalité) |
 | P6c-diag | P1a (+ toutes les phases de F6, F6b, F2c, F1c, F9, F1b, F1 par la règle de fonctionnalité) |
 | P6c-suppress | P1b-db, P1b-sh2 (+ toutes les phases de F6, F6b, F2c, F1c, F9, F1b, F1 par la règle de fonctionnalité) |
+| P12a-docs | P1a (+ toutes les phases de F1c, F1 par la règle de fonctionnalité) |
 | P11-code | P2b-a, P2b-b, P1b-sh1, P1b-sh2 (+ toutes les phases de F2, F2b, F3, F3d, F1b par la règle de fonctionnalité) |
 | P11-invite | P2-groups, P2b-a, P2b-b, P3-core, P1b-sh1, P1b-sh2 (+ toutes les phases de F2, F2b, F3, F3d, F1b par la règle de fonctionnalité) |
 | P7-engine | P7-rules, P6-queue, P6-unsub, P3-core, P5-letter, P1b-sh1 (+ toutes les phases de F6, F3, F5, F1, F1b par la règle de fonctionnalité) |
@@ -1059,20 +1082,21 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P4b-multi | P4b-core, P4b-reveal, P3-roles, P4-engine2 (+ toutes les phases de F3, F4, F2, F1b par la règle de fonctionnalité) |
 | P6c-page | P6c-diag, P6c-suppress, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F6, F6b, F2c, F1c, F9, F1b, F1 par la règle de fonctionnalité) |
 | P10b-consult | P4b-core, P4b-reveal, P2-groups, P2c-websec, P1c-layout (+ toutes les phases de F2, F2c, F3, F4b, F6, F1c, F1b par la règle de fonctionnalité) |
-| P10b-ops | P3-core, P3-rules, P2-groups, P2c-websec, P1b-db, P1c-layout (+ toutes les phases de F2, F2c, F3, F4b, F6, F1c, F1b par la règle de fonctionnalité) |
 | P11-verify | P11-invite, P11-code, P3d-enrol, P3-core, P1b-sh1, P1b-sh2 (+ toutes les phases de F2, F2b, F3, F3d, F1b par la règle de fonctionnalité) |
 | P4c-adjust | P4b-core, P4b-reveal, P3-core, P2e-settings, P1b-sh2 (+ toutes les phases de F4b, F2e, F3, F1b par la règle de fonctionnalité) |
 | P5b-read | P5-letter, P4b-core, P4b-reveal (+ toutes les phases de F5, F4b par la règle de fonctionnalité) |
 | P4d-pages | P4b-reveal, P2e-settings, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F4b, F2e, F2c, F1c, F9, F3 par la règle de fonctionnalité) |
 | P8c-service | P8b-sources, P8b-enrich, P2-groups, P3-core, P4b-core, P5-letter (+ toutes les phases de F8b, F2, F3, F4b, F5, F2c, F1c, F9 par la règle de fonctionnalité) |
+| P11-store | P11-invite, P11-code, P1b-db (+ toutes les phases de F2, F2b, F3, F3d, F1b par la règle de fonctionnalité) |
+| P10b-ops | P3-core, P3-rules, P2-groups, P2c-websec, P1b-db, P1c-layout (+ toutes les phases de F2, F2c, F3, F4b, F6, F1c, F1b par la règle de fonctionnalité) |
 | P9c-seq | P9c-gift, P9c-envelope, P9c-scratch (+ toutes les phases de F9, F1c par la règle de fonctionnalité) |
 | P4c-repair | P4c-adjust, P3-rules, P1b-sh2 (+ toutes les phases de F4b, F2e, F3, F1b par la règle de fonctionnalité) |
 | P5c-mailbox | P1c-layout, P9-theme, P9-illus (+ toutes les phases de F5, F5b, F2c, F1c, F9 par la règle de fonctionnalité) |
 | P5c-pages | P5-letter, P5b-read, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F5, F5b, F2c, F1c, F9 par la règle de fonctionnalité) |
 | P7b-notify | P5b-read, P6-queue, P6-templates, P7-rules (+ toutes les phases de F5b, F6, F7 par la règle de fonctionnalité) |
 | P8c-page | P8c-service, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F8b, F2, F3, F4b, F5, F2c, F1c, F9 par la règle de fonctionnalité) |
-| P4d-roles | P4d-pages, P4b-multi, P3-roles (+ toutes les phases de F4b, F2e, F2c, F1c, F9, F3 par la règle de fonctionnalité) |
 | P11-roleopt | P11-invite, P11-verify, P3d-roles (+ toutes les phases de F2, F2b, F3, F3d, F1b par la règle de fonctionnalité) |
+| P4d-roles | P4d-pages, P4b-multi, P3-roles (+ toutes les phases de F4b, F2e, F2c, F1c, F9, F3 par la règle de fonctionnalité) |
 | P11c-public | P11-invite, P11-code, P11-verify, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F11, F2c, F1c, F9, F1b, F3d par la règle de fonctionnalité) |
 | P4c-roles | P4c-adjust, P4c-repair, P4b-multi, P3-roles (+ toutes les phases de F4b, F2e, F3, F1b par la règle de fonctionnalité) |
 | P5c-roles | P5c-pages, P5c-mailbox, P5b-read (+ toutes les phases de F5, F5b, F2c, F1c, F9 par la règle de fonctionnalité) |
@@ -1085,13 +1109,13 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P10-draw | P4b-core, P4b-reveal, P4c-adjust, P2c-websec, P1c-layout, P9-theme, P10-roles (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b par la règle de fonctionnalité) |
 | P10-people | P3-core, P3-rules, P3d-enrol, P3d-rulechange, P2b-a, P6-unsub, P2c-websec, P1c-layout, P9-theme, P10-roles (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b par la règle de fonctionnalité) |
 | P11c-roles | P11c-public, P11c-admin, P11-roleopt (+ toutes les phases de F11, F2c, F1c, F9, F1b, F3d par la règle de fonctionnalité) |
-| P12b-cov | P12a-bench, P1c-docker, P1c-ci (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
-| P12b-jA | P12a-bench, P2e-pages1, P2e-pages2, P11c-admin, P5c-pages, P5c-mailbox, P10-people, P10-draw, P4d-pages, P9c-gift, P9c-envelope, P9c-scratch, P4b-reveal, P10-menu (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
-| P12b-jB | P12a-bench, P10-draw, P10-settings, P6-unsub, P7-engine, P7b-notify, P10b-consult, P10b-ops, P4c-repair, P8c-page, P5c-pages (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
-| P12b-jC | P12a-bench, P10-roles, P11c-roles, P9c-seq, P4d-roles, P5c-roles, P6c-page, P4c-roles, P8c-multi (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
-| P12b-zza | P12b-cov (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
-| P12b-zzb | P12b-cov (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
-| P12b-zzc | P12b-cov, P12a-bench, P6b-msg, P6b-dkim, P6c-diag, P6c-suppress, P6c-page (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c par la règle de fonctionnalité) |
+| P12b-cov | P12a-bench, P1c-docker, P1c-ci (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
+| P12b-jA | P12a-bench, P2e-pages1, P2e-pages2, P11c-admin, P5c-pages, P5c-mailbox, P10-people, P10-draw, P4d-pages, P9c-gift, P9c-envelope, P9c-scratch, P4b-reveal, P10-menu (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
+| P12b-jB | P12a-bench, P10-draw, P10-settings, P6-unsub, P7-engine, P7b-notify, P10b-consult, P10b-ops, P4c-repair, P8c-page, P5c-pages (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
+| P12b-jC | P12a-bench, P10-roles, P11c-roles, P9c-seq, P4d-roles, P5c-roles, P6c-page, P4c-roles, P8c-multi (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
+| P12b-zza | P12b-cov, P2b-store (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
+| P12b-zzb | P12b-cov, P11-store (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
+| P12b-zzc | P12b-cov, P12a-bench, P6b-msg, P6b-dkim, P6c-diag, P6c-suppress, P6c-page (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11 par la règle de fonctionnalité) |
 
 ### Ownership graph
 
@@ -1113,17 +1137,17 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P1c-layout | web/embed.go, web/templates/layout/**, web/static/css/base/**, tests/e2e/foundation/** |
 | P3-core | internal/participants/** |
 | P3-rules | internal/rules/** |
-| P5-letter | internal/letter/** |
 | P4-engine2 | internal/drawengine/** |
 | P6b-msg | internal/mailmsg/** |
 | P6b-dkim | internal/maildkim/** |
+| P2b-store | internal/access/migrations/**, internal/access/sqlstore/**, internal/access/token/** |
+| P5-letter | internal/letter/** |
 | P8-ssrf | internal/ssrf/** |
-| P6-queue | internal/mail/queue/** |
+| P6-queue | internal/mail/queue/**, internal/mail/migrations/** |
 | P6-templates | internal/mail/templates/** |
 | P6-transport | internal/mail/transport/** |
 | P9-illus | web/static/assets/**, web/static/js/avatars/**, tests/e2e/illustrations/** |
 | P9-theme | web/static/css/theme/**, web/static/fonts/**, web/static/js/theme/**, web/static/manifest.webmanifest, web/static/sw.js, tests/e2e/theme/** |
-| P12a-bench | docker-compose.test.yml, scripts/e2e.sh, scripts/check-no-test-secrets.sh, tests/e2e/mail-sink/**, scripts/spamcheck.sh, tests/e2e/spamassassin/** |
 | P3-roles | internal/participants/roles/** |
 | P3d-enrol | internal/enrolment/** |
 | P3d-rulechange | internal/rulechange/** |
@@ -1133,14 +1157,15 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P2e-settings | internal/groupsettings/** |
 | P6-unsub | internal/mailunsub/**, web/templates/mail/**, web/static/css/mail/**, tests/e2e/mail/** |
 | P8b-enrich | internal/enrich/** |
+| P12a-bench | docker-compose.test.yml, scripts/e2e.sh, scripts/check-no-test-secrets.sh, tests/e2e/mail-sink/**, scripts/spamcheck.sh, tests/e2e/spamassassin/** |
 | P4b-reveal | internal/reveal/** |
 | P7-rules | internal/reminderrules/** |
 | P8b-sources | internal/sources/** |
 | P9c-core | web/static/css/reveal/core/**, web/static/js/reveal/core/**, web/templates/reveal/**, tests/e2e/reveal/core/** |
-| P12a-docs | docs/guide/**, README.md, scripts/check-docs.sh, scripts/check-docs-env.sh |
 | P3d-roles | internal/rulechange/**, internal/enrolment/** |
 | P6c-diag | internal/maildiag/** |
 | P6c-suppress | internal/mailsuppress/** |
+| P12a-docs | docs/guide/**, README.md, scripts/check-docs.sh, scripts/check-docs-env.sh |
 | P11-code | internal/registration/code/** |
 | P11-invite | internal/registration/invite/** |
 | P7-engine | internal/reminders/** |
@@ -1150,25 +1175,26 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P4b-multi | internal/draw/**, internal/reveal/** |
 | P6c-page | internal/maildiagpages/**, web/templates/maildiag/**, web/static/css/maildiag/**, tests/e2e/maildiag/** |
 | P10b-consult | internal/adminconsult/**, web/templates/adminconsult/**, tests/e2e/adminconsult/** |
-| P10b-ops | internal/adminops/**, web/templates/adminops/**, tests/e2e/adminops/** |
 | P11-verify | internal/registration/verify/** |
 | P4c-adjust | internal/adjust/** |
 | P5b-read | internal/letterread/** |
 | P4d-pages | internal/targetpage/**, web/templates/draw/**, web/static/js/draw/**, web/static/css/draw/**, tests/e2e/draw/** |
 | P8c-service | internal/suggestions/** |
+| P11-store | internal/registration/migrations/**, internal/registration/sqlstore/** |
+| P10b-ops | internal/adminops/**, web/templates/adminops/**, tests/e2e/adminops/** |
 | P9c-seq | web/static/css/reveal/sequence/**, web/static/js/reveal/sequence/**, tests/e2e/reveal/sequence/** |
 | P4c-repair | internal/repair/** |
 | P5c-mailbox | internal/mailboxpage/**, web/templates/mailbox/**, web/static/js/mailbox/**, web/static/css/mailbox/**, tests/e2e/mailbox/** |
 | P5c-pages | internal/letterpages/**, web/templates/letter/**, web/static/js/letter/**, web/static/css/letter/**, tests/e2e/letter/** |
 | P7b-notify | internal/givernotify/** |
 | P8c-page | internal/suggestionpages/**, web/templates/suggestions/**, web/static/js/suggestions/**, web/static/css/suggestions/**, tests/e2e/suggestions/** |
-| P4d-roles | internal/targetpage/**, web/templates/draw/**, web/static/js/draw/**, web/static/css/draw/**, tests/e2e/draw/** |
 | P11-roleopt | internal/registration/invite/**, internal/registration/verify/** |
+| P4d-roles | internal/targetpage/**, web/templates/draw/**, web/static/js/draw/**, web/static/css/draw/**, tests/e2e/draw/** |
 | P11c-public | internal/registrationpages/public/**, web/templates/registration/public/**, web/static/js/registration/public/**, web/static/css/registration/public/**, tests/e2e/registration/public/** |
 | P4c-roles | internal/adjust/**, internal/repair/** |
 | P5c-roles | internal/letterpages/**, internal/mailboxpage/**, web/templates/letter/**, web/templates/mailbox/**, web/static/js/letter/**, web/static/js/mailbox/**, web/static/css/letter/**, web/static/css/mailbox/**, tests/e2e/letter/**, tests/e2e/mailbox/** |
 | P8c-multi | internal/suggestions/**, internal/suggestionpages/**, web/templates/suggestions/**, web/static/js/suggestions/**, web/static/css/suggestions/**, tests/e2e/suggestions/** |
-| P10-dash | internal/admin/dashboard/**, internal/admin/audit/**, web/templates/admin/dashboard/**, web/static/js/admin/dashboard/**, web/static/css/admin/dashboard/**, tests/e2e/admin/dashboard/** |
+| P10-dash | internal/admin/dashboard/**, internal/admin/audit/**, web/templates/admin/dashboard/**, web/static/js/admin/dashboard/**, web/static/css/admin/dashboard/**, tests/e2e/admin/dashboard/**, internal/admin/migrations/** |
 | P10-menu | internal/admin/menu/**, web/templates/admin/menu/**, web/static/js/admin/menu/**, web/static/css/admin/menu/**, tests/e2e/admin/menu/** |
 | P10-settings | internal/admin/settingspages/**, web/templates/admin/settings/**, web/static/js/admin/settings/**, web/static/css/admin/settings/**, tests/e2e/admin/settings/** |
 | P11c-admin | internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, tests/e2e/registration/flow/** |
@@ -1180,8 +1206,8 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P12b-jA | tests/e2e/journey/a/** |
 | P12b-jB | tests/e2e/journey/b/**, scripts/check-no-dialogs.sh |
 | P12b-jC | tests/e2e/journey/c/** |
-| P12b-zza | internal/config/zz_coverage_*_test.go, internal/db/zz_coverage_*_test.go, internal/shared/clock/zz_coverage_*_test.go, internal/shared/scheduler/zz_coverage_*_test.go, internal/shared/random/zz_coverage_*_test.go, internal/shared/sanitize/zz_coverage_*_test.go, internal/shared/errs/zz_coverage_*_test.go, internal/shared/ports/zz_coverage_*_test.go, internal/shared/outbound/zz_coverage_*_test.go, internal/shared/adminnav/zz_coverage_*_test.go, internal/health/zz_coverage_*_test.go, internal/groups/zz_coverage_*_test.go, internal/access/token/zz_coverage_*_test.go, internal/access/magic/zz_coverage_*_test.go, internal/access/limiter/zz_coverage_*_test.go, internal/websec/zz_coverage_*_test.go, internal/groupsettings/zz_coverage_*_test.go, internal/participants/zz_coverage_*_test.go, internal/rules/zz_coverage_*_test.go, internal/enrolment/zz_coverage_*_test.go, internal/rulechange/zz_coverage_*_test.go, internal/mail/transport/zz_coverage_*_test.go, internal/mail/queue/zz_coverage_*_test.go, internal/mail/templates/zz_coverage_*_test.go, internal/mailunsub/zz_coverage_*_test.go, internal/ssrf/zz_coverage_*_test.go, internal/sources/zz_coverage_*_test.go, internal/enrich/zz_coverage_*_test.go |
-| P12b-zzb | internal/drawengine/zz_coverage_*_test.go, internal/draw/zz_coverage_*_test.go, internal/reveal/zz_coverage_*_test.go, internal/adjust/zz_coverage_*_test.go, internal/repair/zz_coverage_*_test.go, internal/targetpage/zz_coverage_*_test.go, internal/letter/zz_coverage_*_test.go, internal/letterread/zz_coverage_*_test.go, internal/letterpages/zz_coverage_*_test.go, internal/mailboxpage/zz_coverage_*_test.go, internal/reminders/zz_coverage_*_test.go, internal/reminderrules/zz_coverage_*_test.go, internal/givernotify/zz_coverage_*_test.go, internal/suggestions/zz_coverage_*_test.go, internal/suggestionpages/zz_coverage_*_test.go, internal/grouppages/zz_coverage_*_test.go, internal/accesspages/zz_coverage_*_test.go, internal/admin/dashboard/zz_coverage_*_test.go, internal/admin/audit/zz_coverage_*_test.go, internal/admin/menu/zz_coverage_*_test.go, internal/admin/people/zz_coverage_*_test.go, internal/admin/drawpages/zz_coverage_*_test.go, internal/admin/settingspages/zz_coverage_*_test.go, internal/adminconsult/zz_coverage_*_test.go, internal/adminops/zz_coverage_*_test.go, internal/registration/invite/zz_coverage_*_test.go, internal/registration/code/zz_coverage_*_test.go, internal/registration/verify/zz_coverage_*_test.go, internal/registrationpages/public/zz_coverage_*_test.go, internal/registrationpages/admin/zz_coverage_*_test.go |
+| P12b-zza | internal/config/zz_coverage_*_test.go, internal/db/zz_coverage_*_test.go, internal/shared/clock/zz_coverage_*_test.go, internal/shared/scheduler/zz_coverage_*_test.go, internal/shared/random/zz_coverage_*_test.go, internal/shared/sanitize/zz_coverage_*_test.go, internal/shared/errs/zz_coverage_*_test.go, internal/shared/ports/zz_coverage_*_test.go, internal/shared/outbound/zz_coverage_*_test.go, internal/shared/adminnav/zz_coverage_*_test.go, internal/health/zz_coverage_*_test.go, internal/groups/zz_coverage_*_test.go, internal/access/token/zz_coverage_*_test.go, internal/access/magic/zz_coverage_*_test.go, internal/access/limiter/zz_coverage_*_test.go, internal/websec/zz_coverage_*_test.go, internal/groupsettings/zz_coverage_*_test.go, internal/participants/zz_coverage_*_test.go, internal/rules/zz_coverage_*_test.go, internal/enrolment/zz_coverage_*_test.go, internal/rulechange/zz_coverage_*_test.go, internal/mail/transport/zz_coverage_*_test.go, internal/mail/queue/zz_coverage_*_test.go, internal/mail/templates/zz_coverage_*_test.go, internal/mailunsub/zz_coverage_*_test.go, internal/ssrf/zz_coverage_*_test.go, internal/sources/zz_coverage_*_test.go, internal/enrich/zz_coverage_*_test.go, internal/access/sqlstore/zz_coverage_*_test.go |
+| P12b-zzb | internal/drawengine/zz_coverage_*_test.go, internal/draw/zz_coverage_*_test.go, internal/reveal/zz_coverage_*_test.go, internal/adjust/zz_coverage_*_test.go, internal/repair/zz_coverage_*_test.go, internal/targetpage/zz_coverage_*_test.go, internal/letter/zz_coverage_*_test.go, internal/letterread/zz_coverage_*_test.go, internal/letterpages/zz_coverage_*_test.go, internal/mailboxpage/zz_coverage_*_test.go, internal/reminders/zz_coverage_*_test.go, internal/reminderrules/zz_coverage_*_test.go, internal/givernotify/zz_coverage_*_test.go, internal/suggestions/zz_coverage_*_test.go, internal/suggestionpages/zz_coverage_*_test.go, internal/grouppages/zz_coverage_*_test.go, internal/accesspages/zz_coverage_*_test.go, internal/admin/dashboard/zz_coverage_*_test.go, internal/admin/audit/zz_coverage_*_test.go, internal/admin/menu/zz_coverage_*_test.go, internal/admin/people/zz_coverage_*_test.go, internal/admin/drawpages/zz_coverage_*_test.go, internal/admin/settingspages/zz_coverage_*_test.go, internal/adminconsult/zz_coverage_*_test.go, internal/adminops/zz_coverage_*_test.go, internal/registration/invite/zz_coverage_*_test.go, internal/registration/code/zz_coverage_*_test.go, internal/registration/verify/zz_coverage_*_test.go, internal/registrationpages/public/zz_coverage_*_test.go, internal/registrationpages/admin/zz_coverage_*_test.go, internal/registration/sqlstore/zz_coverage_*_test.go |
 | P12b-zzc | internal/mailmsg/zz_coverage_*_test.go, internal/maildkim/zz_coverage_*_test.go, internal/maildiag/zz_coverage_*_test.go, internal/mailsuppress/zz_coverage_*_test.go, internal/maildiagpages/zz_coverage_*_test.go |
 
 ### Context graph
@@ -1204,17 +1230,17 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P1c-layout | internal/config/**, internal/db/**, internal/shared/** |
 | P3-core | internal/groups/**, internal/shared/**, internal/db/** |
 | P3-rules | internal/groups/**, internal/shared/**, internal/db/** |
-| P5-letter | internal/shared/**, internal/db/** |
 | P4-engine2 | internal/shared/** |
 | P6b-msg | internal/config/**, internal/shared/** |
 | P6b-dkim | internal/config/**, internal/shared/** |
+| P2b-store | internal/shared/**, internal/db/** |
+| P5-letter | internal/shared/**, internal/db/** |
 | P8-ssrf | internal/shared/** |
 | P6-queue | internal/config/**, internal/shared/**, internal/db/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-desinscription, internal/mailmsg/**, internal/maildkim/** |
 | P6-templates | internal/config/**, internal/shared/**, internal/db/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-desinscription, internal/mailmsg/**, internal/maildkim/** |
 | P6-transport | internal/config/**, internal/shared/**, internal/db/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-desinscription, internal/mailmsg/**, internal/maildkim/** |
 | P9-illus | docs/waves/design/snapshot.html#tokens |
 | P9-theme | docs/waves/design/snapshot.html#tokens |
-| P12a-bench | Dockerfile, docker-compose.yml, .env.example, VERSION, tests/e2e/_shared/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md |
 | P3-roles | internal/groups/**, internal/shared/**, internal/db/** |
 | P3d-enrol | internal/participants/**, internal/rules/**, internal/access/**, internal/shared/** |
 | P3d-rulechange | internal/participants/**, internal/rules/**, internal/access/**, internal/shared/** |
@@ -1224,14 +1250,15 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P2e-settings | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/access/**, internal/websec/**, docs/waves/design/snapshot.html#screen-accueil-groupe, docs/waves/design/snapshot.html#screen-creation-groupe, docs/waves/design/snapshot.html#screen-connexion, docs/waves/design/snapshot.html#screen-admin-connexion |
 | P6-unsub | internal/config/**, internal/shared/**, internal/db/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-desinscription, internal/mailmsg/**, internal/maildkim/** |
 | P8b-enrich | internal/ssrf/**, internal/shared/**, internal/config/** |
+| P12a-bench | Dockerfile, docker-compose.yml, .env.example, VERSION, tests/e2e/_shared/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md |
 | P4b-reveal | internal/drawengine/**, internal/participants/**, internal/rules/**, internal/groups/**, internal/shared/**, internal/db/** |
 | P7-rules | internal/mail/**, internal/mailunsub/**, internal/letter/**, internal/participants/**, internal/shared/**, internal/config/** |
 | P8b-sources | internal/ssrf/**, internal/shared/**, internal/config/** |
 | P9c-core | web/templates/layout/**, web/static/css/base/**, web/static/css/theme/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-revelation, docs/waves/design/snapshot.html#screen-revelation-b, docs/waves/design/snapshot.html#screen-revelation-c |
-| P12a-docs | Dockerfile, docker-compose.yml, .env.example, VERSION, tests/e2e/_shared/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md |
 | P3d-roles | internal/participants/**, internal/rules/**, internal/access/**, internal/shared/** |
 | P6c-diag | internal/shared/**, internal/config/**, internal/mail/**, internal/mailmsg/**, internal/maildkim/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-admin-delivrabilite |
 | P6c-suppress | internal/shared/**, internal/config/**, internal/mail/**, internal/mailmsg/**, internal/maildkim/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-admin-delivrabilite |
+| P12a-docs | Dockerfile, docker-compose.yml, .env.example, VERSION, tests/e2e/_shared/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md |
 | P11-code | internal/groups/**, internal/access/**, internal/participants/**, internal/enrolment/**, internal/shared/**, internal/config/** |
 | P11-invite | internal/groups/**, internal/access/**, internal/participants/**, internal/enrolment/**, internal/shared/**, internal/config/** |
 | P7-engine | internal/mail/**, internal/mailunsub/**, internal/letter/**, internal/participants/**, internal/shared/**, internal/config/** |
@@ -1241,20 +1268,21 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P4b-multi | internal/drawengine/**, internal/participants/**, internal/rules/**, internal/groups/**, internal/shared/**, internal/db/** |
 | P6c-page | internal/shared/**, internal/config/**, internal/mail/**, internal/mailmsg/**, internal/maildkim/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-admin-delivrabilite |
 | P10b-consult | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/mail/**, internal/db/** |
-| P10b-ops | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/mail/**, internal/db/** |
 | P11-verify | internal/groups/**, internal/access/**, internal/participants/**, internal/enrolment/**, internal/shared/**, internal/config/** |
 | P4c-adjust | internal/draw/**, internal/reveal/**, internal/drawengine/**, internal/participants/**, internal/rules/**, internal/groupsettings/**, internal/shared/** |
 | P5b-read | internal/letter/**, internal/draw/**, internal/reveal/**, internal/shared/** |
 | P4d-pages | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/draw/**, internal/reveal/**, internal/groups/**, docs/waves/design/snapshot.html#screen-attente-revelation, docs/waves/design/snapshot.html#screen-ma-cible, internal/participants/**, docs/waves/design/snapshot.html#screen-reception-seule |
 | P8c-service | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/sources/**, internal/enrich/**, internal/ssrf/**, internal/groups/**, internal/letter/**, internal/participants/**, internal/draw/**, docs/waves/design/snapshot.html#screen-suggestions |
+| P11-store | internal/groups/**, internal/access/**, internal/participants/**, internal/enrolment/**, internal/shared/**, internal/config/** |
+| P10b-ops | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/mail/**, internal/db/** |
 | P9c-seq | web/templates/layout/**, web/static/css/base/**, web/static/css/theme/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-revelation, docs/waves/design/snapshot.html#screen-revelation-b, docs/waves/design/snapshot.html#screen-revelation-c |
 | P4c-repair | internal/draw/**, internal/reveal/**, internal/drawengine/**, internal/participants/**, internal/rules/**, internal/groupsettings/**, internal/shared/** |
 | P5c-mailbox | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/letter/**, internal/letterread/**, internal/groups/**, docs/waves/design/snapshot.html#screen-lettre, docs/waves/design/snapshot.html#screen-boite-lettres, docs/waves/design/snapshot.html#screen-lettre-recue |
 | P5c-pages | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/letter/**, internal/letterread/**, internal/groups/**, docs/waves/design/snapshot.html#screen-lettre, docs/waves/design/snapshot.html#screen-boite-lettres, docs/waves/design/snapshot.html#screen-lettre-recue |
 | P7b-notify | internal/letter/**, internal/letterread/**, internal/mail/**, internal/mailunsub/**, internal/reveal/**, internal/shared/** |
 | P8c-page | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/sources/**, internal/enrich/**, internal/ssrf/**, internal/groups/**, internal/letter/**, internal/participants/**, internal/draw/**, docs/waves/design/snapshot.html#screen-suggestions |
-| P4d-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/draw/**, internal/reveal/**, internal/groups/**, docs/waves/design/snapshot.html#screen-attente-revelation, docs/waves/design/snapshot.html#screen-ma-cible, internal/participants/**, docs/waves/design/snapshot.html#screen-reception-seule |
 | P11-roleopt | internal/groups/**, internal/access/**, internal/participants/**, internal/enrolment/**, internal/shared/**, internal/config/** |
+| P4d-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/draw/**, internal/reveal/**, internal/groups/**, docs/waves/design/snapshot.html#screen-attente-revelation, docs/waves/design/snapshot.html#screen-ma-cible, internal/participants/**, docs/waves/design/snapshot.html#screen-reception-seule |
 | P11c-public | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/registration/**, internal/groups/**, docs/waves/design/snapshot.html#screen-inscription, docs/waves/design/snapshot.html#screen-inscription-code, docs/waves/design/snapshot.html#screen-inscription-reussie, docs/waves/design/snapshot.html#screen-admin-inscriptions |
 | P4c-roles | internal/draw/**, internal/reveal/**, internal/drawengine/**, internal/participants/**, internal/rules/**, internal/groupsettings/**, internal/shared/** |
 | P5c-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/letter/**, internal/letterread/**, internal/groups/**, docs/waves/design/snapshot.html#screen-lettre, docs/waves/design/snapshot.html#screen-boite-lettres, docs/waves/design/snapshot.html#screen-lettre-recue |
@@ -1283,81 +1311,83 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P1b-db | format, lint, typecheck, unit | F1.AC1–AC6, F1b.AC1–AC10 |
 | P1b-sh1 | format, lint, typecheck, unit | F1.AC1–AC6, F1b.AC1–AC10 |
 | P1b-sh2 | format, lint, typecheck, unit | F1.AC1–AC6, F1b.AC1–AC10 |
-| P1c-ci | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P1c-entry | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P1c-infra | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P2-groups | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P2b-a | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P2b-b | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P2c-websec | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P4-engine | format, lint, typecheck, unit | F2.AC1–AC9, F2b.AC1–AC8, F2c.AC1–AC3 |
-| P1c-docker | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P1c-layout | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P3-core | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P3-rules | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P5-letter | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P4-engine2 | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P6b-msg | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P6b-dkim | format, lint, typecheck, unit | F1c.AC1–AC11, F4.AC1–AC16, F5.AC1–AC8, F6b.AC1–AC11 |
-| P8-ssrf | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P6-queue | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P6-templates | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P6-transport | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P9-illus | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P9-theme | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P12a-bench | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P3-roles | format, lint, typecheck, unit | F3.AC1–AC16, F8.AC1–AC4, F9.AC1–AC10 |
-| P3d-enrol | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P3d-rulechange | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P4b-core | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P2e-pages1 | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P2e-pages2 | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P2e-settings | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P6-unsub | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P8b-enrich | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC32 |
-| P4b-reveal | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P7-rules | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P8b-sources | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P9c-core | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P12a-docs | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P3d-roles | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P6c-diag | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P6c-suppress | format, lint, typecheck, unit | F12a.AC1–AC6, F3d.AC1–AC10, F8b.AC1–AC4 |
-| P11-code | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P11-invite | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P7-engine | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P9c-envelope | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P9c-gift | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P9c-scratch | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P4b-multi | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P6c-page | format, lint, typecheck, unit | F4b.AC1–AC16, F6c.AC1–AC14, F7.AC1–AC13 |
-| P10b-consult | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P10b-ops | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P11-verify | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P4c-adjust | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P5b-read | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P4d-pages | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P8c-service | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P9c-seq | format, lint, typecheck, unit | F10b.AC1–AC11, F5b.AC1–AC7, F9c.AC1–AC15 |
-| P4c-repair | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P5c-mailbox | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P5c-pages | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P7b-notify | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P8c-page | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P4d-roles | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P11-roleopt | format, lint, typecheck, unit | F11.AC1–AC23, F4d.AC1–AC9, F7b.AC1–AC5 |
-| P11c-public | format, lint, typecheck, unit | F4c.AC1–AC16, F5c.AC1–AC10, F8c.AC1–AC9 |
-| P4c-roles | format, lint, typecheck, unit | F4c.AC1–AC16, F5c.AC1–AC10, F8c.AC1–AC9 |
-| P5c-roles | format, lint, typecheck, unit | F4c.AC1–AC16, F5c.AC1–AC10, F8c.AC1–AC9 |
-| P8c-multi | format, lint, typecheck, unit | F4c.AC1–AC16, F5c.AC1–AC10, F8c.AC1–AC9 |
+| P1c-ci | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P1c-entry | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P1c-infra | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P2-groups | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P2b-a | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P2b-b | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P2c-websec | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P4-engine | format, lint, typecheck, unit | F2.AC1–AC9, F2c.AC1–AC3 |
+| P1c-docker | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P1c-layout | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P3-core | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P3-rules | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P4-engine2 | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P6b-msg | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P6b-dkim | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P2b-store | format, lint, typecheck, unit | F1c.AC1–AC11, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
+| P5-letter | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P8-ssrf | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P6-queue | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P6-templates | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P6-transport | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P9-illus | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P9-theme | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P3-roles | format, lint, typecheck, unit | F3.AC1–AC16, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P3d-enrol | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P3d-rulechange | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P4b-core | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P2e-pages1 | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P2e-pages2 | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P2e-settings | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P6-unsub | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P8b-enrich | format, lint, typecheck, unit | F2e.AC1–AC9, F6.AC1–AC33 |
+| P12a-bench | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P4b-reveal | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P7-rules | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P8b-sources | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P9c-core | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P3d-roles | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P6c-diag | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P6c-suppress | format, lint, typecheck, unit | F3d.AC1–AC10, F8b.AC1–AC4 |
+| P12a-docs | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P11-code | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P11-invite | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P7-engine | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P9c-envelope | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P9c-gift | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P9c-scratch | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P4b-multi | format, lint, typecheck, unit | F12a.AC1–AC6, F4b.AC1–AC16, F7.AC1–AC13 |
+| P6c-page | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P10b-consult | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P11-verify | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P4c-adjust | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P5b-read | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P4d-pages | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P8c-service | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P11-store | format, lint, typecheck, unit | F5b.AC1–AC7, F6c.AC1–AC14 |
+| P10b-ops | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P9c-seq | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P4c-repair | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P5c-mailbox | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P5c-pages | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P7b-notify | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P8c-page | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P11-roleopt | format, lint, typecheck, unit | F10b.AC1–AC11, F11.AC1–AC25, F7b.AC1–AC5, F9c.AC1–AC15 |
+| P4d-roles | format, lint, typecheck, unit | F4c.AC1–AC16, F4d.AC1–AC9, F5c.AC1–AC10, F8c.AC1–AC9 |
+| P11c-public | format, lint, typecheck, unit | F4c.AC1–AC16, F4d.AC1–AC9, F5c.AC1–AC10, F8c.AC1–AC9 |
+| P4c-roles | format, lint, typecheck, unit | F4c.AC1–AC16, F4d.AC1–AC9, F5c.AC1–AC10, F8c.AC1–AC9 |
+| P5c-roles | format, lint, typecheck, unit | F4c.AC1–AC16, F4d.AC1–AC9, F5c.AC1–AC10, F8c.AC1–AC9 |
+| P8c-multi | format, lint, typecheck, unit | F4c.AC1–AC16, F4d.AC1–AC9, F5c.AC1–AC10, F8c.AC1–AC9 |
 | P10-dash | format, lint, typecheck, unit | aucun |
 | P10-menu | format, lint, typecheck, unit | aucun |
 | P10-settings | format, lint, typecheck, unit | aucun |
 | P11c-admin | format, lint, typecheck, unit | aucun |
 | P10-roles | format, lint, typecheck, unit | aucun |
-| P10-draw | format, lint, typecheck, unit | F10.AC1–AC35, F11c.AC1–AC14 |
-| P10-people | format, lint, typecheck, unit | F10.AC1–AC35, F11c.AC1–AC14 |
-| P11c-roles | format, lint, typecheck, unit | F10.AC1–AC35, F11c.AC1–AC14 |
+| P10-draw | format, lint, typecheck, unit | F10.AC1–AC36, F11c.AC1–AC14 |
+| P10-people | format, lint, typecheck, unit | F10.AC1–AC36, F11c.AC1–AC14 |
+| P11c-roles | format, lint, typecheck, unit | F10.AC1–AC36, F11c.AC1–AC14 |
 | P12b-cov | format, lint, typecheck, unit | aucun |
 | P12b-jA | format, lint, typecheck, unit | aucun |
 | P12b-jB | format, lint, typecheck, unit | aucun |
@@ -1380,71 +1410,71 @@ integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l
 wave: 2
 phases: [P1c-ci, P1c-entry, P1c-infra, P2-groups, P2b-a, P2b-b, P2c-websec, P4-engine]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum]
-criteria: [F2.AC1, F2.AC2, F2.AC3, F2.AC4, F2.AC5, F2.AC6, F2.AC7, F2.AC8, F2.AC9, F2b.AC1, F2b.AC2, F2b.AC3, F2b.AC4, F2b.AC5, F2b.AC6, F2b.AC7, F2b.AC8, F2c.AC1, F2c.AC2, F2c.AC3]
+criteria: [F2.AC1, F2.AC2, F2.AC3, F2.AC4, F2.AC5, F2.AC6, F2.AC7, F2.AC8, F2.AC9, F2c.AC1, F2c.AC2, F2c.AC3]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 3
-phases: [P1c-docker, P1c-layout, P3-core, P3-rules, P5-letter, P4-engine2, P6b-msg, P6b-dkim]
+phases: [P1c-docker, P1c-layout, P3-core, P3-rules, P4-engine2, P6b-msg, P6b-dkim, P2b-store]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json]
-criteria: [F1c.AC1, F1c.AC2, F1c.AC3, F1c.AC4, F1c.AC5, F1c.AC6, F1c.AC7, F1c.AC8, F1c.AC9, F1c.AC10, F1c.AC11, F4.AC1, F4.AC2, F4.AC3, F4.AC4, F4.AC5, F4.AC6, F4.AC7, F4.AC8, F4.AC9, F4.AC10, F4.AC11, F4.AC12, F4.AC13, F4.AC14, F4.AC15, F4.AC16, F5.AC1, F5.AC2, F5.AC3, F5.AC4, F5.AC5, F5.AC6, F5.AC7, F5.AC8, F6b.AC1, F6b.AC2, F6b.AC3, F6b.AC4, F6b.AC5, F6b.AC6, F6b.AC7, F6b.AC8, F6b.AC9, F6b.AC10, F6b.AC11]
+criteria: [F1c.AC1, F1c.AC2, F1c.AC3, F1c.AC4, F1c.AC5, F1c.AC6, F1c.AC7, F1c.AC8, F1c.AC9, F1c.AC10, F1c.AC11, F2b.AC1, F2b.AC2, F2b.AC3, F2b.AC4, F2b.AC5, F2b.AC6, F2b.AC7, F2b.AC8, F2b.AC9, F2b.AC10, F2b.AC11, F2b.AC12, F4.AC1, F4.AC2, F4.AC3, F4.AC4, F4.AC5, F4.AC6, F4.AC7, F4.AC8, F4.AC9, F4.AC10, F4.AC11, F4.AC12, F4.AC13, F4.AC14, F4.AC15, F4.AC16, F6b.AC1, F6b.AC2, F6b.AC3, F6b.AC4, F6b.AC5, F6b.AC6, F6b.AC7, F6b.AC8, F6b.AC9, F6b.AC10, F6b.AC11]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./...", "cmd:bash tests/e2e/docker/docker-smoke.sh"]
 ```
 
 ```yaml wave
 wave: 4
-phases: [P8-ssrf, P6-queue, P6-templates, P6-transport, P9-illus, P9-theme, P12a-bench, P3-roles]
+phases: [P5-letter, P8-ssrf, P6-queue, P6-templates, P6-transport, P9-illus, P9-theme, P3-roles]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F3.AC1, F3.AC2, F3.AC3, F3.AC4, F3.AC5, F3.AC6, F3.AC7, F3.AC8, F3.AC9, F3.AC10, F3.AC11, F3.AC12, F3.AC13, F3.AC14, F3.AC15, F3.AC16, F8.AC1, F8.AC2, F8.AC3, F8.AC4, F9.AC1, F9.AC2, F9.AC3, F9.AC4, F9.AC5, F9.AC6, F9.AC7, F9.AC8, F9.AC9, F9.AC10]
-integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./...", "cmd:bash scripts/e2e.sh --smoke"]
+criteria: [F3.AC1, F3.AC2, F3.AC3, F3.AC4, F3.AC5, F3.AC6, F3.AC7, F3.AC8, F3.AC9, F3.AC10, F3.AC11, F3.AC12, F3.AC13, F3.AC14, F3.AC15, F3.AC16, F5.AC1, F5.AC2, F5.AC3, F5.AC4, F5.AC5, F5.AC6, F5.AC7, F5.AC8, F8.AC1, F8.AC2, F8.AC3, F8.AC4, F9.AC1, F9.AC2, F9.AC3, F9.AC4, F9.AC5, F9.AC6, F9.AC7, F9.AC8, F9.AC9, F9.AC10]
+integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 5
 phases: [P3d-enrol, P3d-rulechange, P4b-core, P2e-pages1, P2e-pages2, P2e-settings, P6-unsub, P8b-enrich]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F2e.AC1, F2e.AC2, F2e.AC3, F2e.AC4, F2e.AC5, F2e.AC6, F2e.AC7, F2e.AC8, F2e.AC9, F6.AC1, F6.AC2, F6.AC3, F6.AC4, F6.AC5, F6.AC6, F6.AC7, F6.AC8, F6.AC9, F6.AC10, F6.AC11, F6.AC12, F6.AC13, F6.AC14, F6.AC15, F6.AC16, F6.AC17, F6.AC18, F6.AC19, F6.AC20, F6.AC21, F6.AC22, F6.AC23, F6.AC24, F6.AC25, F6.AC26, F6.AC27, F6.AC28, F6.AC29, F6.AC30, F6.AC31, F6.AC32]
+criteria: [F2e.AC1, F2e.AC2, F2e.AC3, F2e.AC4, F2e.AC5, F2e.AC6, F2e.AC7, F2e.AC8, F2e.AC9, F6.AC1, F6.AC2, F6.AC3, F6.AC4, F6.AC5, F6.AC6, F6.AC7, F6.AC8, F6.AC9, F6.AC10, F6.AC11, F6.AC12, F6.AC13, F6.AC14, F6.AC15, F6.AC16, F6.AC17, F6.AC18, F6.AC19, F6.AC20, F6.AC21, F6.AC22, F6.AC23, F6.AC24, F6.AC25, F6.AC26, F6.AC27, F6.AC28, F6.AC29, F6.AC30, F6.AC31, F6.AC32, F6.AC33]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 6
-phases: [P4b-reveal, P7-rules, P8b-sources, P9c-core, P12a-docs, P3d-roles, P6c-diag, P6c-suppress]
+phases: [P12a-bench, P4b-reveal, P7-rules, P8b-sources, P9c-core, P3d-roles, P6c-diag, P6c-suppress]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F12a.AC1, F12a.AC2, F12a.AC3, F12a.AC4, F12a.AC5, F12a.AC6, F3d.AC1, F3d.AC2, F3d.AC3, F3d.AC4, F3d.AC5, F3d.AC6, F3d.AC7, F3d.AC8, F3d.AC9, F3d.AC10, F8b.AC1, F8b.AC2, F8b.AC3, F8b.AC4]
-integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
+criteria: [F3d.AC1, F3d.AC2, F3d.AC3, F3d.AC4, F3d.AC5, F3d.AC6, F3d.AC7, F3d.AC8, F3d.AC9, F3d.AC10, F8b.AC1, F8b.AC2, F8b.AC3, F8b.AC4]
+integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./...", "cmd:bash scripts/e2e.sh --smoke"]
 ```
 
 ```yaml wave
 wave: 7
-phases: [P11-code, P11-invite, P7-engine, P9c-envelope, P9c-gift, P9c-scratch, P4b-multi, P6c-page]
+phases: [P12a-docs, P11-code, P11-invite, P7-engine, P9c-envelope, P9c-gift, P9c-scratch, P4b-multi]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F4b.AC1, F4b.AC2, F4b.AC3, F4b.AC4, F4b.AC5, F4b.AC6, F4b.AC7, F4b.AC8, F4b.AC9, F4b.AC10, F4b.AC11, F4b.AC12, F4b.AC13, F4b.AC14, F4b.AC15, F4b.AC16, F6c.AC1, F6c.AC2, F6c.AC3, F6c.AC4, F6c.AC5, F6c.AC6, F6c.AC7, F6c.AC8, F6c.AC9, F6c.AC10, F6c.AC11, F6c.AC12, F6c.AC13, F6c.AC14, F7.AC1, F7.AC2, F7.AC3, F7.AC4, F7.AC5, F7.AC6, F7.AC7, F7.AC8, F7.AC9, F7.AC10, F7.AC11, F7.AC12, F7.AC13]
+criteria: [F12a.AC1, F12a.AC2, F12a.AC3, F12a.AC4, F12a.AC5, F12a.AC6, F4b.AC1, F4b.AC2, F4b.AC3, F4b.AC4, F4b.AC5, F4b.AC6, F4b.AC7, F4b.AC8, F4b.AC9, F4b.AC10, F4b.AC11, F4b.AC12, F4b.AC13, F4b.AC14, F4b.AC15, F4b.AC16, F7.AC1, F7.AC2, F7.AC3, F7.AC4, F7.AC5, F7.AC6, F7.AC7, F7.AC8, F7.AC9, F7.AC10, F7.AC11, F7.AC12, F7.AC13]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 8
-phases: [P10b-consult, P10b-ops, P11-verify, P4c-adjust, P5b-read, P4d-pages, P8c-service, P9c-seq]
+phases: [P6c-page, P10b-consult, P11-verify, P4c-adjust, P5b-read, P4d-pages, P8c-service, P11-store]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F10b.AC1, F10b.AC2, F10b.AC3, F10b.AC4, F10b.AC5, F10b.AC6, F10b.AC7, F10b.AC8, F10b.AC9, F10b.AC10, F10b.AC11, F5b.AC1, F5b.AC2, F5b.AC3, F5b.AC4, F5b.AC5, F5b.AC6, F5b.AC7, F9c.AC1, F9c.AC2, F9c.AC3, F9c.AC4, F9c.AC5, F9c.AC6, F9c.AC7, F9c.AC8, F9c.AC9, F9c.AC10, F9c.AC11, F9c.AC12, F9c.AC13, F9c.AC14, F9c.AC15]
+criteria: [F5b.AC1, F5b.AC2, F5b.AC3, F5b.AC4, F5b.AC5, F5b.AC6, F5b.AC7, F6c.AC1, F6c.AC2, F6c.AC3, F6c.AC4, F6c.AC5, F6c.AC6, F6c.AC7, F6c.AC8, F6c.AC9, F6c.AC10, F6c.AC11, F6c.AC12, F6c.AC13, F6c.AC14]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 9
-phases: [P4c-repair, P5c-mailbox, P5c-pages, P7b-notify, P8c-page, P4d-roles, P11-roleopt]
+phases: [P10b-ops, P9c-seq, P4c-repair, P5c-mailbox, P5c-pages, P7b-notify, P8c-page, P11-roleopt]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F11.AC1, F11.AC2, F11.AC3, F11.AC4, F11.AC5, F11.AC6, F11.AC7, F11.AC8, F11.AC9, F11.AC10, F11.AC11, F11.AC12, F11.AC13, F11.AC14, F11.AC15, F11.AC16, F11.AC17, F11.AC18, F11.AC19, F11.AC20, F11.AC21, F11.AC22, F11.AC23, F4d.AC1, F4d.AC2, F4d.AC3, F4d.AC4, F4d.AC5, F4d.AC6, F4d.AC7, F4d.AC8, F4d.AC9, F7b.AC1, F7b.AC2, F7b.AC3, F7b.AC4, F7b.AC5]
+criteria: [F10b.AC1, F10b.AC2, F10b.AC3, F10b.AC4, F10b.AC5, F10b.AC6, F10b.AC7, F10b.AC8, F10b.AC9, F10b.AC10, F10b.AC11, F11.AC1, F11.AC2, F11.AC3, F11.AC4, F11.AC5, F11.AC6, F11.AC7, F11.AC8, F11.AC9, F11.AC10, F11.AC11, F11.AC12, F11.AC13, F11.AC14, F11.AC15, F11.AC16, F11.AC17, F11.AC18, F11.AC19, F11.AC20, F11.AC21, F11.AC22, F11.AC23, F11.AC24, F11.AC25, F7b.AC1, F7b.AC2, F7b.AC3, F7b.AC4, F7b.AC5, F9c.AC1, F9c.AC2, F9c.AC3, F9c.AC4, F9c.AC5, F9c.AC6, F9c.AC7, F9c.AC8, F9c.AC9, F9c.AC10, F9c.AC11, F9c.AC12, F9c.AC13, F9c.AC14, F9c.AC15]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 10
-phases: [P11c-public, P4c-roles, P5c-roles, P8c-multi]
+phases: [P4d-roles, P11c-public, P4c-roles, P5c-roles, P8c-multi]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F4c.AC1, F4c.AC2, F4c.AC3, F4c.AC4, F4c.AC5, F4c.AC6, F4c.AC7, F4c.AC8, F4c.AC9, F4c.AC10, F4c.AC11, F4c.AC12, F4c.AC13, F4c.AC14, F4c.AC15, F4c.AC16, F5c.AC1, F5c.AC2, F5c.AC3, F5c.AC4, F5c.AC5, F5c.AC6, F5c.AC7, F5c.AC8, F5c.AC9, F5c.AC10, F8c.AC1, F8c.AC2, F8c.AC3, F8c.AC4, F8c.AC5, F8c.AC6, F8c.AC7, F8c.AC8, F8c.AC9]
+criteria: [F4c.AC1, F4c.AC2, F4c.AC3, F4c.AC4, F4c.AC5, F4c.AC6, F4c.AC7, F4c.AC8, F4c.AC9, F4c.AC10, F4c.AC11, F4c.AC12, F4c.AC13, F4c.AC14, F4c.AC15, F4c.AC16, F4d.AC1, F4d.AC2, F4d.AC3, F4d.AC4, F4d.AC5, F4d.AC6, F4d.AC7, F4d.AC8, F4d.AC9, F5c.AC1, F5c.AC2, F5c.AC3, F5c.AC4, F5c.AC5, F5c.AC6, F5c.AC7, F5c.AC8, F5c.AC9, F5c.AC10, F8c.AC1, F8c.AC2, F8c.AC3, F8c.AC4, F8c.AC5, F8c.AC6, F8c.AC7, F8c.AC8, F8c.AC9]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
@@ -1460,7 +1490,7 @@ integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l
 wave: 12
 phases: [P10-draw, P10-people, P11c-roles]
 integration_owned: [internal/app/**, web/static/i18n/fr.json, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F10.AC1, F10.AC2, F10.AC3, F10.AC4, F10.AC5, F10.AC6, F10.AC7, F10.AC8, F10.AC9, F10.AC10, F10.AC11, F10.AC12, F10.AC13, F10.AC14, F10.AC15, F10.AC16, F10.AC17, F10.AC18, F10.AC19, F10.AC20, F10.AC21, F10.AC22, F10.AC23, F10.AC24, F10.AC25, F10.AC26, F10.AC27, F10.AC28, F10.AC29, F10.AC30, F10.AC31, F10.AC32, F10.AC33, F10.AC34, F10.AC35, F11c.AC1, F11c.AC2, F11c.AC3, F11c.AC4, F11c.AC5, F11c.AC6, F11c.AC7, F11c.AC8, F11c.AC9, F11c.AC10, F11c.AC11, F11c.AC12, F11c.AC13, F11c.AC14]
+criteria: [F10.AC1, F10.AC2, F10.AC3, F10.AC4, F10.AC5, F10.AC6, F10.AC7, F10.AC8, F10.AC9, F10.AC10, F10.AC11, F10.AC12, F10.AC13, F10.AC14, F10.AC15, F10.AC16, F10.AC17, F10.AC18, F10.AC19, F10.AC20, F10.AC21, F10.AC22, F10.AC23, F10.AC24, F10.AC25, F10.AC26, F10.AC27, F10.AC28, F10.AC29, F10.AC30, F10.AC31, F10.AC32, F10.AC33, F10.AC34, F10.AC35, F10.AC36, F11c.AC1, F11c.AC2, F11c.AC3, F11c.AC4, F11c.AC5, F11c.AC6, F11c.AC7, F11c.AC8, F11c.AC9, F11c.AC10, F11c.AC11, F11c.AC12, F11c.AC13, F11c.AC14]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
@@ -1482,9 +1512,11 @@ integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l
 
 ## Forme du plan
 
-86 phases en 14 vagues, au plus 8 phases par vague (vagues 2, 3, 4, 5, 6, 7, 8). Modèles : opus 22, sonnet 64.
+88 phases en 14 vagues, au plus 8 phases par vague (vagues 2, 3, 4, 5, 6, 7, 8, 9). Modèles : opus 24, sonnet 64.
 
 Chemin critique : 14 maillons, jusqu'à la phase P12b-zza. Les services de chaque domaine sont séparés de leurs pages pour que les pages, feuilles du graphe, s'exécutent en parallèle sans allonger le chemin. Toute phase d'une spec marquée risk passe sur opus (règle du validateur).
+
+Replan additif pendant l'exécution (vague 2 en cours) : phases `P2b-store` (migrations et magasin SQL des jetons et codes d'accès, hachage à clé ; les liens magiques ont déjà les leurs) et `P11-store` (migrations et magasins SQL de l'inscription) ajoutées ; `P6-queue` et `P10-dash` possèdent désormais les migrations de `internal/mail` et `internal/admin`. Les vagues figées n'ont pas bougé ; seules les vagues restantes sont recalculées.
 
 ## Fichiers d'intégration
 
@@ -1532,17 +1564,17 @@ P1c-docker: pending
 P1c-layout: pending
 P3-core: pending
 P3-rules: pending
-P5-letter: pending
 P4-engine2: pending
 P6b-msg: pending
 P6b-dkim: pending
+P2b-store: pending
+P5-letter: pending
 P8-ssrf: pending
 P6-queue: pending
 P6-templates: pending
 P6-transport: pending
 P9-illus: pending
 P9-theme: pending
-P12a-bench: pending
 P3-roles: pending
 P3d-enrol: pending
 P3d-rulechange: pending
@@ -1552,14 +1584,15 @@ P2e-pages2: pending
 P2e-settings: pending
 P6-unsub: pending
 P8b-enrich: pending
+P12a-bench: pending
 P4b-reveal: pending
 P7-rules: pending
 P8b-sources: pending
 P9c-core: pending
-P12a-docs: pending
 P3d-roles: pending
 P6c-diag: pending
 P6c-suppress: pending
+P12a-docs: pending
 P11-code: pending
 P11-invite: pending
 P7-engine: pending
@@ -1569,20 +1602,21 @@ P9c-scratch: pending
 P4b-multi: pending
 P6c-page: pending
 P10b-consult: pending
-P10b-ops: pending
 P11-verify: pending
 P4c-adjust: pending
 P5b-read: pending
 P4d-pages: pending
 P8c-service: pending
+P11-store: pending
+P10b-ops: pending
 P9c-seq: pending
 P4c-repair: pending
 P5c-mailbox: pending
 P5c-pages: pending
 P7b-notify: pending
 P8c-page: pending
-P4d-roles: pending
 P11-roleopt: pending
+P4d-roles: pending
 P11c-public: pending
 P4c-roles: pending
 P5c-roles: pending
