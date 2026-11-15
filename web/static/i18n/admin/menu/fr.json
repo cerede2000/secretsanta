@@ -1,0 +1,15 @@
+{
+  "admin.menu.kicker": "Espace organisateur",
+  "admin.menu.title": "Plus",
+  "admin.menu.settings": "Réglages",
+  "admin.menu.settings.hint": "Groupe, courrier, relances, données",
+  "admin.menu.journal": "Journal du groupe",
+  "admin.menu.journal.hint": "Ajustements, consultations, validations",
+  "admin.menu.export": "Exporter les participants",
+  "admin.menu.export.hint": "Fichier JSON, sans les paires",
+  "admin.menu.help": "Aide",
+  "admin.menu.help.hint": "Comment ça marche, en quelques lignes",
+  "admin.menu.logout": "Se déconnecter",
+  "admin.menu.logout.hint": "Ton jeton ou mot de passe reste valable",
+  "admin.menu.note": "Rien de ce menu ne montre qui offre à qui."
+}
