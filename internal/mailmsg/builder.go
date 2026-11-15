@@ -66,6 +66,7 @@ func OptionsFromConfig(c *config.Config, clk clock.Clock, rnd io.Reader) Options
 // Builder fabrique des messages conformes.
 type Builder struct {
 	publicHost   string
+	allowHTTP    bool
 	from         string
 	fromName     string
 	envelopeFrom string
@@ -116,7 +117,7 @@ func New(o Options) (*Builder, error) {
 		rnd = rand.Reader
 	}
 	return &Builder{
-		publicHost: u.Host, from: from, fromName: name, envelopeFrom: env,
+		publicHost: u.Host, allowHTTP: u.Scheme == "http" && isLoopbackHost(u.Hostname()), from: from, fromName: name, envelopeFrom: env,
 		replyTo: replyTo, clock: clk, random: rnd,
 	}, nil
 }
@@ -155,7 +156,7 @@ type Built struct {
 
 // Policy renvoie la politique de liens appliquée à m.
 func (b *Builder) Policy(m Message) Policy {
-	return Policy{PublicHost: b.publicHost, UnsubscribeURL: m.UnsubscribeURL, UnsubscribeMailto: m.UnsubscribeMailto}
+	return Policy{PublicHost: b.publicHost, AllowHTTP: b.allowHTTP, UnsubscribeURL: m.UnsubscribeURL, UnsubscribeMailto: m.UnsubscribeMailto}
 }
 
 // Build valide et fabrique le message.
@@ -330,4 +331,13 @@ func hasHTMLElement(src string) bool {
 			}
 		}
 	}
+}
+
+// isLoopbackHost indique si l'hôte (sans port) est localhost, 127.0.0.1 ou ::1.
+func isLoopbackHost(h string) bool {
+	switch strings.ToLower(h) {
+	case "localhost", "127.0.0.1", "::1":
+		return true
+	}
+	return false
 }

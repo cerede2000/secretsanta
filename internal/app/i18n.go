@@ -1,69 +1,45 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/fs"
-	"strings"
+	"log/slog"
 
+	"secretsanta/internal/i18n/catalog"
 	"secretsanta/web"
 )
 
 // DefaultLang est la langue par défaut de l'interface.
+//
+// Point d'ancrage : la phase de configuration de la vague suivante ajoutera
+// APP_DEFAULT_LANG et I18N_DIR à internal/config. Elles alimenteront alors
+// LoadTextsWith (DefaultLang et ExternalDir) à la place de cette constante ;
+// aucune variable d'environnement n'est lue ici.
 const DefaultLang = "fr"
 
-// Texts est un catalogue minimal : il ne charge que la langue par défaut.
-// Une phase dédiée le remplacera (fusion de tous les modules, négociation de
-// langue, dossier externe) en gardant l'API Text(lang, key, params...).
+// Texts est la façade applicative du catalogue de textes
+// (internal/i18n/catalog) : elle garde l'API Text(lang, key, params...).
 type Texts struct {
-	byLang map[string]map[string]string
+	// Cat est le catalogue sous-jacent (T, TN, Langs, Match).
+	Cat *catalog.Catalog
 }
 
-// LoadTexts fusionne les fichiers web/static/i18n/*/<lang>.json embarqués.
+// LoadTexts charge les catalogues embarqués avec lang comme langue de repli.
 func LoadTexts(lang string) (*Texts, error) {
-	files, err := fs.Glob(web.I18n, "static/i18n/*/"+lang+".json")
+	return LoadTextsWith(catalog.Options{DefaultLang: lang, Logger: slog.Default()})
+}
+
+// LoadTextsWith charge les catalogues embarqués avec les options données
+// (dossier externe, journal).
+func LoadTextsWith(opts catalog.Options) (*Texts, error) {
+	cat, err := catalog.Load(web.I18n, opts)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("textes : %w", err)
 	}
-	if len(files) == 0 {
-		return nil, fmt.Errorf("aucun texte pour la langue %q", lang)
-	}
-	m := map[string]string{}
-	for _, f := range files {
-		b, err := web.I18n.ReadFile(f)
-		if err != nil {
-			return nil, err
-		}
-		var raw map[string]json.RawMessage
-		if err := json.Unmarshal(b, &raw); err != nil {
-			return nil, fmt.Errorf("textes %s invalides : %w", f, err)
-		}
-		for k, v := range raw {
-			if k == "_meta" {
-				continue
-			}
-			var s string
-			if err := json.Unmarshal(v, &s); err != nil {
-				return nil, fmt.Errorf("textes %s, clé %s : %w", f, k, err)
-			}
-			m[k] = s
-		}
-	}
-	return &Texts{byLang: map[string]map[string]string{lang: m}}, nil
+	return &Texts{Cat: cat}, nil
 }
 
 // Text renvoie le texte de la clé dans la langue (repli : langue par défaut,
 // puis la clé elle-même). params : paires nom, valeur remplaçant {nom}.
 func (t *Texts) Text(lang, key string, params ...any) string {
-	s, ok := t.byLang[lang][key]
-	if !ok {
-		s, ok = t.byLang[DefaultLang][key]
-	}
-	if !ok {
-		return key
-	}
-	for i := 0; i+1 < len(params); i += 2 {
-		s = strings.ReplaceAll(s, "{"+fmt.Sprint(params[i])+"}", fmt.Sprint(params[i+1]))
-	}
-	return s
+	return t.Cat.T(lang, key, catalog.Pairs(params...))
 }

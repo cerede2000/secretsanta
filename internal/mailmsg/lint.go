@@ -17,6 +17,10 @@ type Policy struct {
 	// PublicHost est l'hôte (avec son port éventuel) de PUBLIC_URL : seul
 	// hôte autorisé pour les liens https.
 	PublicHost string
+	// AllowHTTP autorise le schéma http, uniquement vers PublicHost. Le
+	// constructeur ne l'active que si l'hôte de PUBLIC_URL est localhost,
+	// 127.0.0.1 ou ::1 (essais en local) ; jamais sinon.
+	AllowHTTP bool
 	// UnsubscribeURL est le lien https de désinscription déclaré (exception
 	// à la règle de l'hôte), ou "".
 	UnsubscribeURL string
@@ -80,7 +84,8 @@ func (p Policy) CheckLink(raw string) error {
 		}
 		return fail(ErrLink, fmt.Sprintf("Seul le mailto de désinscription déclaré est autorisé : « %s ».", raw))
 	}
-	if scheme != "https" || u.Host == "" || u.Opaque != "" {
+	httpLocal := scheme == "http" && p.AllowHTTP && p.PublicHost != "" && strings.EqualFold(u.Host, p.PublicHost)
+	if (scheme != "https" && !httpLocal) || u.Host == "" || u.Opaque != "" {
 		return fail(ErrLink, fmt.Sprintf("Seuls les liens https sont autorisés : « %s ».", raw))
 	}
 	if u.User != nil {

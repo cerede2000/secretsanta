@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -16,7 +17,10 @@ import (
 	"secretsanta/internal/config"
 	"secretsanta/internal/db"
 	"secretsanta/internal/health"
+	"secretsanta/internal/i18n/catalog"
+	"secretsanta/internal/i18n/cli"
 	"secretsanta/internal/shared/clock"
+	"secretsanta/web"
 )
 
 // version est injectée à la compilation (-ldflags "-X main.version=...").
@@ -30,10 +34,25 @@ func main() {
 		}
 		os.Exit(health.Run(addr))
 	}
+	if len(os.Args) > 1 && os.Args[1] == "i18n" {
+		os.Exit(runI18n(os.Args[2:], os.Stdout, os.Stderr))
+	}
 	if err := run(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+// runI18n exécute « secretsanta i18n export|check » sur le catalogue embarqué,
+// sans exiger les secrets d'exécution. Point d'ancrage : APP_DEFAULT_LANG et
+// I18N_DIR (vague suivante) alimenteront DefaultLang et ExternalDir ici.
+func runI18n(args []string, stdout, stderr io.Writer) int {
+	cat, err := catalog.Load(web.I18n, catalog.Options{DefaultLang: app.DefaultLang})
+	if err != nil {
+		fmt.Fprintln(stderr, err)
+		return 1
+	}
+	return cli.Run(args, stdout, stderr, cat)
 }
 
 func run() error {

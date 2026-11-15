@@ -14,7 +14,9 @@ import (
 	"secretsanta/internal/websec"
 )
 
-func newApp(t *testing.T) *App {
+func newApp(t *testing.T) *App { return newAppAt(t, "http://localhost:8080") }
+
+func newAppAt(t *testing.T, publicURL string) *App {
 	t.Helper()
 	d, err := db.Open(t.TempDir())
 	if err != nil {
@@ -22,8 +24,9 @@ func newApp(t *testing.T) *App {
 	}
 	t.Cleanup(func() { d.Close() })
 	cfg := config.Config{
-		PublicURL:    "http://localhost:8080",
+		PublicURL:    publicURL,
 		InstancePass: config.NewSecret("mot-de-passe-d-instance-test"),
+		SigningKey:   config.NewSecret("secret-de-signature-de-test"),
 	}
 	a, err := New(cfg, d, clock.NewFake(time.Date(2026, 11, 1, 10, 0, 0, 0, time.UTC)), "test")
 	if err != nil {
@@ -69,7 +72,7 @@ func TestMigrationRegistry(t *testing.T) {
 			t.Errorf("module %s sans migration", m.Module)
 		}
 	}
-	for _, want := range []string{"groups", "websec", "access_magic"} {
+	for _, want := range []string{"groups", "websec", "access_magic", "participants", "rules", "access_credentials"} {
 		if !seen[want] {
 			t.Errorf("module manquant : %s", want)
 		}

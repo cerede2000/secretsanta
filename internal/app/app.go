@@ -18,9 +18,14 @@ import (
 	"sync"
 	"time"
 
+	"secretsanta/internal/access/token"
 	"secretsanta/internal/config"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/health"
+	"secretsanta/internal/maildkim"
+	"secretsanta/internal/mailmsg"
+	"secretsanta/internal/participants"
+	"secretsanta/internal/rules"
 	"secretsanta/internal/shared/clock"
 	"secretsanta/internal/shared/scheduler"
 	"secretsanta/internal/websec"
@@ -39,6 +44,14 @@ type App struct {
 	Policy   websec.Policy
 	Sessions *websec.Sessions
 	Groups   *groups.Service
+	// Services des vagues intégrées (aucune route métier encore).
+	Participants *participants.Service
+	Rules        *rules.Service
+	Tokens       *token.Service
+	// Mail est nil tant qu'aucune adresse d'expédition n'est configurée.
+	Mail *mailmsg.Builder
+	// DKIM est toujours non nil ; Enabled() dit s'il signe.
+	DKIM *maildkim.Signer
 	// Mux reçoit les routes des fonctionnalités (derrière la chaîne de middlewares).
 	Mux *http.ServeMux
 

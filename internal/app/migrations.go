@@ -5,8 +5,11 @@ import (
 	"fmt"
 
 	"secretsanta/internal/access/magic"
+	accessmig "secretsanta/internal/access/migrations"
 	"secretsanta/internal/db"
 	"secretsanta/internal/groups"
+	"secretsanta/internal/participants"
+	"secretsanta/internal/rules"
 	"secretsanta/internal/websec"
 )
 
@@ -26,6 +29,11 @@ var migrationSources = []struct {
 	{groups.Module, groups.Migrations},
 	{websec.MigrationModule, websec.Migrations},
 	{magic.Module, magic.Migrations},
+	// Dépendances : participants et rules référencent groups ; rules vient
+	// après participants (membres de foyers, exclusions).
+	{participants.Module, participants.Migrations},
+	{rules.Module, rules.Migrations},
+	{accessmig.Module, accessmig.Migrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.
