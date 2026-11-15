@@ -15,6 +15,7 @@ import (
 // Defaults.
 const (
 	DefaultTimezone     = "Europe/Paris"
+	DefaultLang         = "fr"
 	DefaultListenAddr   = ":8080"
 	DefaultDataDir      = "/data"
 	DefaultPublicURL    = "http://localhost:8080"
@@ -29,6 +30,8 @@ type Config struct {
 	DataDir      string
 	Timezone     string
 	Location     *time.Location
+	DefaultLang  string // langue par défaut (APP_DEFAULT_LANG)
+	I18nDir      string // dossier externe de traductions (I18N_DIR), facultatif
 	InstancePass Secret
 	SigningKey   Secret
 
@@ -171,6 +174,7 @@ func Load(getenv func(string) string) (*Config, error) {
 		c.Location = loc
 	}
 
+	l.loadLang(c)
 	l.loadSMTP(c)
 	l.loadMail(c)
 	l.loadDKIM(c)
