@@ -1,0 +1,13 @@
+.git
+.github
+.worktrees
+.env
+.env.*
+!.env.example
+docs
+plan.md
+tests
+node_modules
+*.db
+*.db-wal
+*.db-shm
