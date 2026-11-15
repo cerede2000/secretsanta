@@ -1,0 +1,15 @@
+{
+  "mail.unsub.relances.title": "Stop receiving reminders",
+  "mail.unsub.relances.intro": "You will no longer receive this group's reminders: link not opened yet, letter not written yet and letter to read again.",
+  "mail.unsub.relances.submit": "I don't want reminders any more",
+  "mail.unsub.relances.keep": "Keep the reminders",
+  "mail.unsub.relances.resub": "Turn the reminders back on",
+  "mail.unsub.nouvelle_idee.title": "Stop being told about new ideas",
+  "mail.unsub.nouvelle_idee.intro": "You will no longer be told when the letter of the person you are giving a gift to changes.",
+  "mail.unsub.nouvelle_idee.submit": "I don't want these messages any more",
+  "mail.unsub.nouvelle_idee.keep": "Keep these messages",
+  "mail.unsub.nouvelle_idee.resub": "Turn these messages back on",
+  "mail.unsub.essential": "You still receive the essential emails: your access link, the opening of the draw and the changes that concern you.",
+  "mail.unsub.flash.off": "Done, this kind of message is turned off. You can turn it back on below.",
+  "mail.unsub.flash.on": "Done, you will receive this kind of message again."
+}
