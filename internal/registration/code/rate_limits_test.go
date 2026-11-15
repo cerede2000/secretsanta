@@ -137,7 +137,41 @@ func TestSixthRegistrationPerIPIn15MinutesRefused(t *testing.T) {
 	}
 }
 
+// Les sondes (soumissions valides) ont leur propre compteur : le 21e est
+// refusé, la fenêtre rouvre, et il ne consomme pas le plafond de créations.
+func TestSubmissionsPerIPCapIsSeparateFromRegistrations(t *testing.T) {
+	f := newFixture(t)
+	const ip = "203.0.113.9"
+	for i := 0; i < SubmissionsPerIP.Limit; i++ {
+		if err := f.svc.AllowSubmission(testGroup, ip); err != nil {
+			t.Fatalf("soumission %d : %v", i+1, err)
+		}
+	}
+	if err := f.svc.AllowSubmission(testGroup, ip); !errors.Is(err, limiter.ErrLimited) || !errs.Is(err, errs.KindForbidden) {
+		t.Fatalf("soumission au-delà du plafond : %v", err)
+	}
+	if err := f.svc.AllowSubmission(testGroup, "203.0.113.10"); err != nil {
+		t.Fatalf("autre IP : %v", err)
+	}
+	if err := f.svc.AllowSubmission(testGroup+1, ip); err != nil {
+		t.Fatalf("autre groupe : %v", err)
+	}
+	// Les créations ne sont pas touchées par les soumissions.
+	for i := 0; i < RegistrationsPerIP.Limit; i++ {
+		if err := f.svc.AllowRegistration(testGroup, ip); err != nil {
+			t.Fatalf("création %d : %v", i+1, err)
+		}
+	}
+	f.clk.Advance(SubmissionsPerIP.Window)
+	if err := f.svc.AllowSubmission(testGroup, ip); err != nil {
+		t.Fatalf("après la fenêtre : %v", err)
+	}
+}
+
 func TestLimitRules(t *testing.T) {
+	if SubmissionsPerIP != (limiter.Rule{Limit: 20, Window: 15 * time.Minute}) {
+		t.Fatalf("plafond de soumissions %+v", SubmissionsPerIP)
+	}
 	if CodesPerAddress != (limiter.Rule{Limit: 3, Window: time.Hour}) {
 		t.Fatalf("plafond par adresse %+v", CodesPerAddress)
 	}

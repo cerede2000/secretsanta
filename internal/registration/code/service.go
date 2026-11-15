@@ -67,6 +67,7 @@ type Service struct {
 
 	perAddress *limiter.Limiter
 	perIP      *limiter.Limiter
+	perSubmit  *limiter.Limiter
 
 	// issueMu sérialise les émissions : le délai de renvoi et le plafond par
 	// adresse sont lus et écrits sans course.
@@ -92,6 +93,7 @@ func New(o Options) (*Service, error) {
 		key:        append([]byte(nil), o.Key...),
 		perAddress: limiter.New(o.Clock, CodesPerAddress),
 		perIP:      limiter.New(o.Clock, RegistrationsPerIP),
+		perSubmit:  limiter.New(o.Clock, SubmissionsPerIP),
 	}, nil
 }
 
@@ -101,6 +103,19 @@ func New(o Options) (*Service, error) {
 // juste avant de créer l'inscription en attente.
 func (s *Service) AllowRegistration(groupID int64, ip string) error {
 	if !s.perIP.Allow(limiter.IPKey(groupID, ip)).Allowed {
+		return limiter.Error()
+	}
+	return nil
+}
+
+// AllowSubmission compte une soumission de formulaire valide depuis l'adresse
+// IP dans le groupe et la refuse au-delà de 20 par fenêtre de 15 minutes
+// (erreur enveloppant limiter.ErrLimited : répondre 429). À appeler une fois
+// par soumission, avant tout contrôle d'adresse ou de nom : c'est le plafond
+// sous lequel ces contrôles peuvent révéler quelque chose. Compteur distinct
+// de celui d'AllowRegistration.
+func (s *Service) AllowSubmission(groupID int64, ip string) error {
+	if !s.perSubmit.Allow(limiter.IPKey(groupID, ip)).Allowed {
 		return limiter.Error()
 	}
 	return nil

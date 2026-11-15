@@ -56,10 +56,18 @@ type CodeIssuer interface {
 	IssueCode(ctx context.Context, p Pending) error
 }
 
-// Throttle applique les plafonds d'inscription (par exemple 5 inscriptions
-// par fenêtre de 15 minutes et par adresse IP, F11.3). Il n'est consulté que
-// juste avant la création d'une inscription. Facultatif.
+// Throttle applique les plafonds d'inscription (F11.3). Facultatif.
+//
+// AllowSubmission compte chaque soumission valide au format, avant les
+// contrôles de nom et d'adresse qui peuvent révéler un nom ou une adresse
+// déjà connus : sans lui, un détenteur du lien pourrait les sonder sans
+// limite (par exemple 20 par fenêtre de 15 minutes et par adresse IP).
+// AllowRegistration ne compte que les créations, juste avant l'ajout de
+// l'inscription en attente (par exemple 5 par fenêtre de 15 minutes et par
+// adresse IP) ; deux compteurs distincts, pour qu'une personne qui corrige
+// une faute ne brûle pas ses créations.
 type Throttle interface {
+	AllowSubmission(ctx context.Context, groupID int64, ip string) error
 	AllowRegistration(ctx context.Context, groupID int64, ip, emailKey string) error
 }
 

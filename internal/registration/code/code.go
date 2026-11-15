@@ -50,6 +50,12 @@ var (
 	CodesPerAddress = limiter.Rule{Limit: 3, Window: time.Hour}
 	// RegistrationsPerIP : 5 inscriptions par 15 minutes et par adresse IP.
 	RegistrationsPerIP = limiter.Rule{Limit: 5, Window: 15 * time.Minute}
+	// SubmissionsPerIP : 20 soumissions de formulaire valides par 15 minutes
+	// et par adresse IP et par groupe. Ce compteur borne les sondes d'adresse
+	// et de nom (« adresse déjà utilisée », « nom déjà inscrit ») ; il est
+	// distinct de RegistrationsPerIP, qui ne compte que les créations, pour
+	// qu'une personne qui corrige une faute ne consomme pas ses créations.
+	SubmissionsPerIP = limiter.Rule{Limit: 20, Window: 15 * time.Minute}
 )
 
 // Natures d'empreinte propres à l'inscription : elles séparent ces secrets

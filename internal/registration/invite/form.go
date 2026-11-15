@@ -198,6 +198,9 @@ func codeSent(ref string) *Result {
 // jeton, champ piège, fermeture, validations, unicité du nom (participants
 // par participants.NameExists et inscriptions en attente), adresse partagée,
 // plafonds (Throttle), création de l'inscription puis émission du code.
+// Throttle.AllowSubmission est consulté juste après les validations, avant
+// toute révélation de nom ou d'adresse ; Throttle.AllowRegistration juste
+// avant la création.
 func (s *Service) Submit(ctx context.Context, slug, token string, sub Submission) (*Result, error) {
 	g, inv, err := s.resolve(ctx, slug, token)
 	if err != nil {
@@ -229,6 +232,14 @@ func (s *Service) Submit(ctx context.Context, slug, token string, sub Submission
 	v, fields := validate(sub)
 	if len(fields) > 0 {
 		return &Result{Outcome: OutcomeInvalid, Problem: Problem{codeInvalid, msgInvalid}, Fields: fields, Values: v}, nil
+	}
+
+	// Plafond des sondes : compté avant les contrôles de nom et d'adresse,
+	// dont les réponses révèlent qu'un nom ou une adresse est déjà connu.
+	if s.cfg.Throttle != nil {
+		if err := s.cfg.Throttle.AllowSubmission(ctx, g.ID, sub.IP); err != nil {
+			return nil, err
+		}
 	}
 
 	key := participants.NormalizeName(v.FirstName, v.Name)
