@@ -34,7 +34,7 @@ Cette fonctionnalité donne leur interface aux groupes et à l'accès : les quat
 ```yaml criteria
 AC1: {text: "Le budget se définit, se modifie et se retire à tout moment, y compris avec la doublure DrawState réglée sur « tirage fait » ; le nom, la date du jour J et la consigne aussi ; chaque changement de budget incrémente budget_version et seules les données du groupe sont écrites", verify: "test:internal/groupsettings/update_settings_test.go"}
 AC2: {text: "Un changement de budget émet l'événement budget_modifie avec l'ancien budget, le nouveau (ou aucun) et l'indicateur « prévenir » ; sans l'indicateur aucun envoi n'est demandé ; l'événement ne contient aucune donnée personnelle de participant", verify: "test:internal/groupsettings/budget_event_test.go"}
-AC3: {text: "screen-accueil-groupe, screen-creation-groupe, screen-connexion et screen-admin-connexion n'ont aucun défaut de défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test groups tests/e2e/access"}
+AC3: {text: "screen-accueil-groupe, screen-creation-groupe, screen-connexion et screen-admin-connexion n'ont aucun défaut de défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test groups access"}
 AC4: {text: "L'écran d'accueil de groupe correspond à la maquette approuvée", verify: "design-fidelity:screen-accueil-groupe"}
 AC5: {text: "L'écran de création de groupe correspond à la maquette approuvée", verify: "design-fidelity:screen-creation-groupe"}
 AC6: {text: "L'écran de connexion correspond à la maquette approuvée", verify: "design-fidelity:screen-connexion"}

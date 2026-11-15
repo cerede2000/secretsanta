@@ -32,7 +32,7 @@ Cette fonctionnalité donne à la lettre son interface : la page d'écriture pou
 ## Acceptance criteria
 
 ```yaml criteria
-AC1: {text: "Les pages screen-lettre, screen-lettre-recue et screen-boite-lettres n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test letter tests/e2e/mailbox"}
+AC1: {text: "Les pages screen-lettre, screen-lettre-recue et screen-boite-lettres n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test letter mailbox"}
 AC2: {text: "L'écran de lettre correspond à la maquette approuvée", verify: "design-fidelity:screen-lettre"}
 AC3: {text: "L'écran de boîte aux lettres animée correspond à la maquette approuvée", verify: "design-fidelity:screen-boite-lettres"}
 AC4: {text: "L'animation de la boîte aux lettres est désactivée quand prefers-reduced-motion est actif", verify: "test:tests/e2e/mailbox/reduced-motion.spec.ts"}
