@@ -106,3 +106,57 @@ func TestRoleChangePriorityFallbackFutureOnly(t *testing.T) {
 		})
 	}
 }
+
+// F4c.AC14 : la priorité à l'offre_plus ne doit pas tenir à l'ordre de
+// création. Les deux candidats (un offre_plus et un normal, un cadeau
+// chacun) sont créés dans les deux ordres ; à nombre de paires changées
+// égal, le cadeau supplémentaire va toujours à l'offre_plus.
+func TestRoleChangePriorityIndependentOfOrder(t *testing.T) {
+	n := participants.RoleNormal
+	for _, target := range []participants.DrawRole{participants.RoleUnSeul, participants.RoleReceptionSeule} {
+		for _, plusFirst := range []bool{true, false} {
+			name := string(target) + "/normal_d_abord"
+			if plusFirst {
+				name = string(target) + "/offre_plus_d_abord"
+			}
+			t.Run(name, func(t *testing.T) {
+				e := newEnv(t, 2)
+				var ids []int64
+				var x, a, b, o, m int64
+				if plusFirst {
+					ids = e.people(t, n, participants.RoleReceptionSeule, n, participants.RoleOffrePlus, n)
+					x, a, b, o, m = ids[0], ids[1], ids[2], ids[3], ids[4]
+				} else {
+					ids = e.people(t, n, participants.RoleReceptionSeule, n, n, participants.RoleOffrePlus)
+					x, a, b, m, o = ids[0], ids[1], ids[2], ids[3], ids[4]
+				}
+				before := []Pair{{Giver: x, Receiver: a}, {Giver: x, Receiver: b}, {Giver: o, Receiver: x}, {Giver: m, Receiver: o}, {Giver: b, Receiver: m}}
+				e.setPairs(t, before)
+				if _, err := e.rc.SetRole(ctx, e.gid, x, target, rulechange.ChoiceRepair); err != nil {
+					t.Fatal(err)
+				}
+				after := e.pairs(t)
+				roles := e.roles(t, ids)
+				checkValid(t, after, roles, 2)
+				_, best, _ := bruteOptimum(ids, roles, 2, nil, nil, before, nil)
+				if changedCount(before, after) != best {
+					t.Fatalf("%d paires changées, minimum %d", changedCount(before, after), best)
+				}
+				// Un seul cadeau supplémentaire est évitable par l'offre_plus ;
+				// en reception_seule, un second reste à la charge d'un normal.
+				extraNormals := 0
+				for _, id := range []int64{b, m} {
+					extraNormals += max(giftsOf(after, id)-1, 0)
+				}
+				wantExtra := 0
+				if target == participants.RoleReceptionSeule {
+					wantExtra = 1
+				}
+				if giftsOf(after, o) != 2 || extraNormals != wantExtra {
+					t.Fatalf("l'offre_plus doit porter le cadeau supplémentaire avant un normal : %v", after)
+				}
+				e.checkMails(t, givers(before, after))
+			})
+		}
+	}
+}
