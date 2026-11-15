@@ -1,0 +1,100 @@
+{{/*
+  Page d'administration des inscriptions par lien (screen-admin-inscriptions),
+  rendue dans layout/admin. Données : voir admin.Page. Aucun texte brut : tout
+  passe par t / tn ; les textes du script viennent d'attributs data-*.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/registration/admin/admin.css">
+<section class="regadm" aria-labelledby="regadm-title">
+<header class="regadm-head">
+<a class="regadm-back" href="{{.BackPath}}" aria-label="{{t "registration.admin.back"}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg></a>
+<div><p class="regadm-kicker">{{t "registration.admin.kicker"}}</p><h1 id="regadm-title" class="regadm-title">{{t "registration.admin.title"}}</h1></div>
+</header>
+<div class="regadm-body">
+{{if .ErrorKey}}<p class="regadm-alert" role="alert">{{t .ErrorKey}}</p>{{end}}
+{{if .NoticeKey}}<p class="regadm-notice" role="status">{{t .NoticeKey}}</p>{{end}}
+
+{{if .Closed}}
+<div class="regadm-card regadm-closed">
+<div class="regadm-row"><span class="chip chip-mute">{{t "registration.admin.closed.chip"}}</span><b>{{t "registration.admin.closed.title"}}</b></div>
+<p class="regadm-hint">{{t "registration.admin.closed.hint"}}</p>
+<a class="btn btn-green regadm-wide" href="{{.AdjustPath}}">{{t "registration.admin.closed.adjust"}}</a>
+</div>
+{{else}}
+<div class="regadm-card">
+<form class="regadm-row regadm-switchrow" method="post" action="{{.ModeAction}}">
+{{csrfField}}
+<input type="hidden" name="enabled" value="{{.NextEnabledVal}}">
+<div><div class="regadm-label" id="regadm-mode">{{t "registration.admin.mode.label"}}</div><div class="regadm-state{{if .Enabled}} regadm-state-on{{end}}">{{if .Enabled}}{{t "registration.admin.mode.on"}}{{else}}{{t "registration.admin.mode.off"}}{{end}}</div></div>
+<button class="regadm-switch{{if .Enabled}} regadm-switch-on{{end}}" type="submit" role="switch" aria-checked="{{if .Enabled}}true{{else}}false{{end}}" aria-labelledby="regadm-mode"><span class="regadm-knob"></span></button>
+</form>
+<p class="regadm-hint">{{t "registration.admin.mode.hint"}}</p>
+</div>
+
+<div class="regadm-stats">
+<div class="regadm-card regadm-stat"><div class="regadm-num">{{.Verified}}</div><div class="regadm-cap">{{t "registration.admin.stat.verified"}}</div></div>
+<div class="regadm-card regadm-stat"><div class="regadm-num">{{.PendingCount}}</div><div class="regadm-cap">{{t "registration.admin.stat.pending"}}</div></div>
+<div class="regadm-card regadm-stat"><div class="regadm-num">{{if .Capacity}}{{.Capacity}}{{else}}&ndash;{{end}}</div><div class="regadm-cap">{{t "registration.admin.stat.capacity"}}</div></div>
+</div>
+
+{{if .Enabled}}
+<div class="regadm-card regadm-stack">
+<h2 class="regadm-h2">{{t "registration.admin.link.title"}}</h2>
+{{if .Link}}
+<div data-regadm-copy data-copied="{{t "registration.admin.link.copied"}}" data-failed="{{t "registration.admin.link.copy_failed"}}">
+<label class="field-label" for="regadm-link">{{t "registration.admin.link.label"}}</label>
+<input id="regadm-link" class="field" type="text" readonly value="{{.Link}}" data-regadm-field>
+<button class="btn btn-green regadm-wide regadm-copybtn" type="button" data-regadm-button>{{t "registration.admin.link.copy"}}</button>
+<p class="regadm-hint" role="status" data-regadm-status></p>
+</div>
+<div class="regadm-qr">
+<img class="regadm-qrimg" src="{{.QRPath}}" width="126" height="126" alt="{{t "registration.admin.qr.alt"}}">
+<p class="regadm-hint">{{t "registration.admin.qr.hint"}}</p>
+</div>
+{{else}}
+<p class="regadm-hint">{{t "registration.admin.link.hidden"}}</p>
+{{end}}
+<div class="regadm-sep">
+{{if .ConfirmRenew}}
+<form class="regadm-confirm" method="post" action="{{.RenewAction}}" role="alertdialog" aria-labelledby="regadm-renew-q">
+{{csrfField}}
+<p id="regadm-renew-q" class="regadm-confirm-text">{{t "registration.admin.renew.confirm"}}</p>
+<div class="regadm-actions"><button class="btn btn-red" type="submit">{{t "registration.admin.renew.do"}}</button><a class="btn btn-ghost" href="{{.RenewCancel}}">{{t "registration.admin.renew.cancel"}}</a></div>
+</form>
+{{else}}
+<a class="btn btn-ghost regadm-wide" href="{{.RenewCancel}}?confirm=renew">{{t "registration.admin.renew.ask"}}</a>
+{{end}}
+</div>
+</div>
+{{end}}
+
+<form class="regadm-card regadm-stack" method="post" action="{{.LimitsAction}}">
+{{csrfField}}
+<h2 class="regadm-h2">{{t "registration.admin.limits.title"}} <span class="regadm-opt">{{t "registration.admin.limits.optional"}}</span></h2>
+<div><label class="field-label" for="regadm-cap">{{t "registration.admin.limits.capacity"}}</label><input id="regadm-cap" class="field" type="number" inputmode="numeric" name="capacity" min="0" max="1000"{{if .Capacity}} value="{{.Capacity}}"{{end}}></div>
+<div><label class="field-label" for="regadm-date">{{t "registration.admin.limits.closes"}}</label><input id="regadm-date" class="field" type="date" name="closes_on" value="{{.ClosesAt}}" aria-describedby="regadm-date-hint"><p id="regadm-date-hint" class="regadm-hint">{{t "registration.admin.limits.closes_hint"}}</p></div>
+<button class="btn btn-green regadm-wide" type="submit">{{t "registration.admin.limits.save"}}</button>
+</form>
+
+<div class="regadm-card regadm-pendingcard">
+<div class="regadm-row"><h2 class="regadm-h2">{{t "registration.admin.pending.title"}}</h2><span class="chip chip-warn">{{.PendingCount}}</span></div>
+<p class="regadm-hint">{{t "registration.admin.pending.hint"}}</p>
+{{range .Pending}}<div class="regadm-pend">
+<div><b class="regadm-name">{{.FirstName}} {{.Name}}</b>
+<div class="regadm-hint">{{.Email}} &middot; {{if lt .Minutes 60}}{{tn "registration.admin.pending.age_min" .Minutes}}{{else}}{{tn "registration.admin.pending.age_hour" .Hours}}{{end}}</div>
+<div class="regadm-chips">{{if .Ignored}}<span class="chip chip-mute">{{t "registration.admin.pending.ignored"}}</span>{{else}}<span class="chip chip-warn">{{t "registration.admin.pending.code_waiting"}}</span><span class="chip {{if .ExpiresSoon}}chip-error{{else}}chip-mute{{end}}">{{tn "registration.admin.pending.expires" .ExpiresHours}}</span>{{end}}</div></div>
+{{if not .Ignored}}<form method="post" action="{{.Validate}}">{{csrfField}}<button class="btn btn-green regadm-wide" type="submit">{{t "registration.admin.pending.validate"}}</button></form>{{end}}
+<div class="regadm-actions">
+{{if not .Ignored}}<form class="regadm-grow" method="post" action="{{.Resend}}">{{csrfField}}<button class="btn btn-ghost regadm-wide" type="submit">{{t "registration.admin.pending.resend"}}</button></form>{{end}}
+<form class="regadm-grow" method="post" action="{{.Del}}">{{csrfField}}<button class="btn btn-ghost regadm-danger regadm-wide" type="submit">{{t "registration.admin.pending.delete"}}</button></form>
+</div>
+</div>
+{{else}}<p class="regadm-hint">{{t "registration.admin.pending.empty"}}</p>
+{{end}}
+</div>
+
+{{if .PendingCount}}<p class="regadm-warning"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3l8 14H2z" stroke-linejoin="round"/><path d="M10 8v4M10 14.5v.1"/></svg><span><b>{{t "registration.admin.block.title"}}</b> {{t "registration.admin.block.text"}}</span></p>{{end}}
+{{end}}
+</div>
+</section>
+<script type="module" src="/static/js/registration/admin/copy.js"></script>
+{{end}}
