@@ -1,0 +1,38 @@
+{{/*
+  Rapport du contrôle du tirage : vert ou rouge, règle par règle, uniquement
+  des comptes. Données : .Slug, .Check, .ErrorKey. Aucun nom n'y figure.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/dashboard/dashboard.css">
+<div class="dash dash-narrow">
+<a class="dash-back" href="/{{.Slug}}/admin">{{t "admin.dashboard.check.back"}}</a>
+<h1 class="dash-title">{{t "admin.dashboard.check.title"}}</h1>
+<p class="dash-hint">{{t "admin.dashboard.check.intro"}}</p>
+{{if .ErrorKey}}<div class="dash-alert dash-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+{{if .Check}}
+{{if .Check.Green}}<div class="dash-alert dash-alert-ok" role="status">{{t "admin.dashboard.check.green"}}</div>{{else}}<div class="dash-alert dash-alert-error" role="alert">{{t "admin.dashboard.check.red"}}</div>{{end}}
+<section class="card-admin dash-card" aria-labelledby="chk-rules">
+<h2 id="chk-rules" class="dash-h2">{{t "admin.dashboard.check.rules"}}</h2>
+<ul class="dash-list">
+{{range .Check.Rules}}<li class="dash-rule">
+<span class="dash-rule-label">{{if eq .Rule "each_receives_one"}}{{t "admin.dashboard.check.rule.each_receives_one"}}{{else if eq .Rule "givers_at_least_one"}}{{t "admin.dashboard.check.rule.givers_at_least_one"}}{{else if eq .Rule "within_cap"}}{{t "admin.dashboard.check.rule.within_cap"}}{{else if eq .Rule "one_gift_only"}}{{t "admin.dashboard.check.rule.one_gift_only"}}{{else if eq .Rule "no_self"}}{{t "admin.dashboard.check.rule.no_self"}}{{else if eq .Rule "exclusions"}}{{t "admin.dashboard.check.rule.exclusions"}}{{else if eq .Rule "emails_valid"}}{{t "admin.dashboard.check.rule.emails_valid"}}{{else}}{{t "admin.dashboard.check.rule.links_sent"}}{{end}}</span>
+{{if .OK}}<span class="chip chip-ok">{{t "admin.dashboard.check.ok"}}</span>{{else}}<span class="chip chip-error">{{tn "admin.dashboard.check.violations" .Violations}}</span>{{end}}
+</li>
+{{end}}</ul>
+</section>
+<section class="card-admin dash-card" aria-labelledby="chk-counts">
+<h2 id="chk-counts" class="dash-h2">{{t "admin.dashboard.check.counts"}}</h2>
+<dl class="dash-counts">
+<dt>{{t "admin.dashboard.check.beneficiaries"}}</dt><dd>{{.Check.Beneficiaries}}</dd>
+<dt>{{t "admin.dashboard.check.givers_one"}}</dt><dd>{{.Check.GiversOneGift}}</dd>
+<dt>{{t "admin.dashboard.check.givers_two"}}</dt><dd>{{.Check.GiversTwoGifts}}</dd>
+<dt>{{t "admin.dashboard.check.givers_more"}}</dt><dd>{{.Check.GiversMoreGifts}}</dd>
+<dt>{{t "admin.dashboard.check.cap"}}</dt><dd>{{.Check.Cap}}</dd>
+<dt>{{t "admin.dashboard.check.role.normal"}}</dt><dd>{{.Check.Roles.Normal}}</dd>
+<dt>{{t "admin.dashboard.check.role.offre_plus"}}</dt><dd>{{.Check.Roles.OffrePlus}}</dd>
+<dt>{{t "admin.dashboard.check.role.un_seul"}}</dt><dd>{{.Check.Roles.UnSeul}}</dd>
+<dt>{{t "admin.dashboard.check.role.reception_seule"}}</dt><dd>{{.Check.Roles.ReceptionSeule}}</dd>
+</dl>
+</section>
+<p class="dash-note">{{t "admin.dashboard.check.no_names"}}</p>
+{{end}}
+</div>{{end}}
