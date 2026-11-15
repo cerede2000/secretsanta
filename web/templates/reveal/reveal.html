@@ -1,0 +1,49 @@
+{{/*
+  Page de révélation (screen-revelation) : coque commune aux trois styles.
+  Données : .TargetsURL (GET, JSON : liste de {id, name, hint, budget, deadline}
+  ou {targets: [...]}), .ConfirmURL (POST JSON {target_id}, en-tête X-CSRF-Token),
+  .LetterURL (facultative). Les textes passent par t et sont fournis au script
+  en attributs data-t-*. Le jeton CSRF vient de csrfToken.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/reveal/core/reveal.css">
+<div class="reveal theme-night" data-reveal data-phase="loading" data-targets-url="{{.TargetsURL}}" data-confirm-url="{{.ConfirmURL}}" data-csrf="{{csrfToken}}"
+ data-t-phase-ready="{{t "reveal.core.phase.ready"}}" data-t-phase-progress="{{t "reveal.core.phase.progress"}}" data-t-phase-revealed="{{t "reveal.core.phase.revealed"}}"
+ data-t-title-ready="{{t "reveal.core.title.ready"}}" data-t-title-progress="{{t "reveal.core.title.progress"}}" data-t-title-revealed="{{t "reveal.core.title.revealed"}}"
+ data-t-lead-ready="{{t "reveal.core.lead.ready"}}" data-t-lead-progress="{{t "reveal.core.lead.progress"}}" data-t-lead-revealed="{{t "reveal.core.lead.revealed"}}"
+ data-t-pill="{{t "reveal.core.pill" "n" "{n}" "total" "{total}"}}" data-t-open="{{t "reveal.core.open"}}"
+ data-t-announce="{{t "reveal.core.announce" "name" "{name}"}}"
+ data-t-load-error="{{t "reveal.core.load_error"}}" data-t-empty="{{t "reveal.core.empty"}}">
+<div class="reveal-confetti" data-role="confetti" aria-hidden="true"></div>
+<div class="reveal-body">
+<p class="reveal-cap" data-role="cap">{{t "reveal.core.loading"}}</p>
+<p class="reveal-pill" data-role="pill" hidden></p>
+<h1 class="theme-title reveal-title" data-role="title">{{t "reveal.core.title.ready"}}</h1>
+<p class="reveal-lead" data-role="lead">{{t "reveal.core.lead.ready"}}</p>
+<div class="reveal-stage" data-role="stage"></div>
+<div class="reveal-result" data-role="result" hidden>
+<div class="reveal-glow reveal-name-wrap"><span class="reveal-name" data-role="name"></span></div>
+<div class="reveal-card">
+<div data-role="hintBox" hidden><b>{{t "reveal.core.hint"}}</b><br><span data-role="hint"></span></div>
+<div class="reveal-facts">
+<span data-role="budgetBox" hidden><b>{{t "reveal.core.budget"}}</b> <span data-role="budget"></span></span>
+<span data-role="deadlineBox" hidden><b>{{t "reveal.core.deadline"}}</b> <span data-role="deadline"></span></span>
+</div>
+</div>
+</div>
+<div class="reveal-actions" data-role="actions" hidden>
+<button class="btn btn-gold reveal-action" type="button" data-role="next" hidden>{{t "reveal.core.next"}}</button>
+{{if .LetterURL}}<a class="btn btn-red reveal-action" href="{{.LetterURL}}" data-role="letter" hidden>{{t "reveal.core.letter"}}</a>{{end}}
+<p class="reveal-note">{{t "reveal.core.secret"}}</p>
+</div>
+<div class="reveal-error" data-role="error" role="alert" hidden>
+<span>{{t "reveal.core.error"}}</span>
+<button class="btn btn-ghost-light reveal-action" type="button" data-role="retry">{{t "reveal.core.retry"}}</button>
+</div>
+<p class="reveal-sr" data-role="status" role="status" aria-live="polite"></p>
+<div class="reveal-sound">
+<span id="reveal-sound-label">{{t "reveal.core.sound"}}</span>
+<button class="reveal-switch" type="button" role="switch" aria-checked="false" aria-labelledby="reveal-sound-label" data-role="sound"><span class="reveal-switch-knob"></span></button>
+</div>
+</div>
+</div>
+<script type="module" src="/static/js/reveal/core/main.js"></script>{{end}}
