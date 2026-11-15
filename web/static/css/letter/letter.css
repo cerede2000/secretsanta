@@ -1,0 +1,59 @@
+/* Pages de la lettre (screen-lettre, screen-lettre-recue). Mobile d'abord ;
+   aucune ressource data:, aucun style en ligne. */
+.letter { display: flex; flex-direction: column; gap: 14px; }
+.letter-night { margin: -20px -16px; padding: 20px 16px 28px; min-height: 70vh; border-radius: 0; }
+.letter-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; }
+.letter-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--night-muted); font-weight: 700; font-size: 15px; text-decoration: none; }
+.letter-saved { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--night-muted); }
+.letter-welcome { padding: 12px 14px; border-radius: 14px; background: var(--warn-bg); color: var(--warn-ink); font-size: 15px; line-height: 1.45; }
+.letter-alert { padding: 10px 12px; border-radius: 12px; background: var(--danger-bg); color: var(--danger); font-size: 14px; font-weight: 700; }
+.letter-sheet { display: flex; flex-direction: column; gap: 14px; padding: 20px 16px 22px; border-radius: 22px; background: var(--frost); color: var(--ink); box-shadow: 0 10px 26px rgba(8, 14, 40, .4); position: relative; }
+.letter-intro-form { display: flex; flex-direction: column; gap: 10px; }
+.letter-hero { display: flex; align-items: center; gap: 10px; }
+.letter-title { margin: 0; font-family: var(--font-display); font-size: 34px; line-height: 1.05; color: var(--red); }
+.letter-label { font-size: 14px; font-weight: 800; color: var(--ink); }
+.letter-input, .letter-ta { box-sizing: border-box; width: 100%; border: 2px solid var(--field-line); border-radius: 12px; background: #fff; color: var(--ink); font: 600 16px var(--font-body); }
+.letter-input { height: 48px; padding: 0 14px; }
+.letter-ta { padding: 12px 14px; line-height: 1.5; resize: vertical; }
+.letter-input:focus-visible, .letter-ta:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
+.letter-invalid { border-color: var(--red); }
+.letter-error { padding: 8px 10px; border-radius: 10px; background: var(--danger-bg); color: var(--danger); font-size: 13px; font-weight: 700; line-height: 1.4; }
+.letter-hint { font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+.letter-ideas { display: flex; flex-direction: column; gap: 10px; padding-top: 12px; border-top: 2px dashed var(--line); }
+.letter-ideas-head { display: flex; align-items: center; justify-content: space-between; }
+.letter-h2 { margin: 0; font-family: var(--font-display); font-size: 26px; color: var(--green); }
+.letter-count { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.letter-empty { margin: 0; font-size: 14px; color: var(--ink-2); }
+.letter-idea { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.letter-idea-read { min-height: 76px; box-sizing: border-box; }
+.letter-thumb { flex: none; width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
+.letter-thumb-small { width: 52px; height: 52px; }
+.letter-idea-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
+.letter-link { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 700; color: var(--red); overflow-wrap: anywhere; }
+.letter-note { font-size: 13px; color: var(--ink-2); }
+.letter-del { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; border: 0; border-radius: 12px; background: transparent; color: var(--danger); box-shadow: inset 0 0 0 1px var(--line); cursor: pointer; }
+.letter-new { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 2px var(--green); }
+.letter-new-title { font-size: 15px; font-weight: 800; color: var(--green); }
+.letter-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.letter-photo { position: relative; flex: 1; min-width: 140px; cursor: pointer; }
+.letter-file { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.letter-photo:focus-within { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
+.letter-add { flex: 1; min-width: 120px; }
+.letter-grouped { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--frost); color: var(--warn-ink); font-size: 13px; font-weight: 700; line-height: 1.45; }
+.letter-send { display: flex; flex-direction: column; gap: 10px; }
+.letter-send-btn { width: 100%; min-height: 54px; font-size: 17px; }
+.letter-foot { margin: 0; text-align: center; font-size: 13px; line-height: 1.45; color: var(--night-muted); }
+
+/* Lecture seule. */
+.letter-tabs { display: flex; gap: 6px; padding: 4px; border-radius: 12px; background: rgba(255, 250, 240, .12); }
+.letter-tab { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 6px; border-radius: 10px; color: #fff; font: 800 14px var(--font-body); text-align: center; text-decoration: none; }
+.letter-tab[aria-current="page"] { background: var(--gold); color: var(--ink); }
+.letter-tabs-hint { margin: -6px 0 0; font-size: 12px; line-height: 1.4; color: var(--night-muted); }
+.letter-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.letter-kicker { font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); }
+.letter-intro { margin: 0; font-size: 17px; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+.letter-intro-empty { color: var(--ink-2); font-style: italic; }
+.letter-signature { align-self: flex-end; font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--green); }
+.letter-silent { display: flex; gap: 10px; padding: 14px 16px; border-radius: 16px; background: rgba(255, 250, 240, .1); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22); font-size: 14px; line-height: 1.5; color: #e6ebfb; }
+.letter-silent svg { flex: none; margin-top: 1px; color: var(--gold); }
+.letter-back:focus-visible, .letter-tab:focus-visible, .letter-link:focus-visible, .letter-del:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }

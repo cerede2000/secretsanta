@@ -1,0 +1,27 @@
+{{/*
+  Lecture seule de la lettre d'une cible (screen-lettre-recue). Données :
+  .Name, .Intro, .Ideas, .Tabs, .Budget (vide : aucune mention), .BackURL.
+  Aucun formulaire : le tireur ne répond jamais.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/letter/letter.css">
+<div class="letter letter-night theme-night">
+<div class="letter-top"><a class="letter-back" href="{{.BackURL}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>{{t "letter.back.target"}}</a></div>
+{{if .Tabs}}<nav class="letter-tabs" aria-label="{{t "letter.recue.tabs"}}">{{range .Tabs}}<a class="letter-tab"{{if .Current}} aria-current="page"{{end}} href="{{.URL}}">{{t "letter.recue.tab" "n" .N "total" .Total "name" .Name}}</a>{{end}}</nav>
+<p class="letter-tabs-hint">{{t "letter.recue.tabs_hint"}}</p>{{end}}
+<article class="letter-sheet">
+<div class="letter-sheet-head"><div class="letter-kicker">{{t "letter.recue.of" "name" .Name}}</div>{{if .Budget}}<span class="chip chip-warn letter-budget">{{t "letter.recue.budget" "budget" .Budget}}</span>{{end}}</div>
+<h1 class="theme-title letter-title">{{t "letter.recue.greeting"}}</h1>
+{{if .Intro}}<p class="letter-intro">{{.Intro}}</p>{{else}}<p class="letter-intro letter-intro-empty">{{t "letter.recue.empty" "name" .Name}}</p>{{end}}
+<div class="letter-signature">{{.Name}}</div>
+<div class="letter-ideas">
+<h2 class="theme-title letter-h2">{{t "letter.recue.ideas"}}</h2>
+{{if not .Ideas}}<p class="letter-empty">{{t "letter.recue.ideas_empty"}}</p>{{end}}
+{{range .Ideas}}<div class="letter-idea letter-idea-read">
+{{if .ImageSrc}}<img class="letter-thumb letter-thumb-small" src="{{.ImageSrc}}" alt="{{t "letter.idea.image_alt" "title" .Title}}" width="52" height="52">{{else}}<svg class="letter-thumb letter-thumb-small" aria-hidden="true" width="52" height="52" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="#eaf4ee"/><rect x="14" y="16" width="36" height="34" rx="3" fill="#c41e3a"/><rect x="20" y="22" width="24" height="3" rx="1.5" fill="#fff"/><rect x="20" y="30" width="18" height="3" rx="1.5" fill="#fff"/></svg>{{end}}
+<div class="letter-idea-body"><b>{{.Title}}</b>{{if .Text}}<span class="letter-note">{{.Text}}</span>{{end}}{{if .URL}}<a class="letter-link" href="{{.URL}}" target="_blank" rel="noopener noreferrer nofollow">{{.URLLabel}}</a>{{end}}</div>
+</div>{{end}}
+</div>
+</article>
+<div class="letter-silent"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2.5"/><path d="M3.5 7l7.5 6 7.5-6"/></svg><div><b>{{t "letter.recue.silent"}}</b> {{t "letter.recue.silent_detail" "name" .Name}}</div></div>
+<p class="letter-foot">{{t "letter.recue.foot"}}</p>
+</div>{{end}}
