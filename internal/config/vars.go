@@ -9,6 +9,8 @@ const (
 	VarInstancePassword = "INSTANCE_PASSWORD"
 	VarSigningSecret    = "SIGNING_SECRET"
 	VarTimezone         = "APP_TIMEZONE"
+	VarDefaultLang      = "APP_DEFAULT_LANG"
+	VarI18nDir          = "I18N_DIR"
 
 	VarSMTPHost     = "SMTP_HOST"
 	VarSMTPPort     = "SMTP_PORT"
@@ -40,6 +42,7 @@ const (
 // Variables liste toutes les variables déclarées.
 var Variables = []string{
 	VarPublicURL, VarListenAddr, VarDataDir, VarInstancePassword, VarSigningSecret, VarTimezone,
+	VarDefaultLang, VarI18nDir,
 	VarSMTPHost, VarSMTPPort, VarSMTPUser, VarSMTPPassword, VarMailFrom, VarMailFromName,
 	VarMailEHLOHostname, VarMailEnvelopeFrom, VarMailReplyTo, VarMailTLSMode, VarMailAllowInsecure, VarMailMaxPerMinute,
 	VarMailDKIMDomain, VarMailDKIMSelector, VarMailDKIMKeyFile, VarMailDKIMAlgorithm, VarMailDKIMHeaders,

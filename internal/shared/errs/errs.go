@@ -20,6 +20,12 @@ type Error struct {
 	Kind    Kind
 	Message string
 	Err     error
+
+	// Code est un code de message facultatif (clé du catalogue de textes,
+	// par exemple "groups.name_required") ; Params fournit ses paramètres.
+	// Sans code, les pages utilisent la clé core.errors.<nature>.
+	Code   string
+	Params map[string]any
 }
 
 func (e *Error) Error() string { return e.Message }
@@ -34,6 +40,40 @@ func New(kind Kind, message string) *Error { return &Error{Kind: kind, Message: 
 func Wrap(kind Kind, message string, cause error) *Error {
 	return &Error{Kind: kind, Message: message, Err: cause}
 }
+
+// WithCode renvoie une copie de l'erreur portant un code de message et des
+// paramètres (paires nom, valeur). Le message français et la nature sont
+// inchangés.
+func (e *Error) WithCode(code string, pairs ...any) *Error {
+	c := *e
+	c.Code = code
+	c.Params = nil
+	if len(pairs) > 0 {
+		c.Params = map[string]any{}
+		for i := 0; i+1 < len(pairs); i += 2 {
+			if k, ok := pairs[i].(string); ok {
+				c.Params[k] = pairs[i+1]
+			}
+		}
+	}
+	return &c
+}
+
+// CodeOf renvoie le code de message d'une erreur et ses paramètres ; code vide
+// si l'erreur n'en porte pas.
+func CodeOf(err error) (string, map[string]any) {
+	var e *Error
+	if errors.As(err, &e) {
+		return e.Code, e.Params
+	}
+	return "", nil
+}
+
+// KindKey renvoie la clé de catalogue de la nature : core.errors.<nature>.
+func KindKey(k Kind) string { return "core.errors." + string(k) }
+
+// Kinds liste toutes les natures d'erreur.
+var Kinds = []Kind{KindValidation, KindNotFound, KindConflict, KindForbidden, KindUnauthorized, KindInternal}
 
 func Validation(message string) *Error { return New(KindValidation, message) }
 func NotFound(message string) *Error   { return New(KindNotFound, message) }
