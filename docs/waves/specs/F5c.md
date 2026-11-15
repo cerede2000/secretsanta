@@ -32,7 +32,7 @@ Cette fonctionnalité donne à la lettre son interface : la page d'écriture pou
 ## Acceptance criteria
 
 ```yaml criteria
-AC1: {text: "Les pages screen-lettre, screen-lettre-recue et screen-boite-lettres n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:npx playwright test tests/e2e/letter tests/e2e/mailbox"}
+AC1: {text: "Les pages screen-lettre, screen-lettre-recue et screen-boite-lettres n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test letter tests/e2e/mailbox"}
 AC2: {text: "L'écran de lettre correspond à la maquette approuvée", verify: "design-fidelity:screen-lettre"}
 AC3: {text: "L'écran de boîte aux lettres animée correspond à la maquette approuvée", verify: "design-fidelity:screen-boite-lettres"}
 AC4: {text: "L'animation de la boîte aux lettres est désactivée quand prefers-reduced-motion est actif", verify: "test:tests/e2e/mailbox/reduced-motion.spec.ts"}
@@ -41,7 +41,7 @@ AC6: {text: "Avec bienvenue=1 la page d'écriture affiche le bandeau d'accueil e
 AC7: {text: "La lettre reçue n'affiche aucune mention de budget quand il est vide, l'affiche quand il est défini et suit un changement ou un retrait de budget sans modifier la lettre ni sa version", verify: "test:internal/letterpages/budget_display_test.go"}
 AC8: {text: "La boîte aux lettres d'un tireur à deux cibles liste une lettre reçue par cible découverte et la page de lecture affiche chacune sans mélanger les deux", verify: "test:internal/mailboxpage/two_received_letters_test.go"}
 AC9: {text: "La boîte aux lettres d'une personne reception_seule n'affiche que « Ma lettre » et aucune lettre reçue", verify: "test:internal/mailboxpage/reception_only_mailbox_test.go"}
-AC10: {text: "Les pages de deux lettres reçues n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:npx playwright test tests/e2e/mailbox/two-letters.spec.ts"}
+AC10: {text: "Les pages de deux lettres reçues n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test mailbox/two-letters.spec.ts"}
 AC11: {text: "Les pages de la lettre au Père Noël : tous les textes passent par les catalogues avec les clés fr et en du module, et le rendu avec la langue anglaise ne contient aucune clé brute ni texte français", verify: "test:internal/letterpages/i18n_pages_test.go"}
 AC12: {text: "Les pages de la lettre au Père Noël : tout gestionnaire qui modifie l'état est enveloppé par RequireUnsafeMethod (un GET sur une route modifiante renvoie 405 sans rien modifier) et aucun gabarit n'utilise d'attribut style en ligne ni de ressource data:", verify: "test:internal/letterpages/csp_unsafe_methods_test.go"}
 AC13: {text: "La page de la boîte aux lettres : tous les textes passent par les catalogues avec les clés fr et en du module, et le rendu avec la langue anglaise ne contient aucune clé brute ni texte français", verify: "test:internal/mailboxpage/i18n_pages_test.go"}

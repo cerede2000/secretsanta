@@ -33,14 +33,14 @@ Cette fonctionnalité affiche au participant l'attente de la révélation (compt
 
 ```yaml criteria
 AC1: {text: "La carte de cible et l'écran d'attente n'affichent aucune mention de budget quand il est vide et l'affichent quand il est défini ; le bandeau « Budget mis à jour » apparaît après un changement tant que le participant ne l'a pas vu puis disparaît ; un budget retiré puis redéfini réapparaît avec le bandeau", verify: "test:internal/targetpage/budget_display_test.go"}
-AC2: {text: "Les pages de compte à rebours et de carte de cible n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:npx playwright test tests/e2e/draw"}
+AC2: {text: "Les pages de compte à rebours et de carte de cible n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test draw"}
 AC3: {text: "L'écran d'attente de la révélation (compte à rebours) correspond à la maquette approuvée", verify: "design-fidelity:screen-attente-revelation"}
 AC4: {text: "L'écran de la carte de cible correspond à la maquette approuvée", verify: "design-fidelity:screen-ma-cible"}
 AC5: {text: "La page d'attente propose la préférence « un seul cadeau » qui bascule entre normal et un_seul jusqu'au tirage puis la verrouille avec explication, case non cochée par défaut, et ne la propose jamais à une personne reception_seule ou offre_plus", verify: "test:internal/targetpage/preference_test.go"}
 AC6: {text: "La carte de cible affiche une ou deux cibles, la seconde restant à découvrir tant que son drapeau n'est pas posé, chacune avec ses liens vers la lettre et les suggestions", verify: "test:internal/targetpage/multi_target_card_test.go"}
 AC7: {text: "Une personne reception_seule voit l'accueil de réception seule sans cible, sans compte à rebours de révélation ni bouton de découverte, avec l'invitation à écrire sa lettre", verify: "test:internal/targetpage/reception_only_page_test.go"}
 AC8: {text: "L'écran d'accueil d'une personne en réception seule correspond à la maquette approuvée", verify: "design-fidelity:screen-reception-seule"}
-AC9: {text: "Les pages de la préférence, des deux cibles et de la réception seule n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:npx playwright test tests/e2e/draw/reception-only.spec.ts tests/e2e/draw/preference.spec.ts"}
+AC9: {text: "Les pages de la préférence, des deux cibles et de la réception seule n'ont aucun défilement horizontal et leurs zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:cd tests/e2e && npx playwright test draw/reception-only.spec.ts tests/e2e/draw/preference.spec.ts"}
 AC10: {text: "Les pages d'attente et de cible : tous les textes passent par les catalogues avec les clés fr et en du module, et le rendu avec la langue anglaise ne contient aucune clé brute ni texte français", verify: "test:internal/targetpage/i18n_pages_test.go"}
 AC11: {text: "Les pages d'attente et de cible : tout gestionnaire qui modifie l'état est enveloppé par RequireUnsafeMethod (un GET sur une route modifiante renvoie 405 sans rien modifier) et aucun gabarit n'utilise d'attribut style en ligne ni de ressource data:", verify: "test:internal/targetpage/csp_unsafe_methods_test.go"}
 ```
