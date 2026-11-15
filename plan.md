@@ -1503,7 +1503,7 @@ base_branch: main
 integration_branch: wave/integration
 integration_head: 04953e017c47d2d2cc0dc892b527f06433f405b5
 W1: done
-W2: pending
+W2: running
 W3: pending
 W4: pending
 W5: pending
