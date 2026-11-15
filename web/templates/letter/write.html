@@ -1,0 +1,57 @@
+{{/*
+  Page d'écriture de la lettre (screen-lettre). Données : .Slug, .Welcome,
+  .Intro, .SavedAt, .Ideas, .Count, .MaxReached, .IntroError, .IdeaError,
+  .IdeaTitle, .IdeaURL, .IdeaText, .BackURL. Aucun style en ligne.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/letter/letter.css">
+<div class="letter letter-night theme-night">
+<div class="letter-top">
+<a class="letter-back" href="{{.BackURL}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>{{t "letter.back.mailbox"}}</a>
+<span class="letter-saved">{{if .SavedAt}}<svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2.5 8.5l3.5 3L13.5 4"/></svg>{{t "letter.saved_at" "time" .SavedAt}}{{else}}{{t "letter.not_saved"}}{{end}}</span>
+</div>
+{{if .Welcome}}<div class="letter-welcome" role="status" id="bienvenue"><b>{{t "letter.welcome.title"}}</b> {{t "letter.welcome.text"}}</div>{{end}}
+{{if .InternalError}}<div class="letter-alert" role="alert">{{t "letter.error.internal"}}</div>{{end}}
+<div class="letter-sheet">
+<form class="letter-intro-form" method="post" action="{{.Action}}" id="intro-form">
+{{csrfField}}
+<div class="letter-hero">
+<svg aria-hidden="true" width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="24" r="14" fill="#fff"/><path d="M6 20a16 16 0 0 1 32 0z" fill="#c41e3a"/><circle cx="22" cy="6" r="5" fill="#fff" stroke="#c5ddd0" stroke-width="1.5"/><circle cx="16" cy="26" r="2" fill="#1f2d26"/><circle cx="28" cy="26" r="2" fill="#1f2d26"/><path d="M17 31q5 4 10 0" stroke="#1f2d26" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+<h1 class="theme-title letter-title">{{t "letter.write.heading"}}</h1>
+</div>
+<label class="letter-label" for="intro">{{t "letter.write.message_label"}}</label>
+<textarea id="intro" name="intro" class="letter-ta{{if .IntroError}} letter-invalid{{end}}" rows="4" maxlength="2000" aria-describedby="intro-hint{{if .IntroError}} intro-error{{end}}"{{if .IntroError}} aria-invalid="true"{{end}}{{if .Welcome}} autofocus{{end}}>{{.Intro}}</textarea>
+{{if .IntroError}}<div class="letter-error" id="intro-error" role="alert">{{t "letter.write.intro_error"}}</div>{{end}}
+<div class="letter-hint" id="intro-hint">{{t "letter.write.intro_hint"}}</div>
+</form>
+<div class="letter-ideas">
+<div class="letter-ideas-head"><h2 class="theme-title letter-h2">{{t "letter.ideas.heading"}}</h2><span class="letter-count">{{tn "letter.ideas.count" .Count}}</span></div>
+{{if not .Ideas}}<p class="letter-empty">{{t "letter.ideas.empty"}}</p>{{end}}
+{{range .Ideas}}<div class="letter-idea">
+{{if .ImageSrc}}<img class="letter-thumb" src="{{.ImageSrc}}" alt="{{t "letter.idea.image_alt" "title" .Title}}" width="64" height="64">{{else}}<svg class="letter-thumb" aria-hidden="true" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="10" fill="#eaf4ee"/><rect x="14" y="16" width="36" height="34" rx="3" fill="#c41e3a"/><rect x="20" y="22" width="24" height="3" rx="1.5" fill="#fff"/><rect x="20" y="30" width="18" height="3" rx="1.5" fill="#fff"/></svg>{{end}}
+<div class="letter-idea-body"><b>{{.Title}}</b>{{if .URL}}<a class="letter-link" href="{{.URL}}" target="_blank" rel="noopener noreferrer nofollow">{{.URLLabel}}</a>{{end}}{{if .Text}}<span class="letter-note">{{.Text}}</span>{{end}}</div>
+<form method="post" action="{{.DeleteAction}}">{{csrfField}}<button class="letter-del" type="submit" aria-label="{{t "letter.idea.delete" "title" .Title}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3.5 5h11M7 5V3.5h4V5M5 5l.7 9h6.6L13 5"/></svg></button></form>
+</div>{{end}}
+</div>
+<form class="letter-new" method="post" action="{{.IdeaAction}}" enctype="multipart/form-data" id="idea-form">
+{{csrfField}}
+<div class="letter-new-title">{{t "letter.idea.new"}}</div>
+{{if .MaxReached}}<div class="letter-error" id="idea-error" role="alert">{{t "letter.idea.max"}}</div>{{end}}
+<label class="letter-label" for="idea-title">{{t "letter.idea.title_label"}}</label>
+<input id="idea-title" name="title" class="letter-input{{if .IdeaError}} letter-invalid{{end}}" type="text" maxlength="100" required value="{{.IdeaTitle}}"{{if .IdeaError}} aria-invalid="true" aria-describedby="idea-error"{{end}}>
+{{if .IdeaError}}<div class="letter-error" id="idea-error" role="alert">{{t "letter.idea.error"}}</div>{{end}}
+<label class="letter-label" for="idea-url">{{t "letter.idea.url_label"}}</label>
+<input id="idea-url" name="url" class="letter-input" type="url" maxlength="500" placeholder="{{t "letter.idea.url_placeholder"}}" value="{{.IdeaURL}}">
+<label class="letter-label" for="idea-text">{{t "letter.idea.text_label"}}</label>
+<textarea id="idea-text" name="text" class="letter-ta" rows="2" maxlength="1000">{{.IdeaText}}</textarea>
+<div class="letter-actions">
+<label class="btn btn-ghost letter-photo"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="13" height="11" rx="2"/><circle cx="6.5" cy="7.5" r="1.5"/><path d="M3 13l4-3.5 3 2.5 2-1.5 3 3"/></svg>{{t "letter.idea.photo"}}<input class="letter-file" type="file" name="image" accept="image/jpeg,image/png,image/gif"></label>
+<button class="btn btn-green letter-add" type="submit">{{t "letter.idea.add"}}</button>
+</div>
+</form>
+<p class="letter-grouped">{{t "letter.notice.grouped"}}</p>
+</div>
+<div class="letter-send">
+<button class="btn btn-red letter-send-btn" type="submit" form="intro-form">{{t "letter.send"}}</button>
+<p class="letter-foot">{{t "letter.foot"}}</p>
+</div>
+</div>{{end}}
