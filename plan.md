@@ -335,7 +335,7 @@ rationale: "rôle dans le tirage : énuméré exclusif, droits de réglage, port
 id: P13-negotiate
 spec: F13
 steps: [F13.3]
-owns: [internal/i18n/negotiate/**, internal/i18n/web/**, web/templates/i18n/**, web/static/css/i18n/**, web/static/js/i18n/**, web/static/i18n/i18n/**, tests/e2e/i18n/**]
+owns: [internal/i18n/negotiate/**, internal/i18n/web/**, web/templates/i18n/**, web/static/css/i18n/**, web/static/js/i18n/**, web/static/i18n/i18n/**, tests/e2e/i18n/**, tests/e2e/foundation/i18n.spec.ts]
 depends_on: [P2c-websec]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 0, reasoning: 2}
@@ -1196,7 +1196,7 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P9-illus | web/static/assets/**, web/static/js/avatars/**, tests/e2e/illustrations/** |
 | P9-theme | web/static/css/theme/**, web/static/fonts/**, web/static/js/theme/**, web/static/manifest.webmanifest, web/static/sw.js, tests/e2e/theme/** |
 | P3-roles | internal/participants/roles/** |
-| P13-negotiate | internal/i18n/negotiate/**, internal/i18n/web/**, web/templates/i18n/**, web/static/css/i18n/**, web/static/js/i18n/**, web/static/i18n/i18n/**, tests/e2e/i18n/** |
+| P13-negotiate | internal/i18n/negotiate/**, internal/i18n/web/**, web/templates/i18n/**, web/static/css/i18n/**, web/static/js/i18n/**, web/static/i18n/i18n/**, tests/e2e/i18n/**, tests/e2e/foundation/i18n.spec.ts |
 | P13-guard | internal/i18n/guard/** |
 | P13-config | internal/config/**, .env.example, internal/shared/errs/**, web/static/i18n/core/** |
 | P6-queue | internal/mail/queue/**, internal/mail/migrations/** |
@@ -1385,14 +1385,14 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P6b-dkim | format, lint, typecheck, unit | F1c.AC1–AC15, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
 | P2b-store | format, lint, typecheck, unit | F1c.AC1–AC15, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
 | P13-catalog | format, lint, typecheck, unit | F1c.AC1–AC15, F2b.AC1–AC12, F4.AC1–AC16, F6b.AC1–AC11 |
-| P5-letter | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P8-ssrf | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P9-illus | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P9-theme | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P3-roles | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P13-negotiate | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P13-guard | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
-| P13-config | format, lint, typecheck, unit | F13.AC1–AC17, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P5-letter | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P8-ssrf | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P9-illus | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P9-theme | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P3-roles | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P13-negotiate | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P13-guard | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
+| P13-config | format, lint, typecheck, unit | F13.AC1–AC18, F3.AC1–AC17, F5.AC1–AC8, F8.AC1–AC4, F9.AC1–AC10 |
 | P6-queue | format, lint, typecheck, unit | F2e.AC1–AC14 |
 | P6-templates | format, lint, typecheck, unit | F2e.AC1–AC14 |
 | P3d-enrol | format, lint, typecheck, unit | F2e.AC1–AC14 |
@@ -1488,7 +1488,7 @@ integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l
 wave: 4
 phases: [P5-letter, P8-ssrf, P9-illus, P9-theme, P3-roles, P13-negotiate, P13-guard, P13-config]
 integration_owned: [internal/app/**, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F13.AC1, F13.AC2, F13.AC3, F13.AC4, F13.AC5, F13.AC6, F13.AC7, F13.AC8, F13.AC9, F13.AC10, F13.AC11, F13.AC12, F13.AC13, F13.AC14, F13.AC15, F13.AC16, F13.AC17, F3.AC1, F3.AC2, F3.AC3, F3.AC4, F3.AC5, F3.AC6, F3.AC7, F3.AC8, F3.AC9, F3.AC10, F3.AC11, F3.AC12, F3.AC13, F3.AC14, F3.AC15, F3.AC16, F3.AC17, F5.AC1, F5.AC2, F5.AC3, F5.AC4, F5.AC5, F5.AC6, F5.AC7, F5.AC8, F8.AC1, F8.AC2, F8.AC3, F8.AC4, F9.AC1, F9.AC2, F9.AC3, F9.AC4, F9.AC5, F9.AC6, F9.AC7, F9.AC8, F9.AC9, F9.AC10]
+criteria: [F13.AC1, F13.AC2, F13.AC3, F13.AC4, F13.AC5, F13.AC6, F13.AC7, F13.AC8, F13.AC9, F13.AC10, F13.AC11, F13.AC12, F13.AC13, F13.AC14, F13.AC15, F13.AC16, F13.AC17, F13.AC18, F3.AC1, F3.AC2, F3.AC3, F3.AC4, F3.AC5, F3.AC6, F3.AC7, F3.AC8, F3.AC9, F3.AC10, F3.AC11, F3.AC12, F3.AC13, F3.AC14, F3.AC15, F3.AC16, F3.AC17, F5.AC1, F5.AC2, F5.AC3, F5.AC4, F5.AC5, F5.AC6, F5.AC7, F5.AC8, F8.AC1, F8.AC2, F8.AC3, F8.AC4, F9.AC1, F9.AC2, F9.AC3, F9.AC4, F9.AC5, F9.AC6, F9.AC7, F9.AC8, F9.AC9, F9.AC10]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
