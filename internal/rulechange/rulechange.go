@@ -6,6 +6,20 @@
 // enregistré tel quel ; sinon l'administrateur voit un aperçu en comptes
 // seulement et choisit la réparation (écriture et réparation dans une seule
 // transaction) ou le repli « futurs ajustements seulement ».
+//
+// Convention du rôle (F3d.3) : ports.ProposedRule ne porte pas le nouveau rôle
+// (le port est hors de ce module). Le service envoie donc la nature
+// « role » et la seule personne concernée ; une implémentation de réparation
+// lit le rôle demandé dans la ligne du participant. Dans Apply, le rappel
+// d'écriture est exécuté avant la réparation, la ligne porte alors le nouveau
+// rôle. Dans Preview, rien n'est encore écrit : la ligne porte l'ancien rôle,
+// et l'aperçu ne peut pas connaître le rôle demandé tant que le port n'est pas
+// étendu. Un changement de rôle ne touche jamais aux paires : seule la
+// réparation, après confirmation, peut les modifier.
+//
+// Les textes français de ce module sont des constantes Go (explainPreview,
+// explainFuture, explainNoFix, explainRefused et les messages d'erreur) ; ils
+// sont à déplacer dans web/static/i18n/rulechange/{fr,en}.json.
 package rulechange
 
 import (
