@@ -1,0 +1,44 @@
+/* CSS de base, mobile d'abord (360 px et plus). Aucune ressource data:. */
+:root {
+  --red: #c41e3a;
+  --green: #165b33;
+  --frost: #eaf4ee;
+  --line: #c5ddd0;
+  --ink: #1f2d26;
+  --ink-2: #4a5a50;
+  --radius: 14px;
+  --target: 44px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--frost);
+  color: var(--ink);
+  font: 400 16px/1.5 "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow-wrap: anywhere;
+}
+img, svg, video { max-width: 100%; }
+h1 { margin: 0 0 12px; font-size: 28px; line-height: 1.15; }
+p { margin: 0 0 16px; }
+a { color: var(--green); }
+.skip-link {
+  position: absolute; left: 8px; top: -100px; z-index: 10;
+  background: #fff; padding: 12px 16px; border-radius: 8px;
+}
+.skip-link:focus { top: 8px; }
+.site-header { padding: 12px 16px; border-bottom: 1px solid var(--line); background: #fff; }
+.brand { font-weight: 800; color: var(--red); }
+.site-main { padding: 20px 16px; max-width: 720px; margin: 0 auto; }
+.site-footer { padding: 16px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 14px; }
+.site-footer-text { margin: 0 0 8px; }
+.button, button, input[type="submit"] {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; min-width: var(--target); padding: 0 20px;
+  border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--red); color: #fff; font-family: inherit; font-weight: 800; font-size: 16px; line-height: 1; text-decoration: none;
+}
+.button:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
