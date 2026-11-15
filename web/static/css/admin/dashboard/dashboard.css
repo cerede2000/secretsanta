@@ -14,7 +14,7 @@
 .dash-h3 { display: block; font-size: 15px; font-weight: 800; }
 .dash-hint { margin: 0; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
 .dash-note { margin: 0; padding: 10px 12px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); font-size: 13px; line-height: 1.45; color: var(--ink-2); }
-.dash-link { display: inline-flex; align-items: center; min-height: var(--target); color: var(--red); font-weight: 800; font-size: 14px; text-decoration: none; }
+.dash-link { display: inline-flex; align-items: center; min-height: var(--target); min-width: var(--target); justify-content: flex-end; color: var(--red); font-weight: 800; font-size: 14px; text-decoration: none; }
 .dash-back { display: inline-flex; align-items: center; min-height: var(--target); font-weight: 700; text-decoration: none; }
 .dash-alert { padding: 10px 12px; border-radius: 12px; font-size: 14px; font-weight: 700; line-height: 1.4; }
 .dash-alert-error { background: var(--danger-bg); color: var(--danger); }
