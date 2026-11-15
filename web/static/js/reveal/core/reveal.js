@@ -137,7 +137,11 @@ export function createReveal({
     if (letter) {
       const href = targets[index] && targets[index].letter;
       if (href && href.charAt(0) === '/') letter.setAttribute('href', href);
-      else letter.removeAttribute('href');
+      else if (!letter.hasAttribute('data-default-href') && letter.getAttribute('href')) letter.setAttribute('data-default-href', letter.getAttribute('href'));
+      if (!(href && href.charAt(0) === '/')) {
+        const d = letter.getAttribute('data-default-href');
+        if (d) letter.setAttribute('href', d); else letter.removeAttribute('href');
+      }
       letter.hidden = more || !letter.getAttribute('href');
     }
     show('actions', true);
