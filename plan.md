@@ -1717,11 +1717,11 @@ P10-roles: done
 P10-draw: done
 P10-people: done
 P11c-roles: done
-P12b-cov: running
-P12b-jA: running
-P12b-jB: running
-P12b-jC: running
-P13b-review: running
+P12b-cov: done
+P12b-jA: done
+P12b-jB: done
+P12b-jC: done
+P13b-review: done
 P12b-zza: pending
 P12b-zzb: pending
 P12b-zzc: pending
