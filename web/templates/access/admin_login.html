@@ -1,0 +1,26 @@
+{{/*
+  screen-admin-connexion : saisie du mot de passe ou du jeton du groupe.
+  Données : .Slug, .GroupName (vide après un refus), .ErrorKey. Les onglets
+  sont révélés par web/static/js/access/admin-tabs.js ; les textes qu'il
+  affiche viennent des attributs data-*.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/access/access.css">
+<div class="access access-admin">
+<div class="access-admin-head">
+<svg class="access-icon" aria-hidden="true" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#ffd700" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="16" height="12" rx="3"/><path d="M9 11V8a4 4 0 0 1 8 0v3"/></svg>
+<h1 class="access-admin-title">{{t "access.admin.title"}}</h1>
+</div>
+{{if .GroupName}}<p class="access-group">{{t "access.admin.group"}} <b>{{.GroupName}}</b></p>{{end}}
+<form class="card-admin access-card-admin" method="post" action="/{{.Slug}}/admin/connexion" data-access-admin data-label-password="{{t "access.admin.label_password"}}" data-label-token="{{t "access.admin.label_token"}}">
+{{csrfField}}
+<div class="access-tabs" role="tablist" aria-label="{{t "access.admin.tabs_label"}}" hidden>
+<button class="access-tab" type="button" role="tab" aria-selected="true" data-kind="password">{{t "access.admin.tab_password"}}</button>
+<button class="access-tab" type="button" role="tab" aria-selected="false" data-kind="token">{{t "access.admin.tab_token"}}</button>
+</div>
+<label class="field-label access-label-admin" for="access-secret" data-access-label>{{t "access.admin.label_secret"}}</label>
+<input id="access-secret" class="field" type="password" name="secret" required autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="512"{{if .ErrorKey}} aria-invalid="true" aria-describedby="access-error"{{end}}>
+{{if .ErrorKey}}<div id="access-error" class="access-alert access-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+<button class="btn btn-red access-submit" type="submit">{{t "access.admin.submit"}}</button>
+</form>
+</div>
+<script type="module" src="/static/js/access/admin-tabs.js"></script>{{end}}

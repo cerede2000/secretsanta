@@ -1,0 +1,32 @@
+{{/*
+  screen-connexion : code personnel et demande de lien magique. Données :
+  .Slug, .GroupName (peut être vide), .CodeLen, .ErrorKey, .NoticeKey.
+  CSP stricte : ni style ni script en ligne.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/access/access.css">
+<div class="access access-night theme-night">
+{{if .GroupName}}<a class="access-back" href="/{{.Slug}}"><span aria-hidden="true">&lsaquo;</span> {{.GroupName}}</a>{{end}}
+<div class="access-hero">
+<svg class="access-icon" aria-hidden="true" width="64" height="64" viewBox="0 0 64 64"><rect x="10" y="22" width="44" height="32" rx="4" fill="#eaf4ee"/><path d="M10 26l22 16 22-16" fill="none" stroke="#c41e3a" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="42" r="7" fill="#c41e3a"/><path d="M32 6l2.5 5.5 6 .8-4.4 4.1 1.1 5.9L32 19.5l-5.2 2.8 1.1-5.9-4.4-4.1 6-.8z" fill="#ffd700"/></svg>
+<h1 class="theme-title access-title">{{t "access.login.title"}}</h1>
+</div>
+<form class="card access-card" method="post" action="/{{.Slug}}/connexion/code">
+{{csrfField}}
+<label class="field-label access-label" for="access-code">{{t "access.code.label"}}</label>
+<input id="access-code" class="field access-code" type="text" name="code" required autocomplete="one-time-code" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="20" aria-describedby="access-code-hint{{if .ErrorKey}} access-error{{end}}"{{if and .ErrorKey (not .NoticeKey)}} aria-invalid="true"{{end}}>
+{{if .ErrorKey}}<div id="access-error" class="access-alert access-alert-error" role="alert">{{t .ErrorKey "n" .CodeLen}}</div>{{end}}
+<p id="access-code-hint" class="access-hint">{{t "access.code.hint"}}</p>
+<button class="btn btn-red access-submit" type="submit">{{t "access.code.submit"}}</button>
+</form>
+<details class="access-panel"{{if .NoticeKey}} open{{end}}>
+<summary class="access-summary">{{t "access.magic.summary"}}</summary>
+<form class="access-form" method="post" action="/{{.Slug}}/connexion/lien-magique">
+{{csrfField}}
+<label class="access-label-light" for="access-email">{{t "access.magic.email_label"}}</label>
+<input id="access-email" class="field" type="email" name="email" required autocomplete="email" maxlength="254">
+<button class="btn btn-green access-submit access-submit-outline" type="submit">{{t "access.magic.submit"}}</button>
+{{if .NoticeKey}}<div class="access-alert access-alert-ok" role="status">{{t .NoticeKey}}</div>{{end}}
+</form>
+</details>
+<p class="access-foot">{{t "access.login.no_email"}}</p>
+</div>{{end}}
