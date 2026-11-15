@@ -1630,7 +1630,7 @@ W9: done
 W10: done
 W11: done
 W12: done
-W13: pending
+W13: running
 W14: pending
 P1a: done
 P1b-db: done
@@ -1717,11 +1717,11 @@ P10-roles: done
 P10-draw: done
 P10-people: done
 P11c-roles: done
-P12b-cov: pending
-P12b-jA: pending
-P12b-jB: pending
-P12b-jC: pending
-P13b-review: pending
+P12b-cov: running
+P12b-jA: running
+P12b-jB: running
+P12b-jC: running
+P13b-review: running
 P12b-zza: pending
 P12b-zzb: pending
 P12b-zzc: pending
