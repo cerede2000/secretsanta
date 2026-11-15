@@ -40,5 +40,13 @@
   "registration.public.month.10": "octobre",
   "registration.public.month.11": "novembre",
   "registration.public.month.12": "décembre",
-  "registration.public.error.bad_request": "Cette demande n'a pas pu être lue. Recharge la page et réessaie."
+  "registration.public.error.bad_request": "Cette demande n'a pas pu être lue. Recharge la page et réessaie.",
+  "registration.public.form.role.title": "Un coup de pouce ?",
+  "registration.public.form.role.optional": "(facultatif)",
+  "registration.public.form.role.intro": "Tu n'es pas obligé·e de choisir : sans choix, tu participes comme tout le monde. Un seul choix possible à la fois, toucher le même choix une seconde fois l'annule.",
+  "registration.public.form.role.recv": "Je ne peux pas offrir de cadeau, je recevrai le mien",
+  "registration.public.form.role.recv_sub": "Sans en offrir.",
+  "registration.public.form.role.extra": "J'accepte d'offrir des cadeaux en plus pour ceux qui ne peuvent pas en acheter",
+  "registration.public.form.role.extra_sub": "En plus de ton propre cadeau à offrir.",
+  "registration.public.form.role.foot": "Tu pourras toujours en parler à l'organisateur pour changer. Il peut aussi définir les rôles lui-même, à tout moment."
 }

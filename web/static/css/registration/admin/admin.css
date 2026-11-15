@@ -44,3 +44,4 @@
 .regadm-warning { display: flex; gap: 10px; align-items: flex-start; margin: 0; padding: 12px 14px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 2px #d9a800; font-size: 14px; line-height: 1.45; }
 .regadm-warning svg { flex: none; margin-top: 1px; color: #6b4b00; }
 .regadm-closed { background: #f4faf6; display: flex; flex-direction: column; gap: 10px; }
+.regadm-note { padding: 8px 10px; border-radius: 10px; background: #eaf4ee; }

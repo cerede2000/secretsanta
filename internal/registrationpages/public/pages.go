@@ -31,6 +31,7 @@ import (
 	"secretsanta/internal/i18n/catalog"
 	"secretsanta/internal/i18n/negotiate"
 	i18nweb "secretsanta/internal/i18n/web"
+	"secretsanta/internal/participants"
 	"secretsanta/internal/registration/code"
 	"secretsanta/internal/registration/invite"
 	"secretsanta/internal/registration/verify"
@@ -190,6 +191,12 @@ type page struct {
 	LoginPath  string // « Recevoir mon lien »
 	AskShared  bool
 	SharedOn   bool
+	// Choix de rôle volontaire (F11e) : section montrée seulement si
+	// l'option de l'invitation est activée ; aucun choix présélectionné.
+	RoleChoice bool
+	RoleRecv   bool
+	RoleExtra  bool
+	RoleErr    string
 
 	// Code, erreur.
 	ErrorKey string
@@ -334,7 +341,8 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request, inv *invite.Invit
 // fois le code envoyé, la saisie du code. Il ne montre jamais le nom ni
 // l'adresse d'une autre inscription.
 func (p *Pages) renderForm(w http.ResponseWriter, r *http.Request, status int, inv *invite.Invite, res *invite.Result) {
-	d := page{TitleKey: "registration.title.form", Slug: inv.Slug, GroupName: inv.Name, Action: r.URL.Path, CodeLen: code.Length}
+	d := page{TitleKey: "registration.title.form", Slug: inv.Slug, GroupName: inv.Name, Action: r.URL.Path, CodeLen: code.Length,
+		RoleChoice: inv.RoleChoice}
 	if inv.Closed != "" {
 		key, _ := inv.Closed.Message()
 		d.Closed = key
@@ -358,6 +366,9 @@ func (p *Pages) renderForm(w http.ResponseWriter, r *http.Request, status int, i
 			d.FirstErr = res.Fields[invite.FieldFirstName].Code
 			d.NameErr = res.Fields[invite.FieldName].Code
 			d.EmailErr = res.Fields[invite.FieldEmail].Code
+			d.RoleErr = res.Fields[invite.FieldRole].Code
+			d.RoleRecv = res.Values.Role == participants.RoleReceptionSeule
+			d.RoleExtra = res.Values.Role == participants.RoleOffrePlus
 			d.NameTaken = res.Outcome == invite.OutcomeNameTaken
 			if d.NameTaken {
 				d.LoginPath = "/" + inv.Slug + "/connexion"

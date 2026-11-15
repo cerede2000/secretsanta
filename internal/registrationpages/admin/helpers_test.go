@@ -50,11 +50,12 @@ type fakeInvite struct {
 	enabled map[int64]bool
 	cap     map[int64]int
 	closes  map[int64]*time.Time
+	role    map[int64]bool
 	calls   []string
 }
 
 func newFakeInvite() *fakeInvite {
-	return &fakeInvite{enabled: map[int64]bool{}, cap: map[int64]int{}, closes: map[int64]*time.Time{}}
+	return &fakeInvite{enabled: map[int64]bool{}, cap: map[int64]int{}, closes: map[int64]*time.Time{}, role: map[int64]bool{}}
 }
 
 func (f *fakeInvite) note(s string) { f.calls = append(f.calls, s) }
@@ -62,7 +63,7 @@ func (f *fakeInvite) note(s string) { f.calls = append(f.calls, s) }
 func (f *fakeInvite) Settings(_ context.Context, _ participants.Actor, g int64) (invite.Settings, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	return invite.Settings{Enabled: f.enabled[g], Capacity: f.cap[g], ClosesAt: f.closes[g]}, nil
+	return invite.Settings{Enabled: f.enabled[g], Capacity: f.cap[g], ClosesAt: f.closes[g], RoleChoice: f.role[g]}, nil
 }
 
 func (f *fakeInvite) Enable(_ context.Context, _ participants.Actor, g int64) (*invite.Link, error) {
@@ -96,6 +97,14 @@ func (f *fakeInvite) SetLimits(_ context.Context, _ participants.Actor, g int64,
 		return errs.Validation("capacité")
 	}
 	f.cap[g], f.closes[g] = c, t
+	return nil
+}
+
+func (f *fakeInvite) SetRoleChoice(_ context.Context, _ participants.Actor, g int64, on bool) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.note("role")
+	f.role[g] = on
 	return nil
 }
 
