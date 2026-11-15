@@ -22,13 +22,19 @@ import (
 	"secretsanta/internal/config"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/health"
+	"secretsanta/internal/i18n/catalog"
+	"secretsanta/internal/i18n/negotiate"
+	"secretsanta/internal/letter"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
 	"secretsanta/internal/participants"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/shared/clock"
+	"secretsanta/internal/shared/ports"
 	"secretsanta/internal/shared/scheduler"
+	"secretsanta/internal/ssrf"
 	"secretsanta/internal/websec"
+	"secretsanta/web"
 )
 
 // purgeInterval est la période des purges (sessions, liens expirés).
@@ -36,10 +42,11 @@ const purgeInterval = 15 * time.Minute
 
 // App est le serveur assemblé.
 type App struct {
-	Cfg      config.Config
-	DB       *sql.DB
-	Clock    clock.Clock
-	Texts    *Texts
+	Cfg   config.Config
+	DB    *sql.DB
+	Clock clock.Clock
+	// Cat est le catalogue de textes (embarqué + dossier externe).
+	Cat      *catalog.Catalog
 	Version  string
 	Policy   websec.Policy
 	Sessions *websec.Sessions
@@ -48,6 +55,14 @@ type App struct {
 	Participants *participants.Service
 	Rules        *rules.Service
 	Tokens       *token.Service
+	// Bus est le bus d'événements (en mémoire, synchrone).
+	Bus ports.EventBus
+	// SSRF est la garde de récupération externe (aucune route de recherche encore).
+	SSRF *ssrf.Guard
+	// Images sert les copies locales d'images sous /images/.
+	Images *ssrf.Store
+	// Letter est le service des lettres (aucune route encore).
+	Letter *letter.Service
 	// Mail est nil tant qu'aucune adresse d'expédition n'est configurée.
 	Mail *mailmsg.Builder
 	// DKIM est toujours non nil ; Enabled() dit s'il signe.
@@ -66,16 +81,21 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 	if err := Migrate(database); err != nil {
 		return nil, fmt.Errorf("migrations : %w", err)
 	}
-	texts, err := LoadTexts("fr")
+	if cfg.DefaultLang == "" {
+		cfg.DefaultLang = config.DefaultLang
+	}
+	cat, err := catalog.Load(web.I18n, catalog.Options{
+		DefaultLang: cfg.DefaultLang, ExternalDir: cfg.I18nDir, Logger: slog.Default(),
+	})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("textes : %w", err)
 	}
 	policy, err := websec.NewPolicy(cfg.PublicURL)
 	if err != nil {
 		return nil, err
 	}
 	a := &App{
-		Cfg: cfg, DB: database, Clock: clk, Texts: texts, Version: version,
+		Cfg: cfg, DB: database, Clock: clk, Cat: cat, Version: version,
 		Policy: policy, Mux: http.NewServeMux(), sched: scheduler.New(clk),
 	}
 	a.Sessions = websec.NewSessions(database, clk, policy, websec.SessionOptions{})
@@ -92,14 +112,18 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 	}
 
 	csrf := websec.NewCSRF(policy, websec.CSRFOptions{
-		OnReject: func(w http.ResponseWriter, _ *http.Request, _ error) {
+		OnReject: func(w http.ResponseWriter, r *http.Request, _ error) {
 			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 			w.Header().Set("Cache-Control", "no-store")
 			w.WriteHeader(http.StatusForbidden)
-			_, _ = w.Write([]byte(texts.Text(DefaultLang, "core.csrf.reject") + "\n"))
+			_, _ = w.Write([]byte(cat.T(negotiate.Lang(r.Context(), cfg.DefaultLang), "core.csrf.reject", nil) + "\n"))
 		},
 	})
-	a.handler = websec.SecurityHeaders(policy)(csrf.Middleware(a.Sessions.Middleware(a.Mux)))
+	// Ordre : en-têtes, CSRF, sessions, négociation de langue, mux. Les ports
+	// GroupLanguage (nil) et ParticipantLocale (nil) sont des ancres : les
+	// pages de groupe et de participant les fourniront.
+	lang := negotiate.Middleware(cat, cfg.DefaultLang, nil)
+	a.handler = websec.SecurityHeaders(policy)(csrf.Middleware(a.Sessions.Middleware(lang(a.Mux))))
 	return a, nil
 }
 

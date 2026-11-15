@@ -2,14 +2,18 @@ package app
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"secretsanta/internal/access/sqlstore"
 	"secretsanta/internal/access/token"
 	"secretsanta/internal/groups"
+	"secretsanta/internal/letter"
 	"secretsanta/internal/maildkim"
 	"secretsanta/internal/mailmsg"
 	"secretsanta/internal/participants"
 	"secretsanta/internal/rules"
+	"secretsanta/internal/shared/ports"
+	"secretsanta/internal/ssrf"
 )
 
 // features liste les fonctionnalités branchées : UNE ligne par module.
@@ -22,6 +26,8 @@ var features = []func(*App) error{
 	registerRules,
 	registerTokens,
 	registerMail,
+	registerImages,
+	registerLetter,
 	registerWeb,
 }
 
@@ -78,5 +84,31 @@ func registerMail(a *App) error {
 		return fmt.Errorf("messages courriel : %w", err)
 	}
 	a.Mail = b
+	return nil
+}
+
+// registerImages construit la garde SSRF et le magasin des copies locales
+// d'images (DATA_DIR/images, créé au besoin). La route /images/ est montée par
+// registerWeb ; aucune route de recherche encore.
+func registerImages(a *App) error {
+	g, err := ssrf.New(ssrf.Options{SearxngURL: a.Cfg.Sources.SearxngURL})
+	if err != nil {
+		return fmt.Errorf("garde SSRF : %w", err)
+	}
+	st, err := ssrf.NewStore(filepath.Join(a.Cfg.DataDir, "images"), "/images")
+	if err != nil {
+		return fmt.Errorf("magasin d'images : %w", err)
+	}
+	a.SSRF, a.Images = g, st
+	return nil
+}
+
+// registerLetter construit le service des lettres (bus en mémoire, images dans
+// DATA_DIR/letter-images). Aucune route : les pages viennent plus tard.
+func registerLetter(a *App) error {
+	if a.Bus == nil {
+		a.Bus = &ports.MemoryEventBus{}
+	}
+	a.Letter = letter.NewService(a.DB, a.Clock, a.Bus, filepath.Join(a.Cfg.DataDir, "letter-images"))
 	return nil
 }

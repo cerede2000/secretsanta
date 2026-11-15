@@ -25,6 +25,8 @@ func newAppAt(t *testing.T, publicURL string) *App {
 	t.Cleanup(func() { d.Close() })
 	cfg := config.Config{
 		PublicURL:    publicURL,
+		DataDir:      t.TempDir(),
+		DefaultLang:  "fr",
 		InstancePass: config.NewSecret("mot-de-passe-d-instance-test"),
 		SigningKey:   config.NewSecret("secret-de-signature-de-test"),
 	}
@@ -72,7 +74,7 @@ func TestMigrationRegistry(t *testing.T) {
 			t.Errorf("module %s sans migration", m.Module)
 		}
 	}
-	for _, want := range []string{"groups", "websec", "access_magic", "participants", "rules", "access_credentials"} {
+	for _, want := range []string{"groups", "websec", "access_magic", "participants", "rules", "access_credentials", "letter"} {
 		if !seen[want] {
 			t.Errorf("module manquant : %s", want)
 		}
@@ -81,11 +83,7 @@ func TestMigrationRegistry(t *testing.T) {
 
 func TestCSRFRejectsPostWithFrenchText(t *testing.T) {
 	a := newApp(t)
-	texts, err := LoadTexts("fr")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if texts.Text("fr", "core.csrf.reject") != websec.CSRFRejectMessage {
+	if a.Cat.T("fr", "core.csrf.reject", nil) != websec.CSRFRejectMessage {
 		t.Fatal("fr.json diverge de websec.CSRFRejectMessage")
 	}
 	req := httptest.NewRequest(http.MethodPost, "/health", strings.NewReader("x=1"))
@@ -95,7 +93,7 @@ func TestCSRFRejectsPostWithFrenchText(t *testing.T) {
 	if rec.Code != http.StatusForbidden {
 		t.Fatalf("statut %d, attendu 403", rec.Code)
 	}
-	if !strings.Contains(rec.Body.String(), texts.Text("fr", "core.csrf.reject")) {
+	if !strings.Contains(rec.Body.String(), a.Cat.T("fr", "core.csrf.reject", nil)) {
 		t.Fatalf("texte inattendu : %q", rec.Body.String())
 	}
 }

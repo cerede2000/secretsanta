@@ -44,10 +44,14 @@ func main() {
 }
 
 // runI18n exécute « secretsanta i18n export|check » sur le catalogue embarqué,
-// sans exiger les secrets d'exécution. Point d'ancrage : APP_DEFAULT_LANG et
-// I18N_DIR (vague suivante) alimenteront DefaultLang et ExternalDir ici.
+// sans exiger les secrets d'exécution : seules APP_DEFAULT_LANG et I18N_DIR
+// (variables déclarées de internal/config) sont lues.
 func runI18n(args []string, stdout, stderr io.Writer) int {
-	cat, err := catalog.Load(web.I18n, catalog.Options{DefaultLang: app.DefaultLang})
+	lang := os.Getenv(config.VarDefaultLang)
+	if lang == "" {
+		lang = config.DefaultLang
+	}
+	cat, err := catalog.Load(web.I18n, catalog.Options{DefaultLang: lang, ExternalDir: os.Getenv(config.VarI18nDir)})
 	if err != nil {
 		fmt.Fprintln(stderr, err)
 		return 1

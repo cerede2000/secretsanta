@@ -5,11 +5,16 @@ import (
 	"fmt"
 	"html/template"
 	"io/fs"
+	"log/slog"
 	"net/http"
 	"net/url"
+	"path"
+	"strconv"
 	"strings"
 
 	"secretsanta/internal/i18n/catalog"
+	"secretsanta/internal/i18n/negotiate"
+	i18nweb "secretsanta/internal/i18n/web"
 	"secretsanta/internal/shared/adminnav"
 	"secretsanta/internal/websec"
 	"secretsanta/web"
@@ -25,33 +30,33 @@ type pages struct {
 // newPages analyse les gabarits de mise en page avec des fonctions de repli ;
 // t, tn, csrfField et csrfToken sont rebranchées par requête (render).
 func newPages(cat *catalog.Catalog) (*pages, error) {
-	funcs := template.FuncMap{
-		"t":  func(key string, _ ...any) string { return key },
-		"tn": func(key string, _ int, _ ...any) string { return key },
-	}
+	funcs := template.FuncMap{}
 	for k, v := range websec.TemplateFuncsPlaceholder() {
 		funcs[k] = v
 	}
-	tpl, err := template.New("").Funcs(funcs).ParseFS(web.Templates, "templates/layout/*.html")
+	for k, v := range i18nweb.FuncsPlaceholder() {
+		funcs[k] = v
+	}
+	// Mise en page d'abord, puis les gabarits i18n : le bloc "i18n/selector"
+	// du pied de page est remplacé par celui du sélecteur.
+	tpl, err := template.New("").Funcs(funcs).ParseFS(web.Templates, "templates/layout/*.html", "templates/i18n/*.html")
 	if err != nil {
 		return nil, fmt.Errorf("gabarits : %w", err)
 	}
 	return &pages{tpl: tpl, cat: cat}, nil
 }
 
-// render exécute le gabarit name dans la langue lang (la négociation de langue
-// arrive à la vague suivante : l'appelant passe pour l'instant DefaultLang).
-// data reçoit .Lang ; la réponse est entièrement fabriquée avant d'être écrite.
-func (p *pages) render(w http.ResponseWriter, r *http.Request, status int, lang, name string, data map[string]any) {
+// render exécute le gabarit name dans la langue négociée de la requête
+// (negotiate.Lang). data reçoit .Lang ; la réponse est entièrement fabriquée
+// avant d'être écrite.
+func (p *pages) render(w http.ResponseWriter, r *http.Request, status int, name string, data map[string]any) {
 	clone, err := p.tpl.Clone()
 	if err != nil {
 		http.Error(w, "Erreur interne.", http.StatusInternalServerError)
 		return
 	}
-	funcs := websec.TemplateFuncs(r)
-	funcs["t"] = func(key string, kv ...any) string { return p.cat.T(lang, key, catalog.Pairs(kv...)) }
-	funcs["tn"] = func(key string, n int, kv ...any) string { return p.cat.TN(lang, key, n, catalog.Pairs(kv...)) }
-	clone.Funcs(funcs)
+	clone.Funcs(websec.TemplateFuncs(r)).Funcs(i18nweb.Funcs(p.cat, r))
+	lang := negotiate.Lang(r.Context(), p.cat.DefaultLang())
 	if data == nil {
 		data = map[string]any{}
 	}
@@ -106,14 +111,54 @@ func staticHandler() (http.Handler, error) {
 	fsrv := http.StripPrefix("/static/", http.FileServerFS(sub))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "public, max-age=300, must-revalidate")
+		setStaticType(w, r.URL.Path)
 		fsrv.ServeHTTP(w, r)
+	}), nil
+}
+
+// staticTypes fixe les types que la table système peut ignorer (le serveur
+// de fichiers ne remplace pas un Content-Type déjà posé).
+var staticTypes = map[string]string{
+	".webmanifest": "application/manifest+json",
+	".woff2":       "font/woff2",
+	".woff":        "font/woff",
+	".png":         "image/png",
+	".svg":         "image/svg+xml",
+	".ico":         "image/x-icon",
+	".js":          "text/javascript; charset=utf-8",
+	".css":         "text/css; charset=utf-8",
+	".json":        "application/json",
+}
+
+func setStaticType(w http.ResponseWriter, p string) {
+	if ct, ok := staticTypes[strings.ToLower(path.Ext(p))]; ok {
+		w.Header().Set("Content-Type", ct)
+	}
+}
+
+// serviceWorker sert /sw.js à la racine (portée « / »).
+func serviceWorker() (http.Handler, error) {
+	b, err := fs.ReadFile(web.Static, "static/sw.js")
+	if err != nil {
+		return nil, err
+	}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		h := w.Header()
+		h.Set("Content-Type", "text/javascript")
+		h.Set("Service-Worker-Allowed", "/")
+		h.Set("Cache-Control", "no-cache")
+		h.Set("Content-Length", strconv.Itoa(len(b)))
+		if r.Method == http.MethodHead {
+			return
+		}
+		_, _ = w.Write(b)
 	}), nil
 }
 
 // registerWeb branche /static/, la page d'accueil et, en bouclage seulement,
 // la page squelette d'administration.
 func registerWeb(a *App) error {
-	pg, err := newPages(a.Texts.Cat)
+	pg, err := newPages(a.Cat)
 	if err != nil {
 		return err
 	}
@@ -121,17 +166,34 @@ func registerWeb(a *App) error {
 	if err != nil {
 		return err
 	}
+	sw, err := serviceWorker()
+	if err != nil {
+		return err
+	}
 	a.Mux.Handle("GET /static/", st)
+	a.Mux.Handle("GET /sw.js", sw)
+	a.Mux.Handle("HEAD /sw.js", sw)
+	// Changement de langue : POST seulement, jeton CSRF exigé par la chaîne.
+	// Participants reste nil : ancre documentée (port ParticipantLocale, vague
+	// des pages participant).
+	a.Mux.Handle("POST "+i18nweb.Route, (&i18nweb.Selector{
+		Cat: a.Cat, Secure: strings.HasPrefix(a.Cfg.PublicURL, "https://"),
+		Participants: nil, Logger: slog.Default(),
+	}).Handler())
+	// Copies locales d'images : lecture seule, sans CSRF.
+	images := http.StripPrefix("/images", a.Images.Handler())
+	a.Mux.Handle("GET /images/", images)
+	a.Mux.Handle("HEAD /images/", images)
 	// Racine exacte seulement : le reste répond 404 par défaut du mux.
 	a.Mux.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
-		pg.render(w, r, http.StatusOK, DefaultLang, "layout/home", nil)
+		pg.render(w, r, http.StatusOK, "layout/home", nil)
 	})
 	// GABARIT DE TEST : la page squelette d'administration n'est accessible
 	// sans connexion que si l'hôte de PUBLIC_URL est un bouclage ; sinon 404.
 	// Elle ne doit pas exister en production.
 	if isLoopbackURL(a.Cfg.PublicURL) {
 		a.Mux.HandleFunc("GET /_skeleton/admin", func(w http.ResponseWriter, r *http.Request) {
-			pg.render(w, r, http.StatusOK, DefaultLang, "layout/admin", map[string]any{
+			pg.render(w, r, http.StatusOK, "layout/admin", map[string]any{
 				"TitleKey": "layout.nav.dashboard",
 				"Nav":      canonicalNav("dashboard"),
 			})

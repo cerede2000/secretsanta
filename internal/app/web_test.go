@@ -11,6 +11,7 @@ import (
 	accessmig "secretsanta/internal/access/migrations"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/i18n/cli"
+	"secretsanta/internal/letter"
 	"secretsanta/internal/participants"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/websec"
@@ -32,7 +33,7 @@ func TestRegistryOrderAndEveryModuleApplied(t *testing.T) {
 	for _, m := range reg {
 		got = append(got, m.Module)
 	}
-	want := []string{groups.Module, websec.MigrationModule, magic.Module, participants.Module, rules.Module, accessmig.Module}
+	want := []string{groups.Module, websec.MigrationModule, magic.Module, participants.Module, rules.Module, accessmig.Module, letter.Module}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("ordre %v, attendu %v", got, want)
 	}
@@ -76,12 +77,12 @@ func TestHomePage(t *testing.T) {
 		t.Errorf("Content-Type %q", ct)
 	}
 	body := rec.Body.String()
-	for _, banned := range []string{"style=", "<style", "<script", " onclick="} {
+	for _, banned := range []string{"style=", "<style", " onclick="} {
 		if strings.Contains(body, banned) {
 			t.Errorf("contient %q", banned)
 		}
 	}
-	if !strings.Contains(body, a.Texts.Text("fr", "layout.home.title")) {
+	if !strings.Contains(body, a.Cat.T("fr", "layout.home.title", nil)) {
 		t.Errorf("titre français absent : %s", body)
 	}
 	if get(t, a, "/inconnu").Code != http.StatusNotFound {
@@ -157,7 +158,7 @@ func TestI18nCheckOnEmbeddedCatalog(t *testing.T) {
 	a := newApp(t)
 	for _, lang := range []string{"fr", "en"} {
 		var out, errb bytes.Buffer
-		if code := cli.Run([]string{"check", lang}, &out, &errb, a.Texts.Cat); code != 0 {
+		if code := cli.Run([]string{"check", lang}, &out, &errb, a.Cat); code != 0 {
 			t.Errorf("i18n check %s : code %d\n%s%s", lang, code, out.String(), errb.String())
 		}
 	}

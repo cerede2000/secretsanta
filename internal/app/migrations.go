@@ -8,6 +8,7 @@ import (
 	accessmig "secretsanta/internal/access/migrations"
 	"secretsanta/internal/db"
 	"secretsanta/internal/groups"
+	"secretsanta/internal/letter"
 	"secretsanta/internal/participants"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/websec"
@@ -34,6 +35,8 @@ var migrationSources = []struct {
 	{participants.Module, participants.Migrations},
 	{rules.Module, rules.Migrations},
 	{accessmig.Module, accessmig.Migrations},
+	// letter référence groups et participants : après eux.
+	{letter.Module, letter.Migrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.

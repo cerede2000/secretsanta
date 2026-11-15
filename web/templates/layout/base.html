@@ -8,7 +8,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{if .TitleKey}}{{t .TitleKey}} · {{end}}{{t "layout.brand"}}</title>
+<meta name="theme-color" content="#0f1b3d">
+<link rel="manifest" href="/static/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/css/theme/icons/apple-touch-icon.png">
 <link rel="stylesheet" href="/static/css/base/base.css">
+<link rel="stylesheet" href="/static/css/theme/theme.css">
 <link rel="stylesheet" href="/static/css/base/admin-nav.css">
 </head>{{end}}
 {{define "layout/footer"}}<footer class="site-footer">
@@ -25,6 +29,8 @@
 {{block "layout/content" .}}{{end}}
 </main>
 {{template "layout/footer" .}}
+<script type="module" src="/static/js/theme/snow.js"></script>
+<script type="module" src="/static/js/avatars/avatars.js"></script>
 </body>
 </html>{{end}}
 {{define "layout/home"}}<!doctype html>
@@ -39,5 +45,7 @@
 <a class="button" href="/">{{t "layout.home.action"}}</a>
 </main>
 {{template "layout/footer" .}}
+<script type="module" src="/static/js/theme/snow.js"></script>
+<script type="module" src="/static/js/avatars/avatars.js"></script>
 </body>
 </html>{{end}}

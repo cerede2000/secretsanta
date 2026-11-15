@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"io/fs"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -107,10 +108,8 @@ func TestLayoutTemplatesRender(t *testing.T) {
 			t.Fatalf("%s : %v", name, err)
 		}
 		out := b.String()
-		for _, banned := range []string{"style=", "<style", "<script", "data:", " onclick="} {
-			if strings.Contains(out, banned) {
-				t.Errorf("%s contient %q (CSP stricte)", name, banned)
-			}
+		for _, v := range cspViolations(out) {
+			t.Errorf("%s : %s (CSP stricte)", name, v)
 		}
 		if !strings.Contains(out, "«layout.skip»") {
 			t.Errorf("%s : texte non passé par t", name)
@@ -120,5 +119,57 @@ func TestLayoutTemplatesRender(t *testing.T) {
 	_ = tpl.ExecuteTemplate(&b, "layout/admin", data)
 	if n := strings.Count(b.String(), "<a class=\"admin-nav-item\""); n != 5 {
 		t.Errorf("5 entrées attendues, %d trouvées", n)
+	}
+}
+
+var (
+	scriptRe  = regexp.MustCompile(`(?is)<script\b([^>]*)>(.*?)</script>`)
+	scriptSrc = regexp.MustCompile(`(?i)\bsrc="(/static/[^"]*)"`)
+	onAttrRe  = regexp.MustCompile(`(?i)\son[a-z]+\s*=`)
+)
+
+// cspViolations liste ce que la CSP du projet interdit : style en ligne, data:,
+// URL externe, gestionnaires on*, script en ligne ou dont le src n'est pas
+// local sous /static/. Un script sans contenu avec src="/static/..." passe.
+func cspViolations(out string) []string {
+	var v []string
+	for _, banned := range []string{"style=", "<style", "data:", "http://", "https://"} {
+		if strings.Contains(out, banned) {
+			v = append(v, "contient "+banned)
+		}
+	}
+	if onAttrRe.MatchString(out) {
+		v = append(v, "gestionnaire on*")
+	}
+	rest := scriptRe.ReplaceAllStringFunc(out, func(tag string) string {
+		m := scriptRe.FindStringSubmatch(tag)
+		if strings.TrimSpace(m[2]) != "" {
+			v = append(v, "script avec contenu")
+		} else if !scriptSrc.MatchString(m[1]) {
+			v = append(v, "script sans src local /static/")
+		}
+		return ""
+	})
+	if strings.Contains(strings.ToLower(rest), "<script") {
+		v = append(v, "balise script mal formée")
+	}
+	return v
+}
+
+func TestCSPViolations(t *testing.T) {
+	ok := `<script type="module" src="/static/js/theme/snow.js"></script>`
+	if v := cspViolations(ok); len(v) != 0 {
+		t.Errorf("script local refusé : %v", v)
+	}
+	for name, bad := range map[string]string{
+		"en ligne":         `<script>alert(1)</script>`,
+		"src externe":      `<script type="module" src="https://exemple.org/a.js"></script>`,
+		"contenu et src":   `<script src="/static/js/a.js">alert(1)</script>`,
+		"src relatif":      `<script src="a.js"></script>`,
+		"gestionnaire on*": `<a href="/" onclick="x()">a</a>`,
+	} {
+		if len(cspViolations(bad)) == 0 {
+			t.Errorf("%s : doit être refusé", name)
+		}
 	}
 }
