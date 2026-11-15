@@ -1499,10 +1499,10 @@ Executed by `/wave-planning:wave-execute`. See that skill for the worktree, disp
 ## Status
 
 ```yaml status
-base_branch: none
+base_branch: main
 integration_branch: wave/integration
-integration_head: none
-W1: pending
+integration_head: 932cf2112ab90863b445d5800bf8e98d152b61b8
+W1: running
 W2: pending
 W3: pending
 W4: pending
@@ -1516,10 +1516,10 @@ W11: pending
 W12: pending
 W13: pending
 W14: pending
-P1a: pending
-P1b-db: pending
-P1b-sh1: pending
-P1b-sh2: pending
+P1a: running
+P1b-db: running
+P1b-sh1: running
+P1b-sh2: running
 P1c-ci: pending
 P1c-entry: pending
 P1c-infra: pending
