@@ -9,10 +9,10 @@
 .admin-nav-item {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   min-height: 60px; min-width: var(--target); text-decoration: none;
-  color: var(--ink-2); font-family: inherit; font-weight: 600; font-size: 12px; line-height: 1.1; border-top: 4px solid transparent;
+  color: var(--ink-2); font-family: inherit; font-weight: 600; font-size: 12px; line-height: 1.1; border-top: 2px solid transparent;
 }
 .admin-nav-item[aria-current="page"] {
-  color: var(--green); font-weight: 800; border-top-color: var(--green); background: #f1f8f3;
+  color: var(--green); font-weight: 800; border-top-width: 4px; border-top-color: var(--green); background: #f1f8f3;
 }
 .admin-nav-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (min-width: 1024px) {
@@ -28,5 +28,5 @@
     padding: 0 16px; border-top: 0; border-left: 4px solid transparent;
     border-radius: 8px; font-size: 15px;
   }
-  .admin-nav-item[aria-current="page"] { border-left-color: var(--green); }
+  .admin-nav-item[aria-current="page"] { border-top-width: 0; border-left-color: var(--green); }
 }
