@@ -143,7 +143,7 @@ func (d *Diagnostic) Run(ctx context.Context) Report {
 		rep.Checks = append(rep.Checks, d.checkAlignment()...)
 		rep.Checks = append(rep.Checks, d.checkSMTPTLS(ctx))
 	} else {
-		rep.Checks = append(rep.Checks, Check{ID: "mail", Status: StatusOff, Code: "mail.disabled"})
+		rep.Checks = append(rep.Checks, mk("mail", StatusOff, "disabled", nil, nil))
 	}
 	rep.Checks = append(rep.Checks, d.checkPublicURL(ctx)...)
 	return rep
