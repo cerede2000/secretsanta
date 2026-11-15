@@ -121,7 +121,7 @@ const (
 	RouteRhythm       = "/{slug}/admin/reglages/relances"
 	RouteMailTest     = "/{slug}/admin/reglages/courrier/test"
 	RouteRemind       = "/{slug}/admin/relances"
-	DeliverabilityURL = "/admin/courrier/delivrabilite"
+	DeliverabilityURL = "/{slug}/admin/courrier/delivrabilite"
 
 	maxFormBytes = 16 << 10
 	navKey       = "plus"
@@ -423,7 +423,7 @@ func (p *Pages) smtpView() smtpView {
 // les valeurs enregistrées.
 func (p *Pages) view(ctx context.Context, g *groups.Group, a participants.Actor) (*pageData, error) {
 	d := &pageData{Slug: g.Slug, GroupName: g.Name, BackHref: "/" + g.Slug + "/admin/plus", Open: map[string]bool{secGroup: true},
-		DeliverabilityHref: DeliverabilityURL,
+		DeliverabilityHref: strings.ReplaceAll(DeliverabilityURL, "{slug}", g.Slug),
 		ExportHref:         "/" + g.Slug + "/admin/participants/export",
 		ImportAction:       "/" + g.Slug + "/admin/participants/import",
 		BackupAction:       "/" + g.Slug + "/admin/sauvegarde",

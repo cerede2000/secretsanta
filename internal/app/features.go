@@ -95,6 +95,11 @@ var features = []func(*App) error{
 	registerMailDiagPages,
 	registerSuggestionPages,
 	registerGiverNotify,
+	// Les pages de la vague 12 : l'ajustement suit registerAdminPages et
+	// registerAdjust ; les réglages suivent registerAdminOps (Ops) et
+	// registerReminders.
+	registerAdjustPages,
+	registerSettingsPages,
 }
 
 // publicBase renvoie PUBLIC_URL sans barre finale.

@@ -9,9 +9,9 @@ import { lane, loginAdmin, type Group } from '../../_shared/seed';
 // etats du groupe (avant tirage, inscriptions en attente, tirage programme,
 // revelation ouverte) avec les donnees d'amorcage (_shared/seed.ts).
 //
-// Les pages « a venir » de la vague suivante (reglages, aide, export,
-// ajustement detaille : F10b et F10c) ne sont pas encore montees ; leurs liens
-// sont verifies par le test Go TestDefaultInternalLinksReachARoute.
+// Les reglages, les relances, l'ajustement et les donnees (vagues 10 a 12) sont
+// parcourus ici ; la page d'aide n'existe pas encore : son lien est verifie par
+// le test Go TestDefaultInternalLinksReachARoute.
 
 type Entry = { path: string; statuses?: number[]; label: string };
 
@@ -26,6 +26,11 @@ const COMMON: Entry[] = [
   { label: 'journal', path: 'admin/journal' },
   { label: 'menu Plus', path: 'admin/plus' },
   { label: 'inscriptions', path: 'admin/inscriptions' },
+  { label: 'reglages', path: 'admin/reglages' },
+  { label: 'relances', path: 'admin/relances' },
+  { label: 'ajustement : retrait', path: 'admin/ajuster' },
+  { label: 'ajustement : ajout', path: 'admin/ajuster?mode=ajouter' },
+  { label: 'donnees', path: 'admin/donnees' },
 ];
 
 function watch(page: Page): string[] {

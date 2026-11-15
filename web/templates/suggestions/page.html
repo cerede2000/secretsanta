@@ -18,7 +18,7 @@
 {{if .ErrorKey}}<p class="sugg-alert" role="alert">{{t .ErrorKey}}</p>{{end}}
 {{if .Gifts}}<div class="sugg-gifts" role="group" aria-label="{{t "suggestions.gift.group"}}">
 <div class="sugg-label">{{t "suggestions.gift.group"}}</div>
-<div class="sugg-chips">{{range .Gifts}}<a class="sugg-chip{{if .Current}} is-on{{end}}" href="{{.URL}}"{{if .Current}} aria-current="true"{{end}}>{{if .Name}}{{t "suggestions.gift.label_named" "n" .N "name" .Name}}{{else}}{{t "suggestions.gift.label" "n" .N}}{{end}}</a>{{end}}</div>
+<div class="sugg-chips sugg-gifts">{{range .Gifts}}<a class="sugg-chip{{if .Current}} is-on{{end}}" href="{{.URL}}"{{if .Current}} aria-current="true"{{end}}>{{if .Name}}{{t "suggestions.gift.label_named" "n" .N "name" .Name}}{{else}}{{t "suggestions.gift.label" "n" .N}}{{end}}</a>{{end}}</div>
 <div class="sugg-help">{{t "suggestions.gift.help"}}</div>
 </div>{{end}}
 {{if .Name}}<p class="sugg-intro">{{if .HasBudget}}{{t "suggestions.intro.budget" "name" .Name "amount" .Budget}}{{else}}{{t "suggestions.intro.free" "name" .Name}}{{end}}</p>{{end}}

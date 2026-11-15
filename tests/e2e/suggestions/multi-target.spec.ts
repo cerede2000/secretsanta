@@ -15,7 +15,7 @@ test('screen-suggestions : sélecteur « Cadeau 1 / Cadeau 2 » pour deux cibles
   expect(pair, 'lettre reçue de la première cible').toBeTruthy();
   await page.goto(`/${g.slug}/suggestions/${pair}`);
 
-  const chips = page.locator('.sugg-chip');
+  const chips = page.locator('.sugg-gifts .sugg-chip');
   await expect(chips).toHaveCount(2);
   await expect(chips.first()).toHaveAttribute('aria-current', 'true');
   await expect(chips.nth(1)).not.toHaveAttribute('aria-current', 'true');
@@ -35,5 +35,5 @@ test('screen-suggestions : une seule cible, pas de sélecteur', async ({ page },
   const href = await page.locator('a[href*="/lettre-recue/"]').first().getAttribute('href');
   const pair = /\/lettre-recue\/(\d+)/.exec(href ?? '')?.[1];
   await page.goto(`/${g.slug}/suggestions/${pair}`);
-  await expect(page.locator('.sugg-chip')).toHaveCount(0);
+  await expect(page.locator('.sugg-gifts .sugg-chip')).toHaveCount(0);
 });

@@ -23,6 +23,7 @@ import (
 	"secretsanta/internal/accesspages"
 	"secretsanta/internal/admin/audit"
 	"secretsanta/internal/admin/dashboard"
+	"secretsanta/internal/adminops"
 	"secretsanta/internal/config"
 	"secretsanta/internal/draw"
 	"secretsanta/internal/enrich"
@@ -161,7 +162,9 @@ type App struct {
 	// Adjust ajuste le tirage (retrait, ajout) et met la révélation à jour ;
 	// aucune page encore (F10c). LetterRead sert la lecture de la lettre par
 	// le tireur ; TargetPage les pages du participant.
-	Adjust     *Adjusting
+	Adjust *Adjusting
+	// Ops porte l'exploitation d'un groupe (sauvegarde, duplication...), lue aussi par la page des réglages.
+	Ops        *adminops.Service
 	LetterRead *letterread.Service
 	TargetPage *targetpage.Pages
 	// AdminNav est le registre de navigation d'administration (Tableau,

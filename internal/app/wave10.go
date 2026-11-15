@@ -189,6 +189,7 @@ func registerAdminOps(a *App) error {
 	if err != nil {
 		return fmt.Errorf("exploitation : %w", err)
 	}
+	a.Ops = svc
 	set, err := newTemplateSet(a.Cat, "adminops")
 	if err != nil {
 		return err

@@ -15,7 +15,7 @@ func TestMailSectionLinksToDeliverabilityWithoutImportingF6c(t *testing.T) {
 	gid := e.group("courrier")
 	ck := e.adminCookie(gid)
 	body := e.get("/courrier/admin/reglages", "fr", ck).Body.String()
-	if !strings.Contains(body, `href="/admin/courrier/delivrabilite"`) {
+	if !strings.Contains(body, `href="/courrier/admin/courrier/delivrabilite"`) {
 		t.Error("lien vers le diagnostic absent")
 	}
 	if !strings.Contains(body, "smtp.interne.lan") || strings.Contains(body, "mot-de-passe") {
