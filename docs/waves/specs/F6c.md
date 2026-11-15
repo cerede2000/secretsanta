@@ -1,8 +1,8 @@
 ---
 id: F6c
 title: "Délivrabilité : diagnostic DNS et TLS, liste de suppression et page d'administration"
-depends_on: [F6, F6b, F2c, F1c, F9, F1b, F1]
-owns: [internal/maildiag/**, internal/mailsuppress/**, internal/maildiagpages/**, web/templates/maildiag/**, web/static/css/maildiag/**, tests/e2e/maildiag/**]
+depends_on: [F6, F6b, F2c, F1c, F9, F1b, F1, F13]
+owns: [internal/maildiag/**, internal/mailsuppress/**, internal/maildiagpages/**, web/templates/maildiag/**, web/static/css/maildiag/**, tests/e2e/maildiag/**, web/static/i18n/maildiag/**]
 reads: [internal/shared/**, internal/config/**, internal/mail/**, internal/mailmsg/**, internal/maildkim/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-admin-delivrabilite]
 risk: []
 steps: [F6c.1, F6c.2, F6c.3]
@@ -23,7 +23,9 @@ Cette fonctionnalité aide l'exploitant à vérifier que ses courriels ont une c
 - Courriel de test avec affichage des en-têtes bruts du message mis en file (service de test de F6).
 - Liste de suppression (`internal/mailsuppress/`) : implémente le port `SuppressionList` de F1b, par groupe, avec l'adresse, la raison (réponse du serveur nettoyée) et la date ; page qui la liste et permet de retirer une adresse ; une adresse corrigée n'est pas supprimée.
 - Page `screen-admin-delivrabilite` dans le gabarit d'administration de F1c, atteinte depuis Réglages, section Courrier, par la route `/admin/courrier/delivrabilite` (F10 y renvoie par un lien sans dépendre de F6c) ; session administrateur et jeton CSRF de F2c, isolation entre groupes, mobile d'abord.
-- À brancher par l'orchestrateur : routes dans `internal/app/`, textes dans `web/static/i18n/fr.json`, migrations (`internal/mailsuppress/migrations/`) dans le registre commun, branchement du port `SuppressionList`.
+- À brancher par l'orchestrateur : routes dans `internal/app/`, textes dans les catalogues `web/static/i18n/<module>/fr.json` et `en.json` (français et anglais, un dossier par module, propriété de la phase concernée), migrations (`internal/mailsuppress/migrations/`) dans le registre commun, branchement du port `SuppressionList`.
+- Internationalisation (F13) : aucun texte brut dans les gabarits, les messages ni les courriels de cette fonctionnalité ; tous passent par les fonctions `t` et `tn` avec des clés préfixées par le module dans `web/static/i18n/<module>/fr.json` et `en.json` (français et anglais, mêmes clés, mêmes paramètres). Les textes affichés par du JavaScript sont fournis par le gabarit en attributs `data-*` produits avec `t`, jamais écrits en dur dans le script.
+- Contraintes web héritées de F2c : tout gestionnaire qui modifie l'état est enveloppé par `websec.RequireUnsafeMethod` (une requête GET ne modifie jamais rien) ; aucune page n'utilise d'attribut `style` en ligne ni de ressource `data:` (CSP stricte : classes et CSS dans `web/static/css/**`, images servies par une route de même origine).
 
 ## Out of scope
 
@@ -46,6 +48,8 @@ AC11: {text: "La page de diagnostic et la liste de suppression exigent la sessio
 AC12: {text: "Chaque point à corriger affiche un bouton Copier pour l'enregistrement proposé sans aucune boîte du navigateur", verify: "test:internal/maildiagpages/copy_record_test.go"}
 AC13: {text: "La page de diagnostic n'a aucun défilement horizontal et ses zones tactiles mesurent au moins 44 px en 360×640 et 390×844", verify: "cmd:npx playwright test tests/e2e/maildiag"}
 AC14: {text: "L'écran de diagnostic de délivrabilité correspond à la maquette approuvée", verify: "design-fidelity:screen-admin-delivrabilite"}
+AC15: {text: "La page de diagnostic de délivrabilité : tous les textes passent par les catalogues avec les clés fr et en du module, et le rendu avec la langue anglaise ne contient aucune clé brute ni texte français", verify: "test:internal/maildiagpages/i18n_pages_test.go"}
+AC16: {text: "La page de diagnostic de délivrabilité : tout gestionnaire qui modifie l'état est enveloppé par RequireUnsafeMethod (un GET sur une route modifiante renvoie 405 sans rien modifier) et aucun gabarit n'utilise d'attribut style en ligne ni de ressource data:", verify: "test:internal/maildiagpages/csp_unsafe_methods_test.go"}
 ```
 
 ## Steps

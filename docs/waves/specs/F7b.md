@@ -19,6 +19,7 @@ Quand le tiré ajoute ou modifie des idées, son tireur reçoit un seul courriel
 - Notification « nouvelle idée » au tireur : abonnement à l'événement de lettre nouvelle ou modifiée (F5) pour un tireur qui peut lire la lettre (tirage fait et révélation ouverte). Plusieurs idées ajoutées ou modifiées en moins de 10 minutes produisent un seul courriel (attente de 10 minutes après la dernière modification, plafond de 60 minutes), en s'appuyant sur le regroupement par clé de F6 et l'horloge de F1.
 - Relance du tireur : un tireur qui n'a pas ouvert une lettre nouvelle ou modifiée est relancé (version de lettre de F5 et ouverture de F5b), avec les garde-fous de F7 (un courriel par jour, fenêtre d'envoi, plafond) ; le rappel ne contient que la mention qu'une lettre l'attend.
 - Tireur à deux cibles : la clé de regroupement est celle du TIREUR, pas de la lettre ; deux lettres nouvelles ou modifiées en moins de 10 minutes, quelles que soient leurs cibles, produisent un seul courriel qui dit seulement qu'une ou deux lettres l'attendent (sans nom de cible) ; la relance du tireur est unique, quel que soit le nombre de lettres non ouvertes. Une personne `reception_seule` n'a aucune lettre à lire et ne reçoit jamais cette notification.
+- Les courriels de cette fonctionnalité sont composés dans la langue du destinataire (langue du participant, sinon langue du groupe) ; un tireur à deux cibles reçoit un seul courriel regroupé dans sa langue.
 
 ## Out of scope
 
@@ -32,6 +33,7 @@ AC2: {text: "Plusieurs idées ajoutées ou modifiées en moins de 10 minutes pro
 AC3: {text: "Pour un tireur à deux cibles, des modifications des deux lettres en moins de 10 minutes produisent un seul courriel, avec horloge simulée, sans nom de cible ni de tireur", verify: "test:internal/givernotify/two_targets_coalescing_test.go"}
 AC4: {text: "La relance du tireur est unique quel que soit le nombre de lettres non ouvertes et s'arrête quand toutes les lettres nouvelles ont été ouvertes", verify: "test:internal/givernotify/two_targets_reminder_test.go"}
 AC5: {text: "Une personne reception_seule ne reçoit jamais la notification de nouvelle idée ni la relance du tireur", verify: "test:internal/givernotify/reception_only_never_notified_test.go"}
+AC6: {text: "Les courriels de cette fonctionnalité partent dans la langue du destinataire, sinon dans la langue du groupe, sans jamais mélanger deux langues dans un même message", verify: "test:internal/givernotify/recipient_language_test.go"}
 ```
 
 ## Steps
