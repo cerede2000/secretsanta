@@ -20,8 +20,11 @@ Les portes de phase sont les quatre commandes ci-dessus. Les critères d'accepta
 | F1 Configuration et secrets | docs/waves/specs/F1.md |
 | F10 Interface d'administration | docs/waves/specs/F10.md |
 | F10b Consultation de paire optionnelle et outils d'exploitation | docs/waves/specs/F10b.md |
+| F10c Administration : réglages, relances et page Ajuster le tirage | docs/waves/specs/F10c.md |
 | F11 Inscription par lien invité : lien, formulaire et vérification | docs/waves/specs/F11.md |
 | F11c Inscription par lien : pages publiques et administration des inscriptions | docs/waves/specs/F11c.md |
+| F11d Inscription par lien : option de choix de rôle (service) | docs/waves/specs/F11d.md |
+| F11e Inscription par lien : choix de rôle volontaire et parcours complet | docs/waves/specs/F11e.md |
 | F12a Banc de recette en conteneurs et documentation | docs/waves/specs/F12a.md |
 | F12b Parcours de bout en bout, couverture et contrôles de livraison | docs/waves/specs/F12b.md |
 | F1b Base de données, ports partagés et registre de navigation | docs/waves/specs/F1b.md |
@@ -795,8 +798,8 @@ rationale: "page des suggestions et test de confidentialité des requêtes sorta
 
 ```yaml phase
 id: P11-roleopt
-spec: F11
-steps: [F11.5]
+spec: F11d
+steps: [F11d.1]
 owns: [internal/registration/invite/**, internal/registration/verify/**]
 depends_on: [P11-invite, P11-verify, P3d-roles]
 model: opus
@@ -916,8 +919,8 @@ rationale: "navigation d'administration et feuille Plus"
 
 ```yaml phase
 id: P10-settings
-spec: F10
-steps: [F10.5]
+spec: F10c
+steps: [F10c.1]
 owns: [internal/admin/settingspages/**, web/templates/admin/settings/**, web/static/js/admin/settings/**, web/static/css/admin/settings/**, tests/e2e/admin/settings/**, web/static/i18n/admin/settings/**]
 depends_on: [P2e-settings, P7-engine, P6-queue, P2c-websec, P1c-layout, P9-theme]
 model: sonnet
@@ -926,14 +929,25 @@ rationale: "réglages en sections repliables et relances"
 ```
 
 ```yaml phase
+id: P10-adjust
+spec: F10c
+steps: [F10c.2]
+owns: [internal/admin/adjustpages/**, web/templates/admin/adjust/**, web/static/js/admin/adjust/**, web/static/css/admin/adjust/**, tests/e2e/admin/adjust/**, web/static/i18n/admin/adjust/**]
+depends_on: [P4c-adjust, P4c-repair, P4b-core, P4b-reveal, P2c-websec, P1c-layout, P9-theme, P10-draw]
+model: sonnet
+score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
+rationale: "page Ajuster le tirage (aperçu sans noms, confirmation) branchée sur les services de F4c, livrée après le parcours complet"
+```
+
+```yaml phase
 id: P11c-admin
 spec: F11c
 steps: [F11c.2]
-owns: [internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, tests/e2e/registration/flow/**, web/static/i18n/registration/admin/**]
-depends_on: [P11c-public, P11-verify, P2c-websec, P1c-layout, P1b-sh2, P3d-enrol]
+owns: [internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, web/static/i18n/registration/admin/**]
+depends_on: [P11-verify, P11-invite, P2c-websec, P1c-layout, P1b-sh2, P3d-enrol]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
-rationale: "page d'administration des inscriptions et parcours complet"
+rationale: "page d'administration des inscriptions"
 ```
 
 ```yaml phase
@@ -952,7 +966,7 @@ id: P10-draw
 spec: F10
 steps: [F10.4]
 owns: [internal/admin/drawpages/**, web/templates/admin/draw/**, web/static/js/admin/draw/**, web/static/css/admin/draw/**, tests/e2e/admin/drawpages/**, web/static/i18n/admin/draw/**]
-depends_on: [P4b-core, P4b-reveal, P4c-adjust, P2c-websec, P1c-layout, P9-theme, P10-roles]
+depends_on: [P4b-core, P4b-reveal, P2c-websec, P1c-layout, P9-theme, P10-roles]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
 rationale: "pages du tirage et de l'ajustement ; inclut les fragments de rôles de P10-roles"
@@ -971,13 +985,13 @@ rationale: "page des participants et fiche de personne ; inclut les fragments de
 
 ```yaml phase
 id: P11c-roles
-spec: F11c
-steps: [F11c.3]
-owns: [internal/registrationpages/public/**, web/templates/registration/public/**, web/static/js/registration/public/**, web/static/css/registration/public/**, tests/e2e/registration/public/**, internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, web/static/i18n/registration/public/**]
+spec: F11e
+steps: [F11e.1]
+owns: [internal/registrationpages/public/**, web/templates/registration/public/**, web/static/js/registration/public/**, web/static/css/registration/public/**, tests/e2e/registration/public/**, internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, tests/e2e/registration/flow/**, web/static/i18n/registration/public/**]
 depends_on: [P11c-public, P11c-admin, P11-roleopt]
 model: sonnet
 score: {scope: 2, ambiguity: 1, risk: 1, reasoning: 1}
-rationale: "choix de rôle volontaire dans le formulaire et réglage de l'option côté administration"
+rationale: "choix de rôle volontaire dans le formulaire, réglage de l'option côté administration et parcours complet d'inscription (Playwright)"
 ```
 
 ```yaml phase
@@ -1141,7 +1155,7 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P5c-mailbox | P1c-layout, P9-theme, P9-illus (+ toutes les phases de F5, F5b, F2c, F1c, F9, F13 par la règle de fonctionnalité) |
 | P5c-pages | P5-letter, P5b-read, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F5, F5b, F2c, F1c, F9, F13 par la règle de fonctionnalité) |
 | P8c-page | P8c-service, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F8b, F2, F3, F4b, F5, F2c, F1c, F9, F13 par la règle de fonctionnalité) |
-| P11-roleopt | P11-invite, P11-verify, P3d-roles (+ toutes les phases de F2, F2b, F3, F3d, F1b par la règle de fonctionnalité) |
+| P11-roleopt | P11-invite, P11-verify, P3d-roles (+ toutes les phases de F11, F3d, F13 par la règle de fonctionnalité) |
 | P10b-ops | P3-core, P3-rules, P2-groups, P2c-websec, P1b-db, P1c-layout (+ toutes les phases de F2, F2c, F3, F4b, F6, F1c, F1b, F13 par la règle de fonctionnalité) |
 | P9c-seq | P9c-gift, P9c-envelope, P9c-scratch (+ toutes les phases de F9, F1c, F13 par la règle de fonctionnalité) |
 | P7b-notify | P5b-read, P6-queue, P6-templates, P7-rules (+ toutes les phases de F5b, F6, F7 par la règle de fonctionnalité) |
@@ -1150,22 +1164,23 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P4c-roles | P4c-adjust, P4c-repair, P4b-multi, P3-roles (+ toutes les phases de F4b, F2e, F3, F1b par la règle de fonctionnalité) |
 | P5c-roles | P5c-pages, P5c-mailbox, P5b-read (+ toutes les phases de F5, F5b, F2c, F1c, F9, F13 par la règle de fonctionnalité) |
 | P8c-multi | P8c-service, P8c-page, P4b-multi (+ toutes les phases de F8b, F2, F3, F4b, F5, F2c, F1c, F9, F13 par la règle de fonctionnalité) |
-| P10-dash | P2-groups, P2c-websec, P4b-core, P4b-reveal, P6-queue, P1b-sh2, P1c-layout, P9-theme (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
-| P10-menu | P1c-layout, P1b-sh2, P2c-websec, P9-theme (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
-| P10-settings | P2e-settings, P7-engine, P6-queue, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
-| P11c-admin | P11c-public, P11-verify, P2c-websec, P1c-layout, P1b-sh2, P3d-enrol (+ toutes les phases de F11, F2c, F1c, F9, F1b, F3d, F13 par la règle de fonctionnalité) |
-| P10-roles | P3-roles, P4b-multi (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
-| P10-draw | P4b-core, P4b-reveal, P4c-adjust, P2c-websec, P1c-layout, P9-theme, P10-roles (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
-| P10-people | P3-core, P3-rules, P3d-enrol, P3d-rulechange, P2b-a, P6-unsub, P2c-websec, P1c-layout, P9-theme, P10-roles (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
-| P11c-roles | P11c-public, P11c-admin, P11-roleopt (+ toutes les phases de F11, F2c, F1c, F9, F1b, F3d, F13 par la règle de fonctionnalité) |
-| P12b-cov | P12a-bench, P1c-docker, P1c-ci (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
-| P12b-jA | P12a-bench, P2e-pages1, P2e-pages2, P11c-admin, P5c-pages, P5c-mailbox, P10-people, P10-draw, P4d-pages, P9c-gift, P9c-envelope, P9c-scratch, P4b-reveal, P10-menu (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
-| P12b-jB | P12a-bench, P10-draw, P10-settings, P6-unsub, P7-engine, P7b-notify, P10b-consult, P10b-ops, P4c-repair, P8c-page, P5c-pages (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
-| P12b-jC | P12a-bench, P10-roles, P11c-roles, P9c-seq, P4d-roles, P5c-roles, P6c-page, P4c-roles, P8c-multi (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
-| P13b-review | none (+ toutes les phases de F13, F1c, F2e, F4d, F5c, F6, F6c, F8c, F9c, F10, F10b, F11c par la règle de fonctionnalité) |
-| P12b-zza | P12b-cov, P2b-store (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
-| P12b-zzb | P12b-cov, P11-store (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
-| P12b-zzc | P12b-cov, P12a-bench, P6b-msg, P6b-dkim, P6c-diag, P6c-suppress, P6c-page (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F11c, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P10-dash | P2-groups, P2c-websec, P4b-core, P4b-reveal, P6-queue, P1b-sh2, P1c-layout, P9-theme (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F6, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P10-menu | P1c-layout, P1b-sh2, P2c-websec, P9-theme (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F6, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P10-settings | P2e-settings, P7-engine, P6-queue, P2c-websec, P1c-layout, P9-theme (+ toutes les phases de F10, F2c, F2e, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P10-adjust | P4c-adjust, P4c-repair, P4b-core, P4b-reveal, P2c-websec, P1c-layout, P9-theme, P10-draw (+ toutes les phases de F10, F2c, F2e, F4c, F6, F7, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P11c-admin | P11-verify, P11-invite, P2c-websec, P1c-layout, P1b-sh2, P3d-enrol (+ toutes les phases de F11, F2c, F1c, F9, F1b, F3d, F13 par la règle de fonctionnalité) |
+| P10-roles | P3-roles, P4b-multi (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F6, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P10-draw | P4b-core, P4b-reveal, P2c-websec, P1c-layout, P9-theme, P10-roles (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F6, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P10-people | P3-core, P3-rules, P3d-enrol, P3d-rulechange, P2b-a, P6-unsub, P2c-websec, P1c-layout, P9-theme, P10-roles (+ toutes les phases de F2, F2b, F2c, F2e, F3, F3d, F4b, F6, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P11c-roles | P11c-public, P11c-admin, P11-roleopt (+ toutes les phases de F11, F11c, F11d, F2c, F1c, F9, F1b, F13 par la règle de fonctionnalité) |
+| P12b-cov | P12a-bench, P1c-docker, P1c-ci (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P12b-jA | P12a-bench, P2e-pages1, P2e-pages2, P11c-admin, P5c-pages, P5c-mailbox, P10-people, P10-draw, P4d-pages, P9c-gift, P9c-envelope, P9c-scratch, P4b-reveal, P10-menu (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P12b-jB | P12a-bench, P10-draw, P10-settings, P6-unsub, P7-engine, P7b-notify, P10b-consult, P10b-ops, P4c-repair, P8c-page, P5c-pages (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P12b-jC | P12a-bench, P10-roles, P11c-roles, P9c-seq, P4d-roles, P5c-roles, P6c-page, P4c-roles, P8c-multi (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P13b-review | none (+ toutes les phases de F13, F1c, F2e, F4d, F5c, F6, F6c, F8c, F9c, F10, F10b, F10c, F11c, F11e par la règle de fonctionnalité) |
+| P12b-zza | P12b-cov, P2b-store (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P12b-zzb | P12b-cov, P11-store (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
+| P12b-zzc | P12b-cov, P12a-bench, P6b-msg, P6b-dkim, P6c-diag, P6c-suppress, P6c-page (+ toutes les phases de F12a, F2e, F4d, F5c, F6, F7b, F8c, F9c, F10, F10b, F10c, F11c, F11d, F11e, F4b, F7, F4c, F1c, F6b, F6c, F2b, F11, F13 par la règle de fonctionnalité) |
 
 ### Ownership graph
 
@@ -1250,11 +1265,12 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P10-dash | internal/admin/dashboard/**, internal/admin/audit/**, web/templates/admin/dashboard/**, web/static/js/admin/dashboard/**, web/static/css/admin/dashboard/**, tests/e2e/admin/dashboard/**, internal/admin/migrations/**, web/static/i18n/admin/dashboard/** |
 | P10-menu | internal/admin/menu/**, web/templates/admin/menu/**, web/static/js/admin/menu/**, web/static/css/admin/menu/**, tests/e2e/admin/menu/**, web/static/i18n/admin/menu/** |
 | P10-settings | internal/admin/settingspages/**, web/templates/admin/settings/**, web/static/js/admin/settings/**, web/static/css/admin/settings/**, tests/e2e/admin/settings/**, web/static/i18n/admin/settings/** |
-| P11c-admin | internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, tests/e2e/registration/flow/**, web/static/i18n/registration/admin/** |
+| P10-adjust | internal/admin/adjustpages/**, web/templates/admin/adjust/**, web/static/js/admin/adjust/**, web/static/css/admin/adjust/**, tests/e2e/admin/adjust/**, web/static/i18n/admin/adjust/** |
+| P11c-admin | internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, web/static/i18n/registration/admin/** |
 | P10-roles | internal/admin/roles/**, web/templates/admin/roles/**, web/static/js/admin/roles/**, web/static/css/admin/roles/**, tests/e2e/admin/roles/**, web/static/i18n/admin/roles/** |
 | P10-draw | internal/admin/drawpages/**, web/templates/admin/draw/**, web/static/js/admin/draw/**, web/static/css/admin/draw/**, tests/e2e/admin/drawpages/**, web/static/i18n/admin/draw/** |
 | P10-people | internal/admin/people/**, web/templates/admin/people/**, web/static/js/admin/people/**, web/static/css/admin/people/**, tests/e2e/admin/people/**, web/static/i18n/admin/people/** |
-| P11c-roles | internal/registrationpages/public/**, web/templates/registration/public/**, web/static/js/registration/public/**, web/static/css/registration/public/**, tests/e2e/registration/public/**, internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, web/static/i18n/registration/public/** |
+| P11c-roles | internal/registrationpages/public/**, web/templates/registration/public/**, web/static/js/registration/public/**, web/static/css/registration/public/**, tests/e2e/registration/public/**, internal/registrationpages/admin/**, web/templates/registration/admin/**, web/static/js/registration/admin/**, web/static/css/registration/admin/**, tests/e2e/registration/admin/**, tests/e2e/registration/flow/**, web/static/i18n/registration/public/** |
 | P12b-cov | scripts/coverage.sh, scripts/coverage_script_test.sh, scripts/check-image.sh, scripts/check-vuln.sh, scripts/check-workflows.sh, .github/workflows/coverage.yml, .github/workflows/recette.yml |
 | P12b-jA | tests/e2e/journey/a/** |
 | P12b-jB | tests/e2e/journey/b/**, scripts/check-no-dialogs.sh |
@@ -1335,7 +1351,7 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P5c-mailbox | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/letter/**, internal/letterread/**, internal/groups/**, docs/waves/design/snapshot.html#screen-lettre, docs/waves/design/snapshot.html#screen-boite-lettres, docs/waves/design/snapshot.html#screen-lettre-recue |
 | P5c-pages | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/letter/**, internal/letterread/**, internal/groups/**, docs/waves/design/snapshot.html#screen-lettre, docs/waves/design/snapshot.html#screen-boite-lettres, docs/waves/design/snapshot.html#screen-lettre-recue |
 | P8c-page | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/sources/**, internal/enrich/**, internal/ssrf/**, internal/groups/**, internal/letter/**, internal/participants/**, internal/draw/**, docs/waves/design/snapshot.html#screen-suggestions |
-| P11-roleopt | internal/groups/**, internal/access/**, internal/participants/**, internal/enrolment/**, internal/shared/**, internal/config/** |
+| P11-roleopt | internal/shared/**, internal/registration/**, internal/participants/** |
 | P10b-ops | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/mail/**, internal/db/** |
 | P9c-seq | web/templates/layout/**, web/static/css/base/**, web/static/css/theme/**, tests/e2e/_shared/**, docs/waves/design/snapshot.html#screen-revelation, docs/waves/design/snapshot.html#screen-revelation-b, docs/waves/design/snapshot.html#screen-revelation-c |
 | P7b-notify | internal/letter/**, internal/letterread/**, internal/mail/**, internal/mailunsub/**, internal/reveal/**, internal/shared/** |
@@ -1344,14 +1360,15 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P4c-roles | internal/draw/**, internal/reveal/**, internal/drawengine/**, internal/participants/**, internal/rules/**, internal/groupsettings/**, internal/shared/** |
 | P5c-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/letter/**, internal/letterread/**, internal/groups/**, docs/waves/design/snapshot.html#screen-lettre, docs/waves/design/snapshot.html#screen-boite-lettres, docs/waves/design/snapshot.html#screen-lettre-recue |
 | P8c-multi | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/sources/**, internal/enrich/**, internal/ssrf/**, internal/groups/**, internal/letter/**, internal/participants/**, internal/draw/**, docs/waves/design/snapshot.html#screen-suggestions |
-| P10-dash | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-tirage, docs/waves/design/snapshot.html#screen-admin-reglages |
-| P10-menu | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-tirage, docs/waves/design/snapshot.html#screen-admin-reglages |
-| P10-settings | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-tirage, docs/waves/design/snapshot.html#screen-admin-reglages |
+| P10-dash | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-tirage |
+| P10-menu | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-tirage |
+| P10-settings | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/reminders/**, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-reglages |
+| P10-adjust | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/reminders/**, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-reglages |
 | P11c-admin | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/registration/**, internal/groups/**, docs/waves/design/snapshot.html#screen-inscription, docs/waves/design/snapshot.html#screen-inscription-code, docs/waves/design/snapshot.html#screen-inscription-reussie, docs/waves/design/snapshot.html#screen-admin-inscriptions |
-| P10-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-tirage, docs/waves/design/snapshot.html#screen-admin-reglages |
-| P10-draw | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-tirage, docs/waves/design/snapshot.html#screen-admin-reglages |
-| P10-people | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/adjust/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-ajuster, docs/waves/design/snapshot.html#screen-admin-tirage, docs/waves/design/snapshot.html#screen-admin-reglages |
-| P11c-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/registration/**, internal/groups/**, docs/waves/design/snapshot.html#screen-inscription, docs/waves/design/snapshot.html#screen-inscription-code, docs/waves/design/snapshot.html#screen-inscription-reussie, docs/waves/design/snapshot.html#screen-admin-inscriptions |
+| P10-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-tirage |
+| P10-draw | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-tirage |
+| P10-people | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/groups/**, internal/groupsettings/**, internal/access/**, internal/participants/**, internal/rules/**, internal/draw/**, internal/reveal/**, internal/mail/**, internal/mailunsub/**, internal/reminders/**, internal/letter/**, docs/waves/design/snapshot.html#screen-admin-menu, docs/waves/design/snapshot.html#screen-admin-participants, docs/waves/design/snapshot.html#screen-admin-tableau, docs/waves/design/snapshot.html#screen-admin-tableau-bureau, docs/waves/design/snapshot.html#screen-admin-fiche, docs/waves/design/snapshot.html#screen-admin-tirage |
+| P11c-roles | internal/shared/**, web/templates/layout/**, web/static/css/base/**, tests/e2e/_shared/**, internal/registration/**, internal/groups/**, docs/waves/design/snapshot.html#screen-inscription, docs/waves/design/snapshot.html#screen-admin-inscriptions |
 | P12b-cov | Dockerfile, docker-compose.yml, docker-compose.test.yml, scripts/e2e.sh, .env.example, VERSION, .github/workflows/**, cmd/**, internal/**, web/**, tests/e2e/_shared/**, tests/e2e/mail-sink/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md, scripts/spamcheck.sh, tests/e2e/spamassassin/** |
 | P12b-jA | Dockerfile, docker-compose.yml, docker-compose.test.yml, scripts/e2e.sh, .env.example, VERSION, .github/workflows/**, cmd/**, internal/**, web/**, tests/e2e/_shared/**, tests/e2e/mail-sink/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md, scripts/spamcheck.sh, tests/e2e/spamassassin/** |
 | P12b-jB | Dockerfile, docker-compose.yml, docker-compose.test.yml, scripts/e2e.sh, .env.example, VERSION, .github/workflows/**, cmd/**, internal/**, web/**, tests/e2e/_shared/**, tests/e2e/mail-sink/**, tests/e2e/playwright.config.ts, tests/e2e/package.json, docs/waves/design/DESIGN.md, scripts/spamcheck.sh, tests/e2e/spamassassin/** |
@@ -1417,38 +1434,39 @@ rationale: "score antispam des modèles avec spamcheck et comblement de couvertu
 | P9c-envelope | format, lint, typecheck, unit | F4b.AC1–AC16 |
 | P9c-gift | format, lint, typecheck, unit | F4b.AC1–AC16 |
 | P4b-multi | format, lint, typecheck, unit | F4b.AC1–AC16 |
-| P7-engine | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P9c-scratch | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P11-verify | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P4c-adjust | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P5b-read | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P4d-pages | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P8c-service | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P11-store | format, lint, typecheck, unit | F5b.AC1–AC7, F7.AC1–AC14 |
-| P12a-docs | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P6c-page | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P10b-consult | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P4c-repair | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P5c-mailbox | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P5c-pages | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P8c-page | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P11-roleopt | format, lint, typecheck, unit | F11.AC1–AC25, F12a.AC1–AC7, F6c.AC1–AC16 |
-| P10b-ops | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P9c-seq | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P7b-notify | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P4d-roles | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P11c-public | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P4c-roles | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P5c-roles | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P8c-multi | format, lint, typecheck, unit | F10b.AC1–AC15, F4c.AC1–AC16, F4d.AC1–AC11, F5c.AC1–AC14, F7b.AC1–AC6, F8c.AC1–AC11, F9c.AC1–AC20 |
-| P10-dash | format, lint, typecheck, unit | aucun |
-| P10-menu | format, lint, typecheck, unit | aucun |
-| P10-settings | format, lint, typecheck, unit | aucun |
-| P11c-admin | format, lint, typecheck, unit | aucun |
-| P10-roles | format, lint, typecheck, unit | aucun |
-| P10-draw | format, lint, typecheck, unit | F10.AC1–AC50, F11c.AC1–AC19 |
-| P10-people | format, lint, typecheck, unit | F10.AC1–AC50, F11c.AC1–AC19 |
-| P11c-roles | format, lint, typecheck, unit | F10.AC1–AC50, F11c.AC1–AC19 |
+| P7-engine | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P9c-scratch | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P11-verify | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P4c-adjust | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P5b-read | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P4d-pages | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P8c-service | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P11-store | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P12a-docs | format, lint, typecheck, unit | F12a.AC1–AC7, F4c.AC1–AC16, F6c.AC1–AC16, F7b.AC1–AC6, F9c.AC1–AC20 |
+| P6c-page | format, lint, typecheck, unit | F12a.AC1–AC7, F4c.AC1–AC16, F6c.AC1–AC16, F7b.AC1–AC6, F9c.AC1–AC20 |
+| P10b-consult | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P4c-repair | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P5c-mailbox | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P5c-pages | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P8c-page | format, lint, typecheck, unit | F12a.AC1–AC7, F4c.AC1–AC16, F6c.AC1–AC16, F7b.AC1–AC6, F9c.AC1–AC20 |
+| P11-roleopt | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P10b-ops | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P9c-seq | format, lint, typecheck, unit | F12a.AC1–AC7, F4c.AC1–AC16, F6c.AC1–AC16, F7b.AC1–AC6, F9c.AC1–AC20 |
+| P7b-notify | format, lint, typecheck, unit | F12a.AC1–AC7, F4c.AC1–AC16, F6c.AC1–AC16, F7b.AC1–AC6, F9c.AC1–AC20 |
+| P4d-roles | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P11c-public | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P4c-roles | format, lint, typecheck, unit | F12a.AC1–AC7, F4c.AC1–AC16, F6c.AC1–AC16, F7b.AC1–AC6, F9c.AC1–AC20 |
+| P5c-roles | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
+| P8c-multi | format, lint, typecheck, unit | F10c.AC1–AC9, F8c.AC1–AC11 |
+| P10-dash | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P10-menu | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P10-settings | format, lint, typecheck, unit | F10c.AC1–AC9, F8c.AC1–AC11 |
+| P10-adjust | format, lint, typecheck, unit | F10c.AC1–AC9, F8c.AC1–AC11 |
+| P11c-admin | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P10-roles | format, lint, typecheck, unit | F11.AC1–AC21, F5b.AC1–AC7 |
+| P10-draw | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P10-people | format, lint, typecheck, unit | F10.AC1–AC41, F11c.AC1–AC14, F11d.AC1–AC4, F4d.AC1–AC11 |
+| P11c-roles | format, lint, typecheck, unit | F10b.AC1–AC15, F11e.AC1–AC5, F5c.AC1–AC14, F7.AC1–AC14 |
 | P12b-cov | format, lint, typecheck, unit | F13b.AC1–AC3 |
 | P12b-jA | format, lint, typecheck, unit | F13b.AC1–AC3 |
 | P12b-jB | format, lint, typecheck, unit | F13b.AC1–AC3 |
@@ -1518,41 +1536,41 @@ integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l
 
 ```yaml wave
 wave: 8
-phases: [P7-engine, P9c-scratch, P11-verify, P4c-adjust, P5b-read, P4d-pages, P8c-service, P11-store]
+phases: [P11-verify, P4c-adjust, P5b-read, P4d-pages, P11-store, P10-dash, P10-menu, P10-roles]
 integration_owned: [internal/app/**, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F5b.AC1, F5b.AC2, F5b.AC3, F5b.AC4, F5b.AC5, F5b.AC6, F5b.AC7, F7.AC1, F7.AC2, F7.AC3, F7.AC4, F7.AC5, F7.AC6, F7.AC7, F7.AC8, F7.AC9, F7.AC10, F7.AC11, F7.AC12, F7.AC13, F7.AC14]
+criteria: [F11.AC1, F11.AC2, F11.AC3, F11.AC4, F11.AC5, F11.AC6, F11.AC7, F11.AC8, F11.AC9, F11.AC10, F11.AC11, F11.AC12, F11.AC13, F11.AC14, F11.AC15, F11.AC16, F11.AC17, F11.AC18, F11.AC19, F11.AC20, F11.AC21, F5b.AC1, F5b.AC2, F5b.AC3, F5b.AC4, F5b.AC5, F5b.AC6, F5b.AC7]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 9
-phases: [P12a-docs, P6c-page, P10b-consult, P4c-repair, P5c-mailbox, P5c-pages, P8c-page, P11-roleopt]
+phases: [P5c-mailbox, P5c-pages, P11-roleopt, P4d-roles, P11c-public, P11c-admin, P10-draw, P10-people]
 integration_owned: [internal/app/**, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F11.AC1, F11.AC2, F11.AC3, F11.AC4, F11.AC5, F11.AC6, F11.AC7, F11.AC8, F11.AC9, F11.AC10, F11.AC11, F11.AC12, F11.AC13, F11.AC14, F11.AC15, F11.AC16, F11.AC17, F11.AC18, F11.AC19, F11.AC20, F11.AC21, F11.AC22, F11.AC23, F11.AC24, F11.AC25, F12a.AC1, F12a.AC2, F12a.AC3, F12a.AC4, F12a.AC5, F12a.AC6, F12a.AC7, F6c.AC1, F6c.AC2, F6c.AC3, F6c.AC4, F6c.AC5, F6c.AC6, F6c.AC7, F6c.AC8, F6c.AC9, F6c.AC10, F6c.AC11, F6c.AC12, F6c.AC13, F6c.AC14, F6c.AC15, F6c.AC16]
+criteria: [F10.AC1, F10.AC2, F10.AC3, F10.AC4, F10.AC5, F10.AC6, F10.AC7, F10.AC8, F10.AC9, F10.AC10, F10.AC11, F10.AC12, F10.AC13, F10.AC14, F10.AC15, F10.AC16, F10.AC17, F10.AC18, F10.AC19, F10.AC20, F10.AC21, F10.AC22, F10.AC23, F10.AC24, F10.AC25, F10.AC26, F10.AC27, F10.AC28, F10.AC29, F10.AC30, F10.AC31, F10.AC32, F10.AC33, F10.AC34, F10.AC35, F10.AC36, F10.AC37, F10.AC38, F10.AC39, F10.AC40, F10.AC41, F11c.AC1, F11c.AC2, F11c.AC3, F11c.AC4, F11c.AC5, F11c.AC6, F11c.AC7, F11c.AC8, F11c.AC9, F11c.AC10, F11c.AC11, F11c.AC12, F11c.AC13, F11c.AC14, F11d.AC1, F11d.AC2, F11d.AC3, F11d.AC4, F4d.AC1, F4d.AC2, F4d.AC3, F4d.AC4, F4d.AC5, F4d.AC6, F4d.AC7, F4d.AC8, F4d.AC9, F4d.AC10, F4d.AC11]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 10
-phases: [P10b-ops, P9c-seq, P7b-notify, P4d-roles, P11c-public, P4c-roles, P5c-roles, P8c-multi]
+phases: [P7-engine, P9c-scratch, P8c-service, P10b-consult, P4c-repair, P10b-ops, P5c-roles, P11c-roles]
 integration_owned: [internal/app/**, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F10b.AC1, F10b.AC2, F10b.AC3, F10b.AC4, F10b.AC5, F10b.AC6, F10b.AC7, F10b.AC8, F10b.AC9, F10b.AC10, F10b.AC11, F10b.AC12, F10b.AC13, F10b.AC14, F10b.AC15, F4c.AC1, F4c.AC2, F4c.AC3, F4c.AC4, F4c.AC5, F4c.AC6, F4c.AC7, F4c.AC8, F4c.AC9, F4c.AC10, F4c.AC11, F4c.AC12, F4c.AC13, F4c.AC14, F4c.AC15, F4c.AC16, F4d.AC1, F4d.AC2, F4d.AC3, F4d.AC4, F4d.AC5, F4d.AC6, F4d.AC7, F4d.AC8, F4d.AC9, F4d.AC10, F4d.AC11, F5c.AC1, F5c.AC2, F5c.AC3, F5c.AC4, F5c.AC5, F5c.AC6, F5c.AC7, F5c.AC8, F5c.AC9, F5c.AC10, F5c.AC11, F5c.AC12, F5c.AC13, F5c.AC14, F7b.AC1, F7b.AC2, F7b.AC3, F7b.AC4, F7b.AC5, F7b.AC6, F8c.AC1, F8c.AC2, F8c.AC3, F8c.AC4, F8c.AC5, F8c.AC6, F8c.AC7, F8c.AC8, F8c.AC9, F8c.AC10, F8c.AC11, F9c.AC1, F9c.AC2, F9c.AC3, F9c.AC4, F9c.AC5, F9c.AC6, F9c.AC7, F9c.AC8, F9c.AC9, F9c.AC10, F9c.AC11, F9c.AC12, F9c.AC13, F9c.AC14, F9c.AC15, F9c.AC16, F9c.AC17, F9c.AC18, F9c.AC19, F9c.AC20]
+criteria: [F10b.AC1, F10b.AC2, F10b.AC3, F10b.AC4, F10b.AC5, F10b.AC6, F10b.AC7, F10b.AC8, F10b.AC9, F10b.AC10, F10b.AC11, F10b.AC12, F10b.AC13, F10b.AC14, F10b.AC15, F11e.AC1, F11e.AC2, F11e.AC3, F11e.AC4, F11e.AC5, F5c.AC1, F5c.AC2, F5c.AC3, F5c.AC4, F5c.AC5, F5c.AC6, F5c.AC7, F5c.AC8, F5c.AC9, F5c.AC10, F5c.AC11, F5c.AC12, F5c.AC13, F5c.AC14, F7.AC1, F7.AC2, F7.AC3, F7.AC4, F7.AC5, F7.AC6, F7.AC7, F7.AC8, F7.AC9, F7.AC10, F7.AC11, F7.AC12, F7.AC13, F7.AC14]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 11
-phases: [P10-dash, P10-menu, P10-settings, P11c-admin, P10-roles]
+phases: [P12a-docs, P6c-page, P8c-page, P9c-seq, P7b-notify, P4c-roles]
 integration_owned: [internal/app/**, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: []
+criteria: [F12a.AC1, F12a.AC2, F12a.AC3, F12a.AC4, F12a.AC5, F12a.AC6, F12a.AC7, F4c.AC1, F4c.AC2, F4c.AC3, F4c.AC4, F4c.AC5, F4c.AC6, F4c.AC7, F4c.AC8, F4c.AC9, F4c.AC10, F4c.AC11, F4c.AC12, F4c.AC13, F4c.AC14, F4c.AC15, F4c.AC16, F6c.AC1, F6c.AC2, F6c.AC3, F6c.AC4, F6c.AC5, F6c.AC6, F6c.AC7, F6c.AC8, F6c.AC9, F6c.AC10, F6c.AC11, F6c.AC12, F6c.AC13, F6c.AC14, F6c.AC15, F6c.AC16, F7b.AC1, F7b.AC2, F7b.AC3, F7b.AC4, F7b.AC5, F7b.AC6, F9c.AC1, F9c.AC2, F9c.AC3, F9c.AC4, F9c.AC5, F9c.AC6, F9c.AC7, F9c.AC8, F9c.AC9, F9c.AC10, F9c.AC11, F9c.AC12, F9c.AC13, F9c.AC14, F9c.AC15, F9c.AC16, F9c.AC17, F9c.AC18, F9c.AC19, F9c.AC20]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
 ```yaml wave
 wave: 12
-phases: [P10-draw, P10-people, P11c-roles]
+phases: [P8c-multi, P10-settings, P10-adjust]
 integration_owned: [internal/app/**, go.mod, go.sum, tests/e2e/package-lock.json, web/templates/layout/**]
-criteria: [F10.AC1, F10.AC2, F10.AC3, F10.AC4, F10.AC5, F10.AC6, F10.AC7, F10.AC8, F10.AC9, F10.AC10, F10.AC11, F10.AC12, F10.AC13, F10.AC14, F10.AC15, F10.AC16, F10.AC17, F10.AC18, F10.AC19, F10.AC20, F10.AC21, F10.AC22, F10.AC23, F10.AC24, F10.AC25, F10.AC26, F10.AC27, F10.AC28, F10.AC29, F10.AC30, F10.AC31, F10.AC32, F10.AC33, F10.AC34, F10.AC35, F10.AC36, F10.AC37, F10.AC38, F10.AC39, F10.AC40, F10.AC41, F10.AC42, F10.AC43, F10.AC44, F10.AC45, F10.AC46, F10.AC47, F10.AC48, F10.AC49, F10.AC50, F11c.AC1, F11c.AC2, F11c.AC3, F11c.AC4, F11c.AC5, F11c.AC6, F11c.AC7, F11c.AC8, F11c.AC9, F11c.AC10, F11c.AC11, F11c.AC12, F11c.AC13, F11c.AC14, F11c.AC15, F11c.AC16, F11c.AC17, F11c.AC18, F11c.AC19]
+criteria: [F10c.AC1, F10c.AC2, F10c.AC3, F10c.AC4, F10c.AC5, F10c.AC6, F10c.AC7, F10c.AC8, F10c.AC9, F8c.AC1, F8c.AC2, F8c.AC3, F8c.AC4, F8c.AC5, F8c.AC6, F8c.AC7, F8c.AC8, F8c.AC9, F8c.AC10, F8c.AC11]
 integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l .)\"", "cmd:go test ./..."]
 ```
 
@@ -1574,13 +1592,15 @@ integration_checks: ["cmd:go build ./... && go vet ./... && test -z \"$(gofmt -l
 
 ## Forme du plan
 
-92 phases en 14 vagues, au plus 8 phases par vague (vagues 2, 3, 4, 5, 6, 7, 8, 9, 10). Modèles : opus 23, sonnet 69.
+93 phases en 14 vagues, au plus 8 phases par vague (vagues 2, 3, 4, 5, 6, 7, 8, 9, 10). Modèles : opus 23, sonnet 70.
 
 Chemin critique : 14 maillons, jusqu'à la phase P12b-zza. Les services de chaque domaine sont séparés de leurs pages pour que les pages, feuilles du graphe, s'exécutent en parallèle sans allonger le chemin. Toute phase d'une spec marquée risk passe sur opus (règle du validateur).
 
 Replan additif pendant l'exécution (vague 2 en cours) : phases `P2b-store` (migrations et magasin SQL des jetons et codes d'accès, hachage à clé ; les liens magiques ont déjà les leurs) et `P11-store` (migrations et magasins SQL de l'inscription) ajoutées ; `P6-queue` et `P10-dash` possèdent désormais les migrations de `internal/mail` et `internal/admin`.
 
 Replan internationalisation (vague 2 terminée) : fonctionnalité `F13` (catalogues français et anglais par module, dossier externe `I18N_DIR` pour ajouter une langue, négociation de la langue, fonctions `t` et `tn`, sélecteur, outils `i18n export` et `i18n check`, garde-fous contre le texte brut, `APP_DEFAULT_LANG`, champ `Code` de `errs`) en quatre phases parallèles, et `F13b` (relecture des textes anglais) ; chaque phase d'interface ou de courrier possède ses catalogues `web/static/i18n/<module>/` à la place du fichier central `fr.json` ; les fonctionnalités à gabarits dépendent de `F13` ; la phase `P4-engine2` est absorbée par `P4-engine`, qui a livré les étapes F4.4 et F4.5 ; critères de pages sur la CSP stricte et `RequireUnsafeMethod`. Les vagues figées n'ont pas bougé ; seules les vagues restantes sont recalculées.
+
+Replan « parcours complet d'abord » (vague 6 en cours) : les vagues 7 à 10 livrent d'abord le parcours utilisable de bout en bout (administration, inscription par lien, tirage, espace participant, lettre et boîte aux lettres, courriels de base) ; relances, ajustement, suggestions, diagnostic de délivrabilité, outils d'exploitation et réglages suivent. Fonctionnalités scindées : F10 → F10 + F10c (réglages, relances, page Ajuster) ; F11 → F11 + F11d (option de rôle, service) ; F11c → F11c + F11e (choix de rôle volontaire et parcours complet). F10 ne dépend plus de F4c ni de F7.
 
 ## Fichiers d'intégration
 
@@ -1691,6 +1711,7 @@ P8c-multi: pending
 P10-dash: pending
 P10-menu: pending
 P10-settings: pending
+P10-adjust: pending
 P11c-admin: pending
 P10-roles: pending
 P10-draw: pending
