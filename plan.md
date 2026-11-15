@@ -1629,7 +1629,7 @@ W8: done
 W9: done
 W10: done
 W11: done
-W12: pending
+W12: running
 W13: pending
 W14: pending
 P1a: done
@@ -1707,11 +1707,11 @@ P4d-roles: done
 P11c-public: done
 P4c-roles: done
 P5c-roles: done
-P8c-multi: pending
+P8c-multi: running
 P10-dash: done
 P10-menu: done
-P10-settings: pending
-P10-adjust: pending
+P10-settings: running
+P10-adjust: running
 P11c-admin: done
 P10-roles: done
 P10-draw: done
