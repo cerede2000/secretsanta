@@ -1,0 +1,36 @@
+/* Page d'administration du tirage (screen-admin-tirage). Mobile d'abord ;
+   aucune ressource data:, aucun style en ligne. */
+.drw { display: flex; flex-direction: column; gap: 12px; }
+.drw-head { display: flex; align-items: center; gap: 8px; background: var(--green); color: #fff; margin: -20px -16px 0; padding: 14px 16px; border-radius: 0; }
+.drw-back { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-left: -10px; color: #fff; font-size: 30px; text-decoration: none; }
+.drw-title { margin: 0; font-family: var(--font-display); font-size: 24px; line-height: 1.1; }
+.drw-tabs { display: flex; gap: 6px; background: #dcebe2; border-radius: 12px; padding: 4px; }
+.drw-tab { flex: 1; display: inline-flex; align-items: center; justify-content: center; min-height: var(--target); border-radius: 10px; font-weight: 800; font-size: 15px; color: #3a4a40; text-decoration: none; }
+.drw-tab[aria-current="page"] { background: var(--green); color: #fff; }
+.drw-card { display: flex; flex-direction: column; gap: 10px; max-width: none; }
+.drw-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.drw-h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.drw-h3 { margin: 0; font-size: 16px; font-weight: 800; }
+.drw-hint { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.drw-note { margin: 0; font-size: 13px; line-height: 1.4; color: var(--ink-2); }
+.drw-alert { padding: 10px 12px; border-radius: 12px; font-size: 14px; font-weight: 700; line-height: 1.4; }
+.drw-alert-error { background: var(--danger-bg); color: var(--danger); }
+.drw-alert-ok { background: var(--ok-bg); color: var(--ok-ink); }
+.drw-form, .drw-confirm { display: flex; flex-direction: column; gap: 10px; }
+.drw-confirm { padding: 12px; border-radius: 12px; background: #f1f8f3; box-shadow: inset 0 0 0 1px var(--line); }
+.drw-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.drw-buttons .btn { flex: 1 1 140px; }
+.drw-pending { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; border: 0; }
+.drw-radio { display: flex; align-items: center; gap: 10px; min-height: var(--target); font-weight: 700; }
+.drw-radio input { width: 24px; height: 24px; flex: none; }
+.drw-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.drw-rule, .drw-row { border-top: 1px solid #dcebe2; }
+.drw-rule:first-child, .drw-row:first-child { border-top: 0; }
+.drw-rule { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; padding: 6px 0; font-size: 14px; }
+.drw-details { padding: 4px 0; }
+.drw-summary { display: flex; align-items: center; gap: 8px; min-height: var(--target); cursor: pointer; }
+.drw-counts { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; margin: 0; }
+.drw-counts dt { color: var(--ink-2); }
+.drw-counts dd { margin: 0; font-weight: 800; text-align: right; }
+.drw a:focus-visible, .drw button:focus-visible, .drw input:focus-visible, .drw summary:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+@media (min-width: 1024px) { .drw { max-width: 720px; } }

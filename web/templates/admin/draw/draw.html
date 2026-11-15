@@ -1,0 +1,113 @@
+{{/*
+  Page d'administration du tirage (screen-admin-tirage), onglets Tirage |
+  Ajuster | Historique. Aucune paire : seulement des faits et des comptes.
+  Données : .Slug, .Tab, .Done, .Report, .Cap, .Pending, .Confirm, .History.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/draw/draw.css">
+<div class="drw">
+<div class="drw-head"><a class="drw-back" href="/{{.Slug}}/admin" aria-label="{{t "admin.draw.back"}}">&lsaquo;</a><h1 class="drw-title">{{t "admin.draw.heading"}}</h1></div>
+<nav class="drw-tabs" aria-label="{{t "admin.draw.tabs.label"}}">
+<a class="drw-tab"{{if eq .Tab "tirage"}} aria-current="page"{{end}} href="/{{.Slug}}/admin/tirage">{{t "admin.draw.tabs.draw"}}</a>
+<a class="drw-tab"{{if eq .Tab "ajuster"}} aria-current="page"{{end}} href="/{{.Slug}}/admin/tirage?onglet=ajuster">{{t "admin.draw.tabs.adjust"}}</a>
+<a class="drw-tab"{{if eq .Tab "historique"}} aria-current="page"{{end}} href="/{{.Slug}}/admin/tirage?onglet=historique">{{t "admin.draw.tabs.history"}}</a>
+</nav>
+{{if .ErrorKey}}<div class="drw-alert drw-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+{{if .NoticeKey}}<div class="drw-alert drw-alert-ok" role="status">{{t .NoticeKey}}</div>{{end}}
+{{if eq .Tab "ajuster"}}
+<section class="card-admin drw-card" aria-labelledby="drw-adj">
+<h2 id="drw-adj" class="drw-h2">{{t "admin.draw.adjust.title"}}</h2>
+{{if .Done}}<p class="drw-hint">{{t "admin.draw.adjust.intro"}}</p>
+<a class="btn btn-green" href="{{.AdjustHref}}">{{t "admin.draw.adjust.open"}}</a>
+{{else}}<p class="drw-hint">{{t "admin.draw.adjust.not_done"}}</p>{{end}}
+</section>
+{{else if eq .Tab "historique"}}
+<section class="card-admin drw-card" aria-labelledby="drw-hist">
+<h2 id="drw-hist" class="drw-h2">{{t "admin.draw.history.title"}}</h2>
+{{if .History}}<ul class="drw-list">
+{{range .History}}<li class="drw-row"><details class="drw-details"><summary class="drw-summary"><b>{{.Year}}</b>{{if .Current}} <span class="chip chip-ok">{{t "admin.draw.history.current"}}</span>{{end}}</summary>
+<dl class="drw-counts"><dt>{{t .KindKey}}</dt><dd>{{.DrawnAt}}</dd><dt>{{t "admin.draw.history.participants"}}</dt><dd>{{.Count}}</dd><dt>{{t "admin.draw.history.revision"}}</dt><dd>{{.Revisions}}</dd></dl></details></li>
+{{end}}</ul>{{else}}<p class="drw-hint">{{t "admin.draw.history.empty"}}</p>{{end}}
+<p class="drw-note">{{t "admin.draw.history.private"}}</p>
+</section>
+{{else}}
+<section class="card-admin drw-card" aria-labelledby="drw-state">
+<div class="drw-card-head"><h2 id="drw-state" class="drw-h2">{{t "admin.draw.state.title"}}</h2>
+{{if .Done}}<span class="chip chip-ok">{{t "admin.draw.state.done"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.draw.state.todo"}}</span>{{end}}</div>
+{{if .Done}}<p class="drw-hint">{{t "admin.draw.state.saved" "date" .DrawnAt}} {{t "admin.draw.state.secret"}}</p>{{else}}<p class="drw-hint">{{t "admin.draw.state.not_yet"}}</p>{{end}}
+{{if .DateLocked}}<p class="drw-hint">{{if .RevealShown}}{{t "admin.draw.date.locked" "date" .RevealShown}}{{else}}{{t "admin.draw.date.locked_open"}}{{end}}</p>
+{{else}}<form class="drw-form" method="post" action="/{{.Slug}}/admin/tirage/date">{{csrfField}}
+<label class="field-label" for="drw-date">{{t "admin.draw.date.label"}}</label>
+<input id="drw-date" class="field" type="datetime-local" name="date" value="{{.RevealValue}}">
+<p class="drw-hint">{{t "admin.draw.date.help"}}</p>
+<button class="btn btn-ghost" type="submit">{{t "admin.draw.date.save"}}</button></form>{{end}}
+</section>
+
+<section class="card-admin drw-card" aria-labelledby="drw-report">
+<div class="drw-card-head"><h2 id="drw-report" class="drw-h2">{{t "admin.draw.report.title"}}</h2>
+{{if .Cap.Short}}<span class="chip chip-error">{{t "admin.draw.capacity.short"}}</span>{{else if and .Done .Report}}{{if .Report.Green}}<span class="chip chip-ok">{{t "admin.draw.report.green"}}</span>{{else}}<span class="chip chip-error">{{t "admin.draw.report.red"}}</span>{{end}}{{else}}<span class="chip chip-ok">{{t "admin.draw.capacity.enough"}}</span>{{end}}</div>
+{{if .Report}}<ul class="drw-list">
+{{if .Done}}<li class="drw-rule"><span>{{t "admin.draw.report.each_receives"}}</span>{{if .Report.EachReceivesExactlyOne}}<span class="chip chip-ok">{{t "admin.draw.report.ok"}}</span>{{else}}<span class="chip chip-error">{{t "admin.draw.report.ko"}}</span>{{end}}</li>
+<li class="drw-rule"><span>{{t "admin.draw.report.spread" "one" .Report.GiversOneGift "two" .Report.GiversTwoGifts "more" .Report.GiversMoreGifts}}</span></li>{{end}}
+<li class="drw-rule"><span>{{t "admin.draw.report.counts" "receivers" .Report.Beneficiaries "cap" .Report.Capacity.Cap}}</span></li>
+</ul>{{end}}
+<a class="btn btn-ghost" href="{{.CheckHref}}">{{t "admin.draw.report.full"}}</a>
+<p class="drw-note">{{t "admin.draw.report.no_names"}}</p>
+</section>
+
+{{if .Cap.Short}}<section class="card-admin drw-card" role="alert" aria-labelledby="drw-cap">
+<div class="drw-card-head"><h2 id="drw-cap" class="drw-h2">{{t "admin.draw.capacity.title"}}</h2><span class="chip chip-error">{{t "admin.draw.capacity.short"}}</span></div>
+<p>{{if eq .Cap.Cause "too_many_one_gift"}}{{tn "admin.draw.capacity.explain.too_many_one_gift" .Cap.Missing}}{{else if eq .Cap.Cause "cap_too_low"}}{{tn "admin.draw.capacity.explain.cap_too_low" .Cap.Missing}}{{else if eq .Cap.Cause "too_few_givers"}}{{t "admin.draw.capacity.explain.too_few_givers"}}{{else}}{{t "admin.draw.capacity.explain.generic"}}{{end}}</p>
+<p class="drw-hint">{{if eq .Cap.Cause "too_many_one_gift"}}{{t "admin.draw.capacity.propose.too_many_one_gift"}}{{else if eq .Cap.Cause "cap_too_low"}}{{t "admin.draw.capacity.propose.cap_too_low"}}{{else if eq .Cap.Cause "too_few_givers"}}{{t "admin.draw.capacity.propose.too_few_givers"}}{{else}}{{t "admin.draw.capacity.propose.generic"}}{{end}}</p>
+<a class="btn btn-ghost" href="{{.RolesHref}}">{{t "admin.draw.roles.open"}}</a>
+</section>{{end}}
+
+{{if .Report}}<section class="card-admin drw-card" aria-labelledby="drw-roles">
+<div class="drw-card-head"><h2 id="drw-roles" class="drw-h2">{{t "admin.draw.roles.title"}}</h2>{{if .Cap.Short}}<span class="chip chip-error">{{t "admin.draw.capacity.short"}}</span>{{else}}<span class="chip chip-ok">{{t "admin.draw.capacity.enough"}}</span>{{end}}</div>
+<p><b>{{t "admin.draw.roles.summary" "receivers" .Report.Beneficiaries "extra" .Report.Capacity.ExtraGiftsNeeded}}</b></p>
+<dl class="drw-counts">
+<dt>{{t "admin.draw.roles.normal"}}</dt><dd>{{.Report.Roles.Normal}}</dd>
+<dt>{{t "admin.draw.roles.offre_plus"}}</dt><dd>{{.Report.Roles.OffrePlus}}</dd>
+<dt>{{t "admin.draw.roles.un_seul"}}</dt><dd>{{.Report.Roles.UnSeul}}</dd>
+<dt>{{t "admin.draw.roles.reception_seule"}}</dt><dd>{{.Report.Roles.ReceptionSeule}}</dd>
+<dt>{{t "admin.draw.roles.extra_needed"}}</dt><dd>{{.Report.Capacity.ExtraGiftsNeeded}}</dd>
+<dt>{{t "admin.draw.roles.offre_plus_capacity"}}</dt><dd>{{.Report.Capacity.OffrePlusCapacity}}</dd>
+<dt>{{t "admin.draw.roles.total_capacity"}}</dt><dd>{{.Report.Capacity.TotalCapacity}}</dd>
+</dl>
+<p class="drw-hint">{{t "admin.draw.roles.help"}}</p>
+<a class="btn btn-green" href="{{.RolesHref}}">{{t "admin.draw.roles.open"}}</a>
+</section>{{end}}
+
+<section class="card-admin drw-card" aria-labelledby="drw-actions">
+<h2 id="drw-actions" class="drw-h2">{{t "admin.draw.actions.title"}}</h2>
+{{if eq .Confirm "ouvrir"}}
+<form class="drw-confirm" method="post" action="/{{.Slug}}/admin/tirage/ouvrir" role="group" aria-labelledby="drw-open-q">{{csrfField}}
+<input type="hidden" name="confirm" value="1">
+<h3 id="drw-open-q" class="drw-h3">{{t "admin.draw.open.question"}}</h3>
+<p class="drw-hint">{{tn "admin.draw.open.body" .Targets}}</p>
+<div class="drw-buttons"><a class="btn btn-ghost" href="/{{.Slug}}/admin/tirage">{{t "admin.draw.cancel"}}</a><button class="btn btn-green" type="submit">{{t "admin.draw.open.confirm"}}</button></div>
+</form>
+{{else if eq .Confirm "lancer"}}
+<form class="drw-confirm" method="post" action="/{{.Slug}}/admin/tirage/lancer" role="group" aria-labelledby="drw-launch-q">{{csrfField}}
+<input type="hidden" name="confirm" value="1">
+<h3 id="drw-launch-q" class="drw-h3">{{if .Done}}{{t "admin.draw.launch.redo_question"}}{{else}}{{t "admin.draw.launch.question"}}{{end}}</h3>
+<p class="drw-hint">{{if .Done}}{{t "admin.draw.launch.redo_body"}}{{else}}{{t "admin.draw.launch.body"}}{{end}}</p>
+{{if .Pending}}<fieldset class="drw-pending"><legend class="field-label">{{tn "admin.draw.pending.title" .Pending}}</legend>
+<p class="drw-hint">{{t "admin.draw.pending.help"}}</p>
+<label class="drw-radio"><input type="radio" name="pending" value="{{.IgnoreValue}}" required> <span>{{t "admin.draw.pending.ignore"}}</span></label>
+<label class="drw-radio"><input type="radio" name="pending" value="{{.DeleteValue}}" required> <span>{{t "admin.draw.pending.delete"}}</span></label>
+</fieldset>{{end}}
+{{if .Cap.NeedCapConfirm}}<label class="drw-radio"><input type="checkbox" name="cap_confirmed" value="1" required> <span>{{t "admin.draw.launch.cap_confirm" "cap" .Report.Capacity.Cap}}</span></label>{{end}}
+<div class="drw-buttons"><a class="btn btn-ghost" href="/{{.Slug}}/admin/tirage">{{t "admin.draw.cancel"}}</a><button class="btn btn-danger" type="submit">{{if .Done}}{{t "admin.draw.launch.redo_confirm"}}{{else}}{{t "admin.draw.launch.confirm"}}{{end}}</button></div>
+</form>
+{{else}}
+{{if .Pending}}<p class="drw-hint" role="status">{{tn "admin.draw.pending.notice" .Pending}}</p>{{end}}
+{{if .Cap.Short}}<p class="drw-hint">{{t "admin.draw.launch.blocked"}}</p>{{end}}
+<div class="drw-buttons">
+{{if .CanLaunch}}<a class="btn {{if .Done}}btn-ghost{{else}}btn-red{{end}}" href="/{{.Slug}}/admin/tirage?confirmer=lancer">{{if .Done}}{{t "admin.draw.launch.redo"}}{{else}}{{t "admin.draw.launch.start"}}{{end}}</a>{{end}}
+{{if and .Done (not .Open)}}<a class="btn btn-green" href="/{{.Slug}}/admin/tirage?confirmer=ouvrir">{{t "admin.draw.open.start"}}</a>{{end}}
+{{if .Done}}<a class="btn btn-ghost" href="{{.AdjustHref}}">{{t "admin.draw.adjust.open"}}</a>{{end}}
+</div>
+{{end}}
+</section>
+{{end}}
+</div>{{end}}
