@@ -1,0 +1,24 @@
+{{/* Relance manuelle (F10c) : personnes cochées, type de relance, résultat par personne. */}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/settings/settings.css">
+<div class="stg">
+<div class="stg-head"><a class="stg-back" href="{{.BackHref}}" aria-label="{{t "admin.settings.back"}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><h1 class="stg-title">{{t "admin.settings.remind.heading"}}</h1></div>
+<div class="stg-body">
+{{if .GlobalErr}}<div class="stg-alert stg-alert-error" role="alert">{{t .GlobalErr}}</div>{{end}}
+{{if .Done}}<section class="card-admin stg-card" aria-labelledby="stg-res"><h2 class="stg-h2" id="stg-res">{{t "admin.settings.remind.result"}}</h2>
+<ul class="stg-list">{{range .Counts}}<li>{{tn .KeyOut .N}}</li>{{end}}</ul>
+{{if .Results}}<ul class="stg-list">{{range .Results}}<li><b>{{.Name}}</b> : {{t .KeyOut}}</li>{{end}}</ul>{{end}}</section>{{end}}
+{{if .RemindAct}}<form class="card-admin stg-card stg-form" method="post" action="{{.RemindAct}}">{{csrfField}}
+<p class="stg-hint">{{t "admin.settings.remind.intro"}}</p>
+<div class="stg-fld"><label class="field-label" for="stg-kind">{{t "admin.settings.remind.kind"}}</label>
+<select class="field" id="stg-kind" name="type">
+<option value="lien"{{if eq .Kind "lien"}} selected{{end}}>{{t "admin.settings.remind.kind_link"}}</option>
+<option value="lettre"{{if eq .Kind "lettre"}} selected{{end}}>{{t "admin.settings.remind.kind_letter"}}</option>
+<option value="lecture"{{if eq .Kind "lecture"}} selected{{end}}>{{t "admin.settings.remind.kind_read"}}</option></select></div>
+<fieldset class="stg-people"><legend class="field-label">{{t "admin.settings.remind.people"}}</legend>
+{{range .People}}<label class="stg-check"><input type="checkbox" name="person" value="{{.ID}}"{{if .Checked}} checked{{end}}><span>{{.Name}}{{if not .HasMail}} <span class="chip chip-warn">{{t "admin.settings.remind.no_mail"}}</span>{{end}}</span></label>
+{{end}}</fieldset>
+<p class="stg-hint">{{t "admin.settings.remind.rules"}}</p>
+<button class="btn btn-red stg-wide" type="submit">{{t "admin.settings.remind.send"}}</button>
+</form>{{end}}
+</div>
+</div>{{end}}
