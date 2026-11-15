@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"secretsanta/internal/participants"
 	"secretsanta/internal/registration/code"
 	"secretsanta/internal/registration/invite"
 
@@ -21,7 +22,7 @@ import (
 // ---------------------------------------------------------------------------
 
 func sameInvitation(a, b invite.Invitation) bool {
-	if a.GroupID != b.GroupID || a.Enabled != b.Enabled || a.Capacity != b.Capacity ||
+	if a.GroupID != b.GroupID || a.Enabled != b.Enabled || a.Capacity != b.Capacity || a.RoleChoice != b.RoleChoice ||
 		!reflect.DeepEqual(a.TokenHash, b.TokenHash) || !a.UpdatedAt.Equal(b.UpdatedAt) {
 		return false
 	}
@@ -71,8 +72,9 @@ func TestInviteStoreMatchesMemoryStoreProperty(t *testing.T) {
 			case 0: // enregistrer l'invitation (activation, renouvellement, réglages)
 				inv := invite.Invitation{
 					GroupID: g, Enabled: rapid.Bool().Draw(rt, "enabled"),
-					Capacity:  rapid.IntRange(0, 50).Draw(rt, "capacity"),
-					UpdatedAt: now,
+					Capacity:   rapid.IntRange(0, 50).Draw(rt, "capacity"),
+					RoleChoice: rapid.Bool().Draw(rt, "roleChoice"),
+					UpdatedAt:  now,
 				}
 				if rapid.Bool().Draw(rt, "hash") {
 					inv.TokenHash = rawHash(rapid.SampledFrom([]string{"t1", "t2", "t3"}).Draw(rt, "token"))
@@ -104,7 +106,9 @@ func TestInviteStoreMatchesMemoryStoreProperty(t *testing.T) {
 					NameKey: nameKey, Email: email, EmailKey: email,
 					SharedAddress: rapid.Bool().Draw(rt, "shared"),
 					Lang:          rapid.SampledFrom([]string{"", "fr", "en"}).Draw(rt, "lang"),
-					CreatedAt:     now, ExpiresAt: now.Add(invite.PendingTTL),
+					Role: rapid.SampledFrom([]participants.DrawRole{participants.RoleNormal,
+						participants.RoleReceptionSeule, participants.RoleOffrePlus}).Draw(rt, "role"),
+					CreatedAt: now, ExpiresAt: now.Add(invite.PendingTTL),
 				}
 				sp, err := st.AddPending(ctx, p)
 				if err != nil {

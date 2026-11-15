@@ -18,6 +18,7 @@ import (
 	"errors"
 	"time"
 
+	"secretsanta/internal/participants"
 	"secretsanta/internal/registration/code"
 	"secretsanta/internal/registration/invite"
 	"secretsanta/internal/shared/errs"
@@ -54,11 +55,13 @@ func (s *InviteStore) Invitation(ctx context.Context, groupID int64) (invite.Inv
 		hash     []byte
 		closesAt sql.NullInt64
 		updated  int64
+		// roleChoice est l'option « choix du rôle » (F11d).
+		roleChoice int
 	)
 	err := s.db.QueryRowContext(ctx,
-		`SELECT enabled, token_hash, capacity, closes_at, updated_at
+		`SELECT enabled, token_hash, capacity, closes_at, role_choice, updated_at
 		 FROM registration_invitations WHERE group_id = ?`, groupID).
-		Scan(&enabled, &hash, &inv.Capacity, &closesAt, &updated)
+		Scan(&enabled, &hash, &inv.Capacity, &closesAt, &roleChoice, &updated)
 	if errors.Is(err, sql.ErrNoRows) {
 		return inv, nil
 	}
@@ -66,6 +69,7 @@ func (s *InviteStore) Invitation(ctx context.Context, groupID int64) (invite.Inv
 		return invite.Invitation{}, errs.Internal(err)
 	}
 	inv.Enabled = enabled == 1
+	inv.RoleChoice = roleChoice == 1
 	if len(hash) > 0 {
 		inv.TokenHash = append([]byte(nil), hash...)
 	}
@@ -93,30 +97,35 @@ func (s *InviteStore) SaveInvitation(ctx context.Context, inv invite.Invitation)
 		closesAt = toNanos(*inv.ClosesAt)
 	}
 	_, err := s.db.ExecContext(ctx,
-		`INSERT INTO registration_invitations (group_id, enabled, token_hash, capacity, closes_at, updated_at)
-		 VALUES (?, ?, ?, ?, ?, ?)
+		`INSERT INTO registration_invitations (group_id, enabled, token_hash, capacity, closes_at, role_choice, updated_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?)
 		 ON CONFLICT (group_id) DO UPDATE SET
 			enabled = excluded.enabled, token_hash = excluded.token_hash,
 			capacity = excluded.capacity, closes_at = excluded.closes_at,
-			updated_at = excluded.updated_at`,
-		inv.GroupID, boolInt(inv.Enabled), hash, inv.Capacity, closesAt, toNanos(inv.UpdatedAt))
+			role_choice = excluded.role_choice, updated_at = excluded.updated_at`,
+		inv.GroupID, boolInt(inv.Enabled), hash, inv.Capacity, closesAt, boolInt(inv.RoleChoice), toNanos(inv.UpdatedAt))
 	if err != nil {
 		return errs.Internal(err)
 	}
 	return nil
 }
 
-// AddPending implémente invite.Store et renvoie la copie avec son ID.
+// AddPending implémente invite.Store et renvoie la copie avec son ID. Un rôle
+// vide est enregistré comme normal (le rôle relu est alors normal) ; un rôle
+// hors normal, reception_seule et offre_plus est refusé par la base.
 func (s *InviteStore) AddPending(ctx context.Context, p invite.Pending) (invite.Pending, error) {
 	if p.GroupID == 0 {
 		return invite.Pending{}, errs.Internal(nil)
 	}
+	if p.Role == "" {
+		p.Role = participants.RoleNormal
+	}
 	res, err := s.db.ExecContext(ctx,
 		`INSERT INTO registration_pending
-			(group_id, ref, first_name, name, name_key, email, email_key, shared_address, lang, created_at, expires_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+			(group_id, ref, first_name, name, name_key, email, email_key, shared_address, lang, role, created_at, expires_at)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		p.GroupID, p.Ref, p.FirstName, p.Name, p.NameKey, p.Email, p.EmailKey,
-		boolInt(p.SharedAddress), p.Lang, toNanos(p.CreatedAt), toNanos(p.ExpiresAt))
+		boolInt(p.SharedAddress), p.Lang, string(p.Role), toNanos(p.CreatedAt), toNanos(p.ExpiresAt))
 	if err != nil {
 		return invite.Pending{}, errs.Internal(err)
 	}
@@ -144,7 +153,7 @@ func (s *InviteStore) DeletePending(ctx context.Context, groupID, id int64) erro
 // comme invite.MemoryStore.
 func (s *InviteStore) ListPending(ctx context.Context, groupID int64, now time.Time) ([]invite.Pending, error) {
 	rows, err := s.db.QueryContext(ctx,
-		`SELECT id, group_id, ref, first_name, name, name_key, email, email_key, shared_address, lang, created_at, expires_at
+		`SELECT id, group_id, ref, first_name, name, name_key, email, email_key, shared_address, lang, role, created_at, expires_at
 		 FROM registration_pending WHERE group_id = ? AND expires_at > ? ORDER BY id`,
 		groupID, cutoff(now))
 	if err != nil {
@@ -156,13 +165,15 @@ func (s *InviteStore) ListPending(ctx context.Context, groupID int64, now time.T
 		var (
 			p                invite.Pending
 			shared           int
+			role             string
 			created, expires int64
 		)
 		if err := rows.Scan(&p.ID, &p.GroupID, &p.Ref, &p.FirstName, &p.Name, &p.NameKey,
-			&p.Email, &p.EmailKey, &shared, &p.Lang, &created, &expires); err != nil {
+			&p.Email, &p.EmailKey, &shared, &p.Lang, &role, &created, &expires); err != nil {
 			return nil, errs.Internal(err)
 		}
 		p.SharedAddress = shared == 1
+		p.Role = participants.DrawRole(role)
 		p.CreatedAt = fromNanos(created)
 		p.ExpiresAt = fromNanos(expires)
 		out = append(out, p)

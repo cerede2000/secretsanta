@@ -15,6 +15,8 @@
   "registration.email_required": "L'adresse mail est obligatoire.",
   "registration.email_too_long": "L'adresse mail ne doit pas dépasser 254 caractères.",
   "registration.email_invalid": "L'adresse mail n'est pas valide.",
+  "registration.role_invalid": "Ce choix de rôle n'est pas proposé : choisis offrir et recevoir, seulement recevoir ou offrir plus.",
+  "registration.role_exclusive": "Choisis seulement recevoir ou offrir plus, pas les deux.",
   "registration.renew_disabled": "Active d'abord l'inscription par lien.",
   "registration.capacity_invalid": "Le nombre de places doit être compris entre 1 et 1000.",
   "registration.pending_not_found": "Cette inscription n'existe pas ou a expiré.",

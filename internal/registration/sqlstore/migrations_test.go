@@ -46,9 +46,9 @@ func TestMigrationsAreEmbeddedAndOrdered(t *testing.T) {
 func TestMigrationsCreateRegistrationTables(t *testing.T) {
 	d := openMigrated(t, t.TempDir())
 	want := map[string][]string{
-		"registration_invitations": {"group_id", "enabled", "token_hash", "capacity", "closes_at", "updated_at"},
+		"registration_invitations": {"group_id", "enabled", "token_hash", "capacity", "closes_at", "updated_at", "role_choice"},
 		"registration_pending": {"id", "group_id", "ref", "first_name", "name", "name_key", "email", "email_key",
-			"shared_address", "lang", "created_at", "expires_at"},
+			"shared_address", "lang", "created_at", "expires_at", "role"},
 		"registration_codes": {"group_id", "registration_id", "code_hash", "token_hash", "issued_at", "expires_at",
 			"attempts", "consumed"},
 	}
