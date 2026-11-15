@@ -127,6 +127,10 @@ export async function loginAdmin(page: Page, group: Group): Promise<void> {
 
 /** Connecte la page en participant par son lien personnel (« Ouvrir mon espace »). */
 export async function loginPerson(page: Page, p: Person): Promise<void> {
+  // Le limiteur de codes (10 essais par quart d'heure, par IP et par groupe)
+  // compte chaque ouverture de lien : sans adresse propre à chaque contexte,
+  // les specs d'un même groupe l'épuisent en suite complète.
+  await asNewVisitor(page.context());
   await page.goto(p.personalPath);
   await page.locator('.access-submit').click();
   await page.waitForURL((u) => !u.pathname.includes('/acces/'));
