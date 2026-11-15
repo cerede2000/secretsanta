@@ -1,0 +1,26 @@
+/* Style cadeau enveloppé (screen-revelation). Animations : transform et
+   opacité seulement. Aucun style en ligne, aucune ressource data:. */
+.gift { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 100%; }
+.gift-art { display: block; padding: 0; border: 0; border-radius: 24px; background: transparent; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.gift-art:focus-visible { outline: 3px solid var(--gold); outline-offset: 6px; }
+.gift-svg { display: block; max-width: 100%; height: auto; overflow: visible; }
+.gift-lid, .gift-ribbon, .gift-halo { transform-box: fill-box; transform-origin: center; will-change: transform, opacity; }
+.gift-lid { transition: transform .6s ease; }
+.gift-ribbon { transition: transform .6s ease, opacity .6s ease; }
+.gift-halo { opacity: 0; transition: opacity .6s ease; }
+
+/* Appui long : le ruban se dénoue en 1,5 s, se renoue doucement au relâchement. */
+.gift.is-holding .gift-ribbon { transform: translateY(-6px) rotate(-10deg) scale(.94); opacity: .85; transition: transform 1.5s linear, opacity 1.5s linear; }
+.gift.is-holding .gift-lid { transform: rotate(-3deg); transition: transform 1.5s linear; }
+.gift.is-holding .gift-halo { opacity: .8; transition: opacity 1.5s linear; }
+.gift.is-open .gift-ribbon { transform: translateY(-34px) rotate(-24deg) scale(.9); opacity: 0; transition: transform .5s ease, opacity .5s ease; }
+.gift.is-open .gift-lid { transform: translate(-8px, -26px) rotate(-16deg); transition: transform .5s ease; }
+.gift.is-open .gift-halo { opacity: 1; transition: opacity .5s ease; }
+
+.gift-hint { margin: 0; font-size: 14px; font-weight: 700; color: var(--night-muted); }
+.gift-note { margin: 0; max-width: 300px; font-size: 13px; line-height: 1.45; color: var(--night-muted); }
+.gift .reveal-open { width: 100%; max-width: 300px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gift-lid, .gift-ribbon, .gift-halo { transition: none; }
+}
