@@ -1,0 +1,92 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+  packages: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: gofmt
+        run: test -z "$(gofmt -l .)"
+      - name: go vet
+        run: go vet ./...
+      - name: go test
+        run: go test ./...
+      - name: build statique sans CGO
+        run: CGO_ENABLED=0 go build -o /dev/null ./cmd/secretsanta
+      - name: govulncheck
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          govulncheck ./...
+
+  publish:
+    needs: checks
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/cerede2000/secretsanta
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: calcul de la version
+        id: version
+        run: |
+          git fetch --tags --force
+          version="$(git tag --list 'v*' | go run ./cmd/ci/version VERSION)"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: publication de l'image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.version.outputs.version }}
+            ${{ env.IMAGE }}:latest
+      - name: tag Git
+        run: |
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin "v${{ steps.version.outputs.version }}"
+      - name: retention (4 dernieres versions)
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER}"
+          pkg="secretsanta"
+          versions="$(gh api --paginate "/users/${owner}/packages/container/${pkg}/versions?per_page=100" \
+            | jq -s '[.[][] | {id: .id, tags: (.metadata.container.tags // [])}]')"
+          git fetch --tags --force
+          tags="$(git tag --list 'v*' | jq -R . | jq -s .)"
+          plan="$(jq -n --argjson v "${versions}" --argjson t "${tags}" \
+            '{package_versions: $v, git_tags: $t}' | go run ./cmd/ci/retention)"
+          for id in $(echo "${plan}" | jq -r '.delete_package_version_ids[]'); do
+            gh api -X DELETE "/users/${owner}/packages/container/${pkg}/versions/${id}"
+          done
+          for tag in $(echo "${plan}" | jq -r '.delete_git_tags[]'); do
+            gh release delete "${tag}" --yes --cleanup-tag 2>/dev/null \
+              || git push origin ":refs/tags/${tag}"
+          done
