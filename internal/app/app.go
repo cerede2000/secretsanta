@@ -135,7 +135,8 @@ type App struct {
 	// plafonds, formulaire) ; RegCodes les codes de vérification ; Verify la
 	// vérification réussie, qui crée le participant et tient le port
 	// RegistrationState du tirage (compteur réel des inscriptions en attente).
-	// Les pages du formulaire sont minimales, F11c les remplacera.
+	// Ses pages sont celles de registrationpages/public ; l'administration des
+	// inscriptions est celle de registrationpages/admin.
 	Invite   *invite.Service
 	RegCodes *code.Service
 	Verify   *verify.Service
@@ -146,7 +147,7 @@ type App struct {
 	LetterRead *letterread.Service
 	TargetPage *targetpage.Pages
 	// AdminNav est le registre de navigation d'administration (Tableau,
-	// Participants, Tirage, Plus) : F11c y déclarera « Inscriptions ». Audit
+	// Participants, Tirage, Inscriptions, Plus). Audit
 	// tient le journal des actions sensibles, Dashboard le tableau de bord.
 	AdminNav  *adminnav.Registry
 	Audit     *audit.Service

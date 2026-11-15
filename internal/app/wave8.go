@@ -11,6 +11,7 @@ import (
 	"secretsanta/internal/admin/menu"
 	"secretsanta/internal/admin/roles"
 	"secretsanta/internal/letterread"
+	regadmin "secretsanta/internal/registrationpages/admin"
 	"secretsanta/internal/shared/adminnav"
 	"secretsanta/internal/targetpage"
 )
@@ -85,12 +86,13 @@ func auditAction(action string) string { return strings.ReplaceAll(action, ".", 
 // la session administrateur de SON groupe (redirection vers la connexion
 // sinon, jamais d'accès croisé) et analyse ses propres gabarits : chacune
 // définit son bloc layout/content, un jeu cloné par page. Le registre de
-// navigation est celui de F1b : Tableau, Participants, Tirage et Plus sont
-// déclarés ici, « Inscriptions » le sera par F11c.
+// navigation est celui de F1b : Tableau, Participants, Tirage, Inscriptions et
+// Plus sont tous déclarés ici (cinq entrées dans la barre du bas).
 func registerAdminPages(a *App) error {
 	a.AdminNav = adminnav.New()
 	menu.DeclareNav(a.AdminNav)
 	menu.DeclareParticipants(a.AdminNav)
+	regadmin.DeclareNav(a.AdminNav)
 	a.Audit = audit.New(a.DB, a.Clock)
 
 	menuSet, err := newTemplateSet(a.Cat, "admin/menu")

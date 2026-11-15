@@ -86,5 +86,16 @@
   "admin.dashboard.journal.empty": "Aucune action consignée pour le moment.",
   "admin.dashboard.action.lien_remis": "Lien remis en main propre",
   "admin.dashboard.action.roles_changement": "Rôles modifiés",
+  "admin.dashboard.action.tirage_lance": "Tirage lancé",
+  "admin.dashboard.action.tirage_refait": "Tirage refait",
+  "admin.dashboard.action.revelation_ouverte": "Révélation ouverte",
+  "admin.dashboard.action.date_revelation": "Date de révélation modifiée",
+  "admin.dashboard.action.lien_renvoye": "Lien personnel renvoyé",
+  "admin.dashboard.action.adresse_corrigee": "Adresse corrigée",
+  "admin.dashboard.action.lien_regenere": "Lien personnel régénéré",
+  "admin.dashboard.action.personne_ajoutee": "Personne ajoutée",
+  "admin.dashboard.action.personne_modifiee": "Personne modifiée",
+  "admin.dashboard.action.personne_supprimee": "Personne supprimée",
+  "admin.dashboard.action.regle_modifiee": "Règle modifiée",
   "admin.dashboard.action.unknown": "Action sensible"
 }

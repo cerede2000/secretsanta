@@ -300,7 +300,10 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request, inv *invite.Invit
 		Email:         r.PostFormValue(invite.FieldEmail),
 		Honeypot:      r.PostFormValue(invite.FieldHoneypot),
 		ConfirmShared: r.PostFormValue(invite.FieldConfirmShared) == "1",
-		IP:            p.o.ClientIP(r),
+		// Rôle choisi (F11d) : toutes les valeurs reçues ; le service les
+		// ignore tant que l'option « choix du rôle » est désactivée.
+		Roles: r.PostForm[invite.FieldRole],
+		IP:    p.o.ClientIP(r),
 		// La langue choisie (sélecteur de F13) devient la locale du
 		// participant ; le service écarte une valeur invalide.
 		Lang: negotiate.Lang(r.Context(), ""),

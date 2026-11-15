@@ -4,36 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"html/template"
 	"log/slog"
 	"net/http"
-	"strings"
+	"strconv"
 	"time"
 
-	"secretsanta/internal/access/limiter"
-	"secretsanta/internal/access/magic"
-	"secretsanta/internal/groups"
-	"secretsanta/internal/i18n/negotiate"
-	i18nweb "secretsanta/internal/i18n/web"
 	"secretsanta/internal/mail/queue"
 	"secretsanta/internal/registration/code"
 	"secretsanta/internal/registration/invite"
 	"secretsanta/internal/registration/sqlstore"
 	"secretsanta/internal/registration/verify"
-	"secretsanta/internal/shared/errs"
+	regpublic "secretsanta/internal/registrationpages/public"
 	"secretsanta/internal/websec"
-	"secretsanta/web"
-)
-
-// Chemins de l'inscription par lien (sous l'adresse du groupe). Le formulaire
-// vit sous magic.PatternJoin et magic.PatternJoinBare.
-const (
-	registrationConfirmPath = "/{slug}/inscription/confirmer/{token}"
-	// registrationCodePath reçoit la saisie du code (page minimale, en
-	// attendant F11c).
-	registrationCodePath = "/{slug}/inscription/code"
-	// maxRegistrationFormBytes borne le corps de la saisie du code.
-	maxRegistrationFormBytes = 4 << 10
 )
 
 // mailEnqueuer adapte la file d'envoi à code.Enqueuer et verify.Enqueuer : sans
@@ -170,286 +152,136 @@ func (a *App) restoreRegistrations(ctx context.Context) error {
 	return nil
 }
 
-// registrationPages porte les pages de l'inscription : le formulaire
-// (invite.Renderer), la saisie du code, le lien de confirmation en un clic et
-// l'écran de réussite. Ce sont des pages MINIMALES : F11c les remplacera.
-type registrationPages struct {
-	a     *App
-	forms map[string]*template.Template
-}
+// signedInVerifier enveloppe la vérification des inscriptions pour les pages
+// publiques : quand une vérification par code ou par lien en un clic réussit
+// (preuve de possession de la boîte mail), elle note la réussite dans la
+// requête, et openSessionAfterVerify ouvre alors la session de la personne.
+type signedInVerifier struct{ inner regpublic.Verifier }
 
-// Gabarits (web/templates/registration/<nom>.html). Chacun définit son propre
-// bloc layout/content : un jeu analysé par page, jamais partagé.
-const (
-	regTplForm    = "form"
-	regTplCode    = "code"
-	regTplConfirm = "confirm"
-	regTplDone    = "done"
-	regTplError   = "error"
-)
+type verifiedKey struct{}
 
-func newRegistrationPages(a *App) (*registrationPages, error) {
-	funcs := template.FuncMap{}
-	for k, v := range websec.TemplateFuncsPlaceholder() {
-		funcs[k] = v
+// verifiedNote reçoit la réussite d'une vérification ; il vit dans le contexte
+// de la requête.
+type verifiedNote struct{ success *verify.Success }
+
+// VerifyCode implémente regpublic.Verifier.
+func (v signedInVerifier) VerifyCode(ctx context.Context, groupID int64, ref, input string) (*verify.Success, error) {
+	s, err := v.inner.VerifyCode(ctx, groupID, ref, input)
+	if err == nil {
+		noteVerified(ctx, s)
 	}
-	for k, v := range i18nweb.FuncsPlaceholder() {
-		funcs[k] = v
+	return s, err
+}
+
+// PreviewLink implémente regpublic.Verifier ; l'aperçu n'a aucun effet.
+func (v signedInVerifier) PreviewLink(ctx context.Context, groupID int64, tok string) (code.Preview, error) {
+	return v.inner.PreviewLink(ctx, groupID, tok)
+}
+
+// ConfirmLink implémente regpublic.Verifier.
+func (v signedInVerifier) ConfirmLink(ctx context.Context, groupID int64, tok string) (*verify.Success, error) {
+	s, err := v.inner.ConfirmLink(ctx, groupID, tok)
+	if err == nil {
+		noteVerified(ctx, s)
 	}
-	p := &registrationPages{a: a, forms: map[string]*template.Template{}}
-	for _, name := range []string{regTplForm, regTplCode, regTplConfirm, regTplDone, regTplError} {
-		t, err := template.New("").Funcs(funcs).ParseFS(web.Templates,
-			"templates/layout/*.html", "templates/i18n/*.html", "templates/registration/"+name+".html")
-		if err != nil {
-			return nil, fmt.Errorf("gabarit d'inscription %s : %w", name, err)
-		}
-		p.forms[name] = t
+	return s, err
+}
+
+var _ regpublic.Verifier = signedInVerifier{}
+
+func noteVerified(ctx context.Context, s *verify.Success) {
+	if n, ok := ctx.Value(verifiedKey{}).(*verifiedNote); ok {
+		n.success = s
 	}
-	return p, nil
 }
 
-// regPage est la donnée commune des gabarits d'inscription.
-type regPage struct {
-	Lang      string
-	TitleKey  string
-	Slug      string
-	GroupName string
-	Action    string
-	Ref       string
-	Code      string
-	FirstName string
-
-	// Closed est la clé du message de fermeture ; vide si ouvert.
-	Closed       string
-	MessageKey   string
-	ErrorKey     string
-	HintKey      string
-	FirstNameErr string
-	NameErr      string
-	EmailErr     string
-	AskShared    bool
-	Values       invite.Values
-	Offers       []regOffer
-
-	AlreadyVerified bool
+// sessionWriter ouvre la session participant juste avant que l'en-tête de la
+// réponse parte : le cookie doit précéder le corps.
+type sessionWriter struct {
+	http.ResponseWriter
+	open func()
+	done bool
 }
 
-type regOffer struct {
-	Key  string
-	Href string
-}
-
-func (p *registrationPages) lang(r *http.Request) string {
-	return negotiate.Lang(r.Context(), p.a.Cfg.DefaultLang)
-}
-
-func (p *registrationPages) render(w http.ResponseWriter, r *http.Request, status int, name string, d regPage) {
-	clone, err := p.forms[name].Clone()
-	if err != nil {
-		http.Error(w, "Erreur interne.", http.StatusInternalServerError)
-		return
+func (w *sessionWriter) first() {
+	if !w.done {
+		w.done = true
+		w.open()
 	}
-	clone.Funcs(websec.TemplateFuncs(r)).Funcs(i18nweb.Funcs(p.a.Cat, r))
-	d.Lang = p.lang(r)
-	var buf strings.Builder
-	if err := clone.ExecuteTemplate(&buf, "layout/base", d); err != nil {
-		http.Error(w, "Erreur interne.", http.StatusInternalServerError)
-		return
-	}
-	h := w.Header()
-	h.Set("Content-Type", "text/html; charset=utf-8")
-	h.Set("Cache-Control", "no-store")
-	h.Set("Referrer-Policy", "no-referrer")
-	w.WriteHeader(status)
-	_, _ = w.Write([]byte(buf.String()))
 }
 
-// Render implémente invite.Renderer : le formulaire, son refus de champs, la
-// fermeture ou, une fois le code envoyé, la saisie du code.
-func (p *registrationPages) Render(w http.ResponseWriter, r *http.Request, status int, v invite.View) {
-	d := regPage{TitleKey: "registration.title.form", Slug: v.Invite.Slug, GroupName: v.Invite.Name, Action: v.Action}
-	switch res := v.Result; {
-	case v.Closed != "":
-		key, _ := v.Closed.Message()
-		d.Closed = key
-	case res != nil && res.Outcome == invite.OutcomeCodeSent:
-		d.TitleKey = "registration.title.code"
-		d.Ref = res.Ref
-		d.Action = "/" + v.Invite.Slug + "/inscription/code"
-		p.render(w, r, status, regTplCode, d)
-		return
-	case res != nil:
-		d.Values = res.Values
-		d.MessageKey = res.Problem.Code
-		d.FirstNameErr = res.Fields[invite.FieldFirstName].Code
-		d.NameErr = res.Fields[invite.FieldName].Code
-		d.EmailErr = res.Fields[invite.FieldEmail].Code
-		if d.FirstNameErr != "" || d.NameErr != "" || d.EmailErr != "" {
-			// Le message de champ suffit ; « Vérifie les champs » reste pour
-			// les saisies invalides.
-			if res.Outcome == invite.OutcomeNameTaken {
-				d.MessageKey = ""
+// WriteHeader implémente http.ResponseWriter.
+func (w *sessionWriter) WriteHeader(code int) {
+	w.first()
+	w.ResponseWriter.WriteHeader(code)
+}
+
+// Write implémente http.ResponseWriter.
+func (w *sessionWriter) Write(b []byte) (int, error) {
+	w.first()
+	return w.ResponseWriter.Write(b)
+}
+
+// Unwrap laisse http.ResponseController atteindre l'écrivain d'origine.
+func (w *sessionWriter) Unwrap() http.ResponseWriter { return w.ResponseWriter }
+
+// openSessionAfterVerify enveloppe un gestionnaire de vérification (saisie du
+// code, lien de confirmation en un clic) : si la personne vient d'être créée
+// par cette vérification, sa session participant est ouverte dans la même
+// réponse, car elle a prouvé qu'elle possède la boîte mail. Aucune session
+// pour une inscription déjà vérifiée (code rejoué, validation de
+// l'administrateur sans code) : rien n'a prouvé la possession de la boîte. Si
+// la session ne peut pas s'ouvrir, la personne reste inscrite et se connecte
+// comme d'habitude (lien personnel, lien magique).
+func (a *App) openSessionAfterVerify(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		note := &verifiedNote{}
+		r = r.WithContext(context.WithValue(r.Context(), verifiedKey{}, note))
+		sw := &sessionWriter{ResponseWriter: w}
+		sw.open = func() {
+			s := note.success
+			if s == nil || s.AlreadyVerified || s.ParticipantID <= 0 {
+				return
+			}
+			_, err := a.Sessions.Create(r.Context(), sw.ResponseWriter, r, websec.Identity{
+				Kind: websec.KindParticipant, GroupID: strconv.FormatInt(s.GroupID, 10),
+				Subject: strconv.FormatInt(s.ParticipantID, 10),
+			})
+			if err != nil {
+				slog.Error("inscription : session non ouverte", "groupe", s.GroupID, "erreur", err)
 			}
 		}
-		d.AskShared = res.Outcome == invite.OutcomeConfirmShared
-		for _, o := range res.Offers {
-			switch {
-			case o.Path != "":
-				d.Offers = append(d.Offers, regOffer{Key: o.Code, Href: o.Path})
-			case o.Kind == invite.OfferPrecision:
-				d.HintKey = o.Code
-			}
-		}
-	}
-	p.render(w, r, status, regTplForm, d)
+		next.ServeHTTP(sw, r)
+		sw.first()
+	})
 }
 
-var _ invite.Renderer = (*registrationPages)(nil)
-
-// group résout le groupe de l'adresse ; faux si inconnu (la réponse est alors
-// écrite : la page de refus uniforme).
-func (p *registrationPages) group(w http.ResponseWriter, r *http.Request) (*groups.Group, bool) {
-	g, err := p.a.Groups.BySlug(r.Context(), r.PathValue("slug"))
-	if err != nil || g == nil {
-		if err != nil && !errs.Is(err, errs.KindNotFound) {
-			p.fail(w, r, err)
-			return nil, false
-		}
-		p.refused(w, r)
-		return nil, false
-	}
-	return g, true
-}
-
-// refused répond le refus uniforme d'un lien ou d'un code : même page pour un
-// groupe inconnu, un jeton faux, utilisé, expiré ou une inscription ignorée.
-func (p *registrationPages) refused(w http.ResponseWriter, r *http.Request) {
-	p.render(w, r, http.StatusNotFound, regTplError, regPage{
-		TitleKey: "registration.title.error", ErrorKey: "registration.error.refused"})
-}
-
-// fail traduit une erreur de service en page : plafond atteint (429), tirage
-// fait (403, texte de fermeture), refus uniforme (404), sinon erreur interne.
-func (p *registrationPages) fail(w http.ResponseWriter, r *http.Request, err error) {
-	switch {
-	case errors.Is(err, limiter.ErrLimited):
-		p.render(w, r, http.StatusTooManyRequests, regTplError, regPage{
-			TitleKey: "registration.title.error", ErrorKey: "registration.error.limited"})
-	case code.IsRefused(err):
-		p.refused(w, r)
-	case errs.Is(err, errs.KindForbidden) || errs.Is(err, errs.KindNotFound):
-		key, _ := errs.CodeOf(err)
-		if _, known := p.a.Cat.Messages(p.lang(r))[key]; !known {
-			key = errs.KindKey(errs.KindOf(err))
-		}
-		status := http.StatusForbidden
-		if errs.Is(err, errs.KindNotFound) {
-			status = http.StatusNotFound
-		}
-		p.render(w, r, status, regTplError, regPage{TitleKey: "registration.title.error", ErrorKey: key})
-	default:
-		slog.Error("inscription : erreur interne", "erreur", err)
-		p.render(w, r, http.StatusInternalServerError, regTplError, regPage{
-			TitleKey: "registration.title.error", ErrorKey: "registration.error.internal"})
-	}
-}
-
-// done rend l'écran de réussite : aucun secret, aucune paire.
-func (p *registrationPages) done(w http.ResponseWriter, r *http.Request, g *groups.Group, s *verify.Success) {
-	p.render(w, r, http.StatusOK, regTplDone, regPage{
-		TitleKey: "registration.title.done", Slug: g.Slug, GroupName: g.Name,
-		FirstName: s.FirstName, AlreadyVerified: s.AlreadyVerified})
-}
-
-// confirmPage sert le lien de confirmation en un clic (GET) : il affiche le
-// code « déjà saisi » et un bouton, sans rien modifier. Un scanneur de
-// courriel qui précharge le lien n'a aucun effet.
-func (p *registrationPages) confirmPage(w http.ResponseWriter, r *http.Request) {
-	g, ok := p.group(w, r)
-	if !ok {
-		return
-	}
-	if err := p.a.Invite.VerificationAllowed(r.Context(), g.ID); err != nil {
-		p.fail(w, r, err)
-		return
-	}
-	pv, err := p.a.Verify.PreviewLink(r.Context(), g.ID, r.PathValue("token"))
-	if err != nil {
-		p.fail(w, r, err)
-		return
-	}
-	p.render(w, r, http.StatusOK, regTplConfirm, regPage{
-		TitleKey: "registration.title.confirm", Slug: g.Slug, GroupName: g.Name,
-		Action: r.URL.Path, Code: pv.Code})
-}
-
-// confirmSubmit consomme le jeton (POST seulement, jeton CSRF contrôlé par la
-// chaîne) et vérifie l'inscription : le participant est créé par
-// verify.ConfirmLink.
-func (p *registrationPages) confirmSubmit(w http.ResponseWriter, r *http.Request) {
-	g, ok := p.group(w, r)
-	if !ok {
-		return
-	}
-	if err := p.a.Invite.VerificationAllowed(r.Context(), g.ID); err != nil {
-		p.fail(w, r, err)
-		return
-	}
-	s, err := p.a.Verify.ConfirmLink(r.Context(), g.ID, r.PathValue("token"))
-	if err != nil {
-		p.fail(w, r, err)
-		return
-	}
-	p.done(w, r, g, s)
-}
-
-// codeSubmit vérifie le code saisi pour l'inscription de référence « ref ».
-func (p *registrationPages) codeSubmit(w http.ResponseWriter, r *http.Request) {
-	g, ok := p.group(w, r)
-	if !ok {
-		return
-	}
-	r.Body = http.MaxBytesReader(w, r.Body, maxRegistrationFormBytes)
-	if err := r.ParseForm(); err != nil {
-		http.Error(w, "Requête invalide.", http.StatusBadRequest)
-		return
-	}
-	ref, input := r.PostFormValue("ref"), r.PostFormValue("code")
-	if err := p.a.Invite.VerificationAllowed(r.Context(), g.ID); err != nil {
-		p.fail(w, r, err)
-		return
-	}
-	s, err := p.a.Verify.VerifyCode(r.Context(), g.ID, ref, input)
-	if code.IsRefused(err) {
-		p.render(w, r, http.StatusUnprocessableEntity, regTplCode, regPage{
-			TitleKey: "registration.title.code", Slug: g.Slug, GroupName: g.Name,
-			Action: r.URL.Path, Ref: ref, ErrorKey: "registration.code.refused"})
-		return
-	}
-	if err != nil {
-		p.fail(w, r, err)
-		return
-	}
-	p.done(w, r, g, s)
-}
-
-// registerRegistrationPages monte les routes de l'inscription sur Slugs, derrière
-// la chaîne SecurityHeaders, CSRF, Sessions : le formulaire (GET et POST, motif
-// avec et sans jeton), la saisie du code et le lien de confirmation en un clic
-// (GET sans effet, POST qui vérifie).
+// registerRegistrationPages monte les pages publiques de l'inscription
+// (registrationpages/public : formulaire sous magic.PatternJoin et
+// magic.PatternJoinBare, saisie du code, lien de confirmation en un clic,
+// écran de réussite) sur Slugs, derrière la chaîne SecurityHeaders, CSRF,
+// Sessions. Le paquet analyse un jeu de gabarits par page. L'écran de réussite
+// mène à la lettre (/{slug}/lettre?bienvenue=1, le paramètre est ajouté par le
+// paquet) ; les deux gestes qui vérifient l'inscription ouvrent la session
+// participant (openSessionAfterVerify).
 func registerRegistrationPages(a *App) error {
-	p, err := newRegistrationPages(a)
+	p, err := regpublic.New(regpublic.Options{
+		Groups: a.Groups, Invites: a.Invite, Verify: signedInVerifier{inner: a.Verify}, Translator: a.Cat,
+		Logger: slog.Default(), ClientIP: a.clientIP, Location: a.Cfg.Location,
+		LetterPath: func(slug string) string { return "/" + slug + "/lettre" },
+		Home:       func(slug string) string { return "/" + slug + "/participant" },
+	})
 	if err != nil {
-		return err
+		return fmt.Errorf("pages d'inscription : %w", err)
 	}
-	h := &invite.Handlers{
-		Service: a.Invite, Render: p, Neutral: magic.NewNeutral(nil), Logger: slog.Default(), ClientIP: a.clientIP,
+	for _, r := range p.Routes() {
+		h := r.Handler
+		if r.Modifies {
+			// Seules les routes qui vérifient l'inscription (POST du code et
+			// de la confirmation) modifient l'état.
+			h = a.openSessionAfterVerify(h)
+		}
+		a.Slugs.Handle(r.Pattern, h)
 	}
-	join := h.Join()
-	a.Slugs.Handle(magic.PatternJoin, join)
-	a.Slugs.Handle(magic.PatternJoinBare, join)
-	a.Slugs.Handle("GET "+registrationConfirmPath, http.HandlerFunc(p.confirmPage))
-	a.Slugs.Handle("POST "+registrationConfirmPath, websec.RequireUnsafeMethod(http.HandlerFunc(p.confirmSubmit)))
-	a.Slugs.Handle("POST "+registrationCodePath, websec.RequireUnsafeMethod(http.HandlerFunc(p.codeSubmit)))
 	return nil
 }

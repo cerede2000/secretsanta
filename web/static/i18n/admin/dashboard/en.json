@@ -86,5 +86,16 @@
   "admin.dashboard.journal.empty": "No action recorded yet.",
   "admin.dashboard.action.lien_remis": "Link handed over in person",
   "admin.dashboard.action.roles_changement": "Roles changed",
+  "admin.dashboard.action.tirage_lance": "Draw launched",
+  "admin.dashboard.action.tirage_refait": "Draw redone",
+  "admin.dashboard.action.revelation_ouverte": "Reveal opened",
+  "admin.dashboard.action.date_revelation": "Reveal date changed",
+  "admin.dashboard.action.lien_renvoye": "Personal link resent",
+  "admin.dashboard.action.adresse_corrigee": "Address corrected",
+  "admin.dashboard.action.lien_regenere": "Personal link regenerated",
+  "admin.dashboard.action.personne_ajoutee": "Person added",
+  "admin.dashboard.action.personne_modifiee": "Person edited",
+  "admin.dashboard.action.personne_supprimee": "Person removed",
+  "admin.dashboard.action.regle_modifiee": "Rule changed",
   "admin.dashboard.action.unknown": "Sensitive action"
 }

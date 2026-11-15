@@ -113,8 +113,8 @@ func TestWave8MigrationsAfterTheirDependencies(t *testing.T) {
 		}
 	}
 	var versions int
-	if err := a.DB.QueryRow(`SELECT COUNT(*) FROM schema_migrations WHERE module = ?`, regmig.Module).Scan(&versions); err != nil || versions != 2 {
-		t.Errorf("migrations de l'inscription appliquées : %d (%v), attendu 2", versions, err)
+	if err := a.DB.QueryRow(`SELECT COUNT(*) FROM schema_migrations WHERE module = ?`, regmig.Module).Scan(&versions); err != nil || versions != 3 {
+		t.Errorf("migrations de l'inscription appliquées : %d (%v), attendu 3", versions, err)
 	}
 }
 
@@ -210,7 +210,7 @@ func TestRegistrationJourneyCodeAndOneClickLink(t *testing.T) {
 	}
 	// Le bon code vérifie l'inscription : le participant existe, « bienvenue » part.
 	rec = visitor.post(link.Path, "/noel/inscription/code", url.Values{"ref": {ref}, "code": {code}})
-	if rec.Code != http.StatusOK || !strings.Contains(html.UnescapeString(rec.Body.String()), a.Cat.T("fr", "registration.done.title", nil)) {
+	if rec.Code != http.StatusOK || !strings.Contains(html.UnescapeString(rec.Body.String()), a.Cat.T("fr", "registration.public.done.title", nil)) {
 		t.Fatalf("bon code : %d\n%s", rec.Code, rec.Body.String())
 	}
 	list, _ := a.Participants.List(ctx, admin, g.ID)
@@ -249,7 +249,7 @@ func TestRegistrationJourneyCodeAndOneClickLink(t *testing.T) {
 	if r := visitor.do(http.MethodPost, confirm, url.Values{}); r.Code != http.StatusForbidden {
 		t.Errorf("POST sans jeton CSRF : %d, attendu 403", r.Code)
 	}
-	if rec = visitor.post(confirm, confirm, url.Values{}); rec.Code != http.StatusOK || !strings.Contains(html.UnescapeString(rec.Body.String()), a.Cat.T("fr", "registration.done.title", nil)) {
+	if rec = visitor.post(confirm, confirm, url.Values{}); rec.Code != http.StatusOK || !strings.Contains(html.UnescapeString(rec.Body.String()), a.Cat.T("fr", "registration.public.done.title", nil)) {
 		t.Fatalf("confirmation : %d\n%s", rec.Code, rec.Body.String())
 	}
 	if list, _ := a.Participants.List(ctx, admin, g.ID); len(list) != 2 {
@@ -645,9 +645,9 @@ func TestAdminPagesRequireOwnGroupSessionAndRenderOwnContent(t *testing.T) {
 	if rec := admin.get("/inconnu/admin"); rec.Code != http.StatusNotFound {
 		t.Errorf("groupe inconnu : %d", rec.Code)
 	}
-	// Les entrées du registre : Tableau, Participants, Tirage, Plus.
-	if n := strings.Count(admin.get("/famille/admin").Body.String(), `<a class="admin-nav-item"`); n != 4 {
-		t.Errorf("%d entrées de navigation, attendu 4 (Inscriptions viendra avec F11c)", n)
+	// Les entrées du registre : Tableau, Participants, Tirage, Inscriptions, Plus.
+	if n := strings.Count(admin.get("/famille/admin").Body.String(), `<a class="admin-nav-item"`); n != 5 {
+		t.Errorf("%d entrées de navigation, attendu 5", n)
 	}
 }
 

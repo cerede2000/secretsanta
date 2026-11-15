@@ -72,6 +72,13 @@ var features = []func(*App) error{
 	registerTargetPage,
 	registerRegistrationPages,
 	registerAdminPages,
+	// Les pages de la vague 9 suivent registerAdminPages : elles ont besoin du
+	// registre de navigation, du journal et du tirage avec sa révélation.
+	registerLetterPages,
+	registerMailboxPage,
+	registerRegistrationAdmin,
+	registerDrawPages,
+	registerPeoplePages,
 }
 
 // publicBase renvoie PUBLIC_URL sans barre finale.
