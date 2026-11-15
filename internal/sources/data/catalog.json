@@ -1,0 +1,226 @@
+{
+ "fr": {
+  "all": [
+   {
+    "title": "Chaussettes de Noël bien chaudes",
+    "description": "Une paire de chaussettes douillettes aux motifs de fête."
+   },
+   {
+    "title": "Coffret de thé d'hiver",
+    "description": "Assortiment de thés épicés pour les soirées au coin du feu."
+   },
+   {
+    "title": "Bougie parfumée cannelle et orange",
+    "description": "Une ambiance de Noël dans toute la maison."
+   },
+   {
+    "title": "Livre de contes de Noël",
+    "description": "Un recueil d'histoires à lire en famille."
+   },
+   {
+    "title": "Boîte de chocolats de fête",
+    "description": "Assortiment de chocolats pour les gourmands."
+   }
+  ],
+  "under20": [
+   {
+    "title": "Boule de Noël personnalisée",
+    "description": "Décoration à accrocher au sapin."
+   },
+   {
+    "title": "Mug de Noël et chocolat chaud",
+    "description": "Un mug festif accompagné de son sachet."
+   },
+   {
+    "title": "Calendrier de pâtisseries en bois",
+    "description": "Moules à biscuits aux formes de Noël."
+   },
+   {
+    "title": "Gants tactiles d'hiver",
+    "description": "Pour garder les mains au chaud dehors."
+   },
+   {
+    "title": "Carnet et stylo de fête",
+    "description": "Pour noter les bonnes résolutions."
+   }
+  ],
+  "20to50": [
+   {
+    "title": "Plaid doux en polaire",
+    "description": "Idéal pour les soirées d'hiver."
+   },
+   {
+    "title": "Coffret de bain de Noël",
+    "description": "Savons, gel douche et crème aux senteurs d'épices."
+   },
+   {
+    "title": "Jeu de société en famille",
+    "description": "Un classique pour les veillées de fête."
+   },
+   {
+    "title": "Écharpe en laine",
+    "description": "Une écharpe chaude aux couleurs d'hiver."
+   },
+   {
+    "title": "Coffret de vin chaud",
+    "description": "Épices, mug et recette pour l'hiver."
+   }
+  ],
+  "50to100": [
+   {
+    "title": "Enceinte Bluetooth portable",
+    "description": "De la musique partout, même au chalet."
+   },
+   {
+    "title": "Pull de Noël de qualité",
+    "description": "Maille épaisse aux motifs de saison."
+   },
+   {
+    "title": "Coffret dégustation de fromages et charcuterie",
+    "description": "Pour un bon repas de fête."
+   },
+   {
+    "title": "Bouilloire ou théière design",
+    "description": "Un bel objet pour les amateurs de thé."
+   },
+   {
+    "title": "Puzzle 1000 pièces haut de gamme",
+    "description": "Pour les longues soirées d'hiver."
+   }
+  ],
+  "over100": [
+   {
+    "title": "Casque audio sans fil",
+    "description": "Un confort d'écoute pour toute l'année."
+   },
+   {
+    "title": "Montre connectée",
+    "description": "Suivi du sport et notifications."
+   },
+   {
+    "title": "Coffret spa et bien-être",
+    "description": "Un moment de détente offert."
+   },
+   {
+    "title": "Appareil à raclette ou fondue premium",
+    "description": "Pour les repas conviviaux de l'hiver."
+   },
+   {
+    "title": "Liseuse électronique",
+    "description": "Toute une bibliothèque dans la poche."
+   }
+  ]
+ },
+ "en": {
+  "all": [
+   {
+    "title": "Warm Christmas socks",
+    "description": "A cosy pair of socks with festive patterns."
+   },
+   {
+    "title": "Winter tea gift set",
+    "description": "Spiced tea assortment for evenings by the fire."
+   },
+   {
+    "title": "Cinnamon and orange scented candle",
+    "description": "Christmas atmosphere for the whole house."
+   },
+   {
+    "title": "Christmas storybook",
+    "description": "A collection of tales to read together."
+   },
+   {
+    "title": "Box of festive chocolates",
+    "description": "An assortment for the sweet tooth."
+   }
+  ],
+  "under20": [
+   {
+    "title": "Personalised Christmas bauble",
+    "description": "A decoration for the tree."
+   },
+   {
+    "title": "Christmas mug with hot chocolate",
+    "description": "A festive mug with its sachet."
+   },
+   {
+    "title": "Wooden Christmas cookie cutters",
+    "description": "Shapes for holiday baking."
+   },
+   {
+    "title": "Touchscreen winter gloves",
+    "description": "To keep hands warm outdoors."
+   },
+   {
+    "title": "Festive notebook and pen",
+    "description": "For writing down resolutions."
+   }
+  ],
+  "20to50": [
+   {
+    "title": "Soft fleece blanket",
+    "description": "Perfect for winter evenings."
+   },
+   {
+    "title": "Christmas bath gift set",
+    "description": "Soaps, shower gel and cream with spiced scents."
+   },
+   {
+    "title": "Family board game",
+    "description": "A classic for holiday nights."
+   },
+   {
+    "title": "Wool scarf",
+    "description": "A warm scarf in winter colours."
+   },
+   {
+    "title": "Mulled wine kit",
+    "description": "Spices, mug and recipe for winter."
+   }
+  ],
+  "50to100": [
+   {
+    "title": "Portable Bluetooth speaker",
+    "description": "Music anywhere, even at the cabin."
+   },
+   {
+    "title": "Quality Christmas sweater",
+    "description": "Thick knit with seasonal patterns."
+   },
+   {
+    "title": "Cheese and charcuterie tasting box",
+    "description": "For a great holiday meal."
+   },
+   {
+    "title": "Designer kettle or teapot",
+    "description": "A nice piece for tea lovers."
+   },
+   {
+    "title": "Premium 1000-piece puzzle",
+    "description": "For long winter evenings."
+   }
+  ],
+  "over100": [
+   {
+    "title": "Wireless headphones",
+    "description": "Listening comfort all year long."
+   },
+   {
+    "title": "Smartwatch",
+    "description": "Sports tracking and notifications."
+   },
+   {
+    "title": "Spa and wellness gift set",
+    "description": "A relaxing moment as a gift."
+   },
+   {
+    "title": "Premium raclette or fondue set",
+    "description": "For convivial winter meals."
+   },
+   {
+    "title": "E-book reader",
+    "description": "A whole library in a pocket."
+   }
+  ]
+ }
+}
