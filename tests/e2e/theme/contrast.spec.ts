@@ -7,6 +7,11 @@ const PAIRS: Array<[string, string, string?]> = [
   ['b-red', 'b-red'], ['b-green', 'b-green'], ['b-danger', 'b-danger'], ['b-gold', 'b-gold'],
   ['b-off', 'b-off'], ['c-ok', 'c-ok'], ['c-warn', 'c-warn'], ['c-error', 'c-error'],
   ['night-text', 'night'], ['night-title', 'night'], ['err', 'body'],
+  ['admin-body', 'card-admin'],
+  // Boutons fantomes : vert sur givre, blanc sur nuit.
+  ['b-ghost', 'card'], ['b-ghost-light', 'night'],
+  // Champ : texte saisi sur son fond, etiquette et message d'erreur sur la carte.
+  ['f', 'f'], ['label', 'card'], ['err', 'card'],
 ];
 
 test('les contrastes de texte atteignent 4,5:1', async ({ page }) => {
@@ -21,6 +26,15 @@ test('les contrastes de texte atteignent 4,5:1', async ({ page }) => {
       return 'rgb(255, 255, 255)';
     };
     const out: Record<string, { fg: string; bg: string }> = {};
+    // Le fantome et la zone de nuit : on mesure sur le fond reel du conteneur (givre / nuit).
+    const ghost = document.getElementById('b-ghost')!;
+    const ghostLight = document.getElementById('b-ghost-light')!;
+    const card = document.getElementById('card')!;
+    const night = document.getElementById('night')!;
+    // Place les boutons fantomes et l'erreur sur leur fond d'usage.
+    card.append(ghost);
+    night.append(ghostLight);
+    card.append(document.getElementById('label')!, document.getElementById('err')!);
     for (const el of Array.from(document.querySelectorAll('[id]'))) {
       out[el.id] = { fg: getComputedStyle(el).color, bg: bgOf(el) };
     }
