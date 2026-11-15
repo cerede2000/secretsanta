@@ -1,0 +1,134 @@
+{{/*
+  Réglages d'administration (screen-admin-reglages) : sections repliables
+  (details/summary, sans JavaScript), la première ouverte. Aucune paire.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/settings/settings.css">
+<div class="stg">
+<div class="stg-head"><a class="stg-back" href="{{.BackHref}}" aria-label="{{t "admin.settings.back"}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><h1 class="stg-title">{{t "admin.settings.heading"}}</h1></div>
+<div class="stg-body">
+{{if .GlobalErr}}<div class="stg-alert stg-alert-error" role="alert">{{t .GlobalErr}}</div>{{end}}
+{{if .Notice}}<div class="stg-alert stg-alert-ok" role="status">{{t .Notice}}</div>{{end}}
+
+<details class="stg-acc" id="groupe"{{if .Open.groupe}} open{{end}}>
+<summary class="stg-sum"><span>{{t "admin.settings.group.title"}}</span></summary>
+<form class="stg-form" method="post" action="{{.GroupAction}}">{{csrfField}}
+<div class="stg-fld"><label class="field-label" for="stg-slug">{{t "admin.settings.group.slug"}}</label>
+<div class="stg-ro" id="stg-slug">{{.Slug}}</div><p class="stg-hint">{{t "admin.settings.group.slug_hint"}}</p></div>
+<div class="stg-fld"><label class="field-label" for="stg-name">{{t "admin.settings.group.name"}}</label>
+<input class="field" id="stg-name" name="name" type="text" maxlength="80" value="{{.Form.Name}}" required{{if eq .ErrField "name"}} aria-invalid="true" aria-describedby="stg-name-err"{{end}}>
+{{if eq .ErrField "name"}}<div class="field-error" id="stg-name-err" role="alert">{{t .ErrKey}}</div>{{end}}</div>
+<div class="stg-fld"><label class="field-label" for="stg-budget">{{t "admin.settings.group.budget"}} <span class="stg-opt">{{t "admin.settings.optional"}}</span></label>
+<div class="stg-unit"><input class="field" id="stg-budget" name="budget" type="text" inputmode="decimal" maxlength="20" value="{{.Form.Budget}}" aria-describedby="stg-budget-hint{{if eq .ErrField "budget"}} stg-budget-err{{end}}"{{if eq .ErrField "budget"}} aria-invalid="true"{{end}}><span class="stg-suffix" aria-hidden="true">€</span></div>
+{{if eq .ErrField "budget"}}<div class="field-error" id="stg-budget-err" role="alert">{{t .ErrKey}}</div>{{end}}
+<p class="stg-hint" id="stg-budget-hint">{{t "admin.settings.group.budget_hint"}}</p></div>
+<div class="stg-two">
+<div class="stg-fld"><label class="field-label" for="stg-reveal">{{t "admin.settings.group.reveal"}}</label>
+{{if .RevealLock}}<div class="stg-ro" id="stg-reveal">{{.Form.Reveal}}</div><p class="stg-hint">{{t "admin.settings.group.reveal_locked"}}</p>{{else}}<input class="field" id="stg-reveal" name="reveal" type="datetime-local" value="{{.Form.Reveal}}"{{if eq .ErrField "reveal"}} aria-invalid="true" aria-describedby="stg-reveal-err"{{end}}>
+{{if eq .ErrField "reveal"}}<div class="field-error" id="stg-reveal-err" role="alert">{{t .ErrKey}}</div>{{end}}{{end}}</div>
+<div class="stg-fld"><label class="field-label" for="stg-date">{{t "admin.settings.group.event_date"}}</label>
+<input class="field" id="stg-date" name="event_date" type="date" value="{{.Form.EventDate}}"{{if eq .ErrField "event_date"}} aria-invalid="true" aria-describedby="stg-date-err"{{end}}>
+{{if eq .ErrField "event_date"}}<div class="field-error" id="stg-date-err" role="alert">{{t .ErrKey}}</div>{{end}}</div>
+</div>
+<div class="stg-fld"><label class="field-label" for="stg-instr">{{t "admin.settings.group.instructions"}}</label>
+<textarea class="field stg-ta" id="stg-instr" name="instructions" maxlength="1000">{{.Form.Instructions}}</textarea></div>
+<div class="stg-fld"><label class="field-label" for="stg-max">{{t "admin.settings.group.max_gifts"}}</label>
+<input class="field" id="stg-max" name="max_gifts" type="number" min="2" max="5" value="{{.Form.MaxGifts}}" aria-describedby="stg-max-hint{{if eq .ErrField "max_gifts"}} stg-max-err{{end}}"{{if eq .ErrField "max_gifts"}} aria-invalid="true"{{end}}>
+{{if eq .ErrField "max_gifts"}}<div class="field-error" id="stg-max-err" role="alert">{{t .ErrKey}}</div>{{end}}
+<p class="stg-hint" id="stg-max-hint">{{t "admin.settings.group.max_gifts_hint"}}</p>
+<label class="stg-check"><input type="checkbox" name="confirm_max_gifts" value="1"{{if .Form.ConfirmMax}} checked{{end}}><span>{{t "admin.settings.group.max_gifts_confirm"}}</span></label></div>
+<div class="stg-fld"><label class="field-label" for="stg-lang">{{t "admin.settings.group.lang"}}</label>
+<select class="field" id="stg-lang" name="lang"{{if eq .ErrField "lang"}} aria-invalid="true" aria-describedby="stg-lang-err"{{end}}>
+<option value=""{{if eq .Form.Lang ""}} selected{{end}}>{{t "admin.settings.group.lang_instance"}}</option>
+{{range .Langs}}<option value="{{.Code}}"{{if .Selected}} selected{{end}}>{{.Name}}</option>{{end}}</select>
+{{if eq .ErrField "lang"}}<div class="field-error" id="stg-lang-err" role="alert">{{t .ErrKey}}</div>{{end}}</div>
+<div class="stg-switch"><div><div class="stg-lbl" id="stg-notify-l">{{t "admin.settings.group.notify"}}</div><p class="stg-hint">{{t "admin.settings.group.notify_hint"}}</p></div>
+<label class="stg-sw"><input type="checkbox" role="switch" name="notify" value="1" aria-labelledby="stg-notify-l"{{if .Form.Notify}} checked{{end}}><span class="stg-knob" aria-hidden="true"></span></label></div>
+<div class="stg-info"><div class="stg-lbl">{{t "admin.settings.group.after.title"}}</div>
+<div class="stg-chips"><span class="chip chip-ok">{{t "admin.settings.group.after.budget"}}</span><span class="chip chip-ok">{{t "admin.settings.group.after.dates"}}</span><span class="chip chip-ok">{{t "admin.settings.group.after.instructions"}}</span><span class="chip chip-ok">{{t "admin.settings.group.after.names"}}</span></div>
+<p class="stg-hint">{{t "admin.settings.group.after.note"}}</p></div>
+<button class="btn btn-green stg-wide" type="submit">{{t "admin.settings.save"}}</button>
+</form>
+</details>
+
+<details class="stg-acc" id="courrier"{{if .Open.courrier}} open{{end}}>
+<summary class="stg-sum"><span>{{t "admin.settings.mail.title"}} {{if .SMTP.Enabled}}<span class="chip chip-ok">{{t "admin.settings.mail.on"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.settings.mail.off"}}</span>{{end}}</span></summary>
+<div class="stg-inner">
+<p class="stg-hint">{{t "admin.settings.mail.env_hint"}}</p>
+{{if .SMTP.Enabled}}<dl class="stg-dl">
+<div><dt>{{t "admin.settings.mail.host"}}</dt><dd>{{.SMTP.Host}}</dd></div>
+<div><dt>{{t "admin.settings.mail.port"}}</dt><dd>{{.SMTP.Port}}</dd></div>
+<div><dt>{{t "admin.settings.mail.security"}}</dt><dd>{{.SMTP.Security}}</dd></div>
+<div><dt>{{t "admin.settings.mail.from"}}</dt><dd>{{.SMTP.From}}</dd></div>
+<div><dt>{{t "admin.settings.mail.domain"}}</dt><dd>{{.SMTP.Domain}}</dd></div>
+{{if .SMTP.EHLO}}<div><dt>{{t "admin.settings.mail.ehlo"}}</dt><dd>{{.SMTP.EHLO}}</dd></div>{{end}}
+<div><dt>{{t "admin.settings.mail.dkim"}}</dt><dd>{{if .SMTP.DKIM}}{{t "admin.settings.mail.dkim_on"}}{{else}}{{t "admin.settings.mail.dkim_off"}}{{end}}</dd></div>
+{{if .SMTP.DKIM}}<div><dt>{{t "admin.settings.mail.dkim_selector"}}</dt><dd>{{.SMTP.DKIMSelector}}</dd></div><div><dt>{{t "admin.settings.mail.dkim_algo"}}</dt><dd>{{.SMTP.DKIMAlgo}}</dd></div>{{end}}
+{{if .SMTP.PerMinute}}<div><dt>{{t "admin.settings.mail.rate"}}</dt><dd>{{tn "admin.settings.mail.rate_value" .SMTP.PerMinute}}</dd></div>{{end}}
+</dl>{{else}}<p class="stg-hint">{{t "admin.settings.mail.disabled"}}</p>{{end}}
+<p class="stg-hint">{{t "admin.settings.mail.reputation"}}</p>
+<a class="btn btn-green stg-wide" href="{{.DeliverabilityHref}}">{{t "admin.settings.mail.diagnostic"}}</a>
+<form class="stg-form" method="post" action="{{.MailTestAction}}">{{csrfField}}
+<label class="field-label" for="stg-test">{{t "admin.settings.mail.test_to"}}</label>
+<input class="field" id="stg-test" name="test_to" type="email" maxlength="254" value="{{.TestTo}}"{{if eq .ErrField "mail_to"}} aria-invalid="true" aria-describedby="stg-test-err"{{end}}>
+{{if eq .ErrField "mail_to"}}<div class="field-error" id="stg-test-err" role="alert">{{t .ErrKey}}</div>{{end}}
+<button class="btn btn-green stg-wide" type="submit">{{t "admin.settings.mail.test_send"}}</button></form>
+{{if .TestOK}}<div class="stg-alert stg-alert-ok" role="status">{{t .TestOK "time" .TestTime}}</div>{{end}}
+{{if .TestErr}}<div class="stg-alert stg-alert-error" role="alert">{{t .TestErr}}{{if .TestRaw}} <span class="stg-raw">{{.TestRaw}}</span>{{end}}</div>{{end}}
+</div>
+</details>
+
+<details class="stg-acc" id="relances"{{if .Open.relances}} open{{end}}>
+<summary class="stg-sum"><span>{{t "admin.settings.rhythm.title"}}</span></summary>
+<form class="stg-form" method="post" action="{{.RhythmAction}}">{{csrfField}}
+<label class="stg-check"><input type="checkbox" name="enabled" value="1"{{if .Rhythm.Enabled}} checked{{end}}><span>{{t "admin.settings.rhythm.enabled"}}</span></label>
+<div class="stg-two">
+<div class="stg-fld"><label class="field-label" for="stg-first">{{t "admin.settings.rhythm.first"}}</label>
+<input class="field" id="stg-first" name="first" type="number" min="1" max="30" value="{{.Rhythm.First}}"{{if eq .ErrField "first"}} aria-invalid="true" aria-describedby="stg-first-err"{{end}}>
+{{if eq .ErrField "first"}}<div class="field-error" id="stg-first-err" role="alert">{{t .ErrKey}}</div>{{end}}</div>
+<div class="stg-fld"><label class="field-label" for="stg-spacing">{{t "admin.settings.rhythm.spacing"}}</label>
+<input class="field" id="stg-spacing" name="spacing" type="number" min="1" max="30" value="{{.Rhythm.Spacing}}"{{if eq .ErrField "spacing"}} aria-invalid="true" aria-describedby="stg-spacing-err"{{end}}>
+{{if eq .ErrField "spacing"}}<div class="field-error" id="stg-spacing-err" role="alert">{{t .ErrKey}}</div>{{end}}</div>
+</div>
+<div class="stg-two">
+<div class="stg-fld"><label class="field-label" for="stg-cap">{{t "admin.settings.rhythm.cap"}}</label>
+<input class="field" id="stg-cap" name="cap" type="number" min="1" max="5" value="{{.Rhythm.Cap}}"{{if eq .ErrField "cap"}} aria-invalid="true" aria-describedby="stg-cap-err"{{end}}>
+{{if eq .ErrField "cap"}}<div class="field-error" id="stg-cap-err" role="alert">{{t .ErrKey}}</div>{{end}}</div>
+<div class="stg-fld"><div class="field-label">{{t "admin.settings.rhythm.window"}}</div><div class="stg-ro">{{t "admin.settings.rhythm.window_value" "hours" .Window}}</div></div>
+</div>
+<p class="stg-hint">{{t "admin.settings.rhythm.hint" "tz" .Timezone}}</p>
+<button class="btn btn-ghost stg-wide" type="submit">{{t "admin.settings.rhythm.save"}}</button>
+</form>
+<div class="stg-inner"><a class="btn btn-green stg-wide" href="{{.RemindHref}}">{{t "admin.settings.rhythm.manual"}}</a></div>
+</details>
+
+<details class="stg-acc" id="donnees"{{if .Open.donnees}} open{{end}}>
+<summary class="stg-sum"><span>{{t "admin.settings.data.title"}}</span></summary>
+<div class="stg-inner">
+<a class="btn btn-ghost stg-wide" href="{{.ExportHref}}">{{t "admin.settings.data.export"}}</a>
+<form class="stg-form" method="post" action="{{.ImportAction}}" enctype="multipart/form-data">{{csrfField}}
+<label class="field-label" for="stg-import">{{t "admin.settings.data.import"}}</label>
+<input class="field" id="stg-import" name="file" type="file" accept="application/json,.json" required>
+<button class="btn btn-ghost stg-wide" type="submit">{{t "admin.settings.data.import_go"}}</button></form>
+<p class="stg-hint">{{t "admin.settings.data.no_pairs"}}</p>
+<form class="stg-form" method="post" action="{{.BackupAction}}">{{csrfField}}<button class="btn btn-ghost stg-wide" type="submit">{{t "admin.settings.data.backup"}}</button></form>
+<p class="stg-hint"><span class="chip chip-warn">{{t "admin.settings.data.last_backup"}}</span> {{if .LastBackup}}{{.LastBackup}}{{else}}{{t "admin.settings.data.never"}}{{end}}</p>
+<form class="stg-form stg-sep" method="post" action="{{.DuplicateAction}}">{{csrfField}}
+<div class="stg-lbl">{{t "admin.settings.data.next_year"}}</div>
+<p class="stg-hint">{{t "admin.settings.data.next_year_hint"}}</p>
+<button class="btn btn-green stg-wide" type="submit">{{if .Dup.Year}}{{t "admin.settings.data.duplicate_year" "year" .Dup.Year}}{{else}}{{t "admin.settings.data.duplicate"}}{{end}}</button></form>
+</div>
+</details>
+
+<details class="stg-acc stg-danger" id="sensible"{{if .Open.sensible}} open{{end}}>
+<summary class="stg-sum"><span>{{t "admin.settings.danger.title"}}</span></summary>
+<form class="stg-form stg-warnbox" method="post" action="{{.DeleteAction}}">{{csrfField}}
+<div class="stg-lbl stg-red">{{t "admin.settings.danger.question"}}</div>
+<p class="stg-hint stg-red">{{t "admin.settings.danger.text"}}</p>
+<label class="field-label" for="stg-confirm">{{t "admin.settings.danger.confirm"}}</label>
+<input class="field" id="stg-confirm" name="confirm_name" type="text" autocomplete="off">
+<label class="stg-check"><input type="checkbox" name="purge" value="1"><span>{{t "admin.settings.danger.purge"}}</span></label>
+<button class="btn btn-danger stg-wide" type="submit">{{t "admin.settings.danger.delete"}}</button>
+</form>
+</details>
+</div>
+</div>{{end}}
