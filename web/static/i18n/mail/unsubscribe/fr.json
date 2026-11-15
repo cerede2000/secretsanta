@@ -1,0 +1,15 @@
+{
+  "mail.unsub.relances.title": "Ne plus recevoir les rappels",
+  "mail.unsub.relances.intro": "Tu ne recevras plus les rappels de ce groupe : lien pas encore ouvert, lettre pas encore écrite et lettre à relire.",
+  "mail.unsub.relances.submit": "Je ne veux plus de rappels",
+  "mail.unsub.relances.keep": "Garder les rappels",
+  "mail.unsub.relances.resub": "Rétablir les rappels",
+  "mail.unsub.nouvelle_idee.title": "Ne plus être prévenu des nouvelles idées",
+  "mail.unsub.nouvelle_idee.intro": "Tu ne seras plus prévenu quand la lettre de la personne à qui tu offres un cadeau change.",
+  "mail.unsub.nouvelle_idee.submit": "Je ne veux plus de ces messages",
+  "mail.unsub.nouvelle_idee.keep": "Garder ces messages",
+  "mail.unsub.nouvelle_idee.resub": "Rétablir ces messages",
+  "mail.unsub.essential": "Tu continues à recevoir les mails essentiels : ton lien d'accès, l'ouverture du tirage et les changements qui te concernent.",
+  "mail.unsub.flash.off": "C'est fait, ce type de message est coupé. Tu peux le rétablir ci-dessous.",
+  "mail.unsub.flash.on": "C'est rétabli, tu recevras de nouveau ce type de message."
+}

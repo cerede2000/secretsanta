@@ -1,0 +1,32 @@
+{{/*
+  screen-desinscription : confirmation de la désinscription d'un type de mail.
+  Données : .TitleKey .IntroKey .SubmitKey .KeepKey .ResubKey (clés de texte
+  selon le type), .FlashKey (état après un clic), .Unsubscribed, .GroupName,
+  .GroupHref, .Action. Le GET ne change rien ; les boutons envoient un POST.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/mail/unsubscribe.css">
+<div class="unsub">
+<div class="unsub-head">
+<svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28"><path d="M14 3l2.500 6 6.500.6-5 4.400 1.600 6.400L14 17l-5.600 3.400L10 14 5 9.600 11.500 9z" fill="#ffd700"/></svg>
+<div class="unsub-group">{{.GroupName}}</div>
+</div>
+<div class="unsub-body">
+<svg class="unsub-bell" aria-hidden="true" width="72" height="72" viewBox="0 0 72 72"><path d="M36 8c-12 0-20 9-20 22v14l-6 8h52l-6-8V30c0-13-8-22-20-22z" fill="#ffd700" stroke="#c9a400" stroke-width="2.500" stroke-linejoin="round"/><path d="M28 56a8 8 0 0 0 16 0" fill="#c41e3a"/><path d="M50 14l8-4M22 14l-8-4" stroke="#165b33" stroke-width="3" stroke-linecap="round"/><path d="M12 56L60 16" stroke="#c41e3a" stroke-width="5" stroke-linecap="round"/></svg>
+<h1 class="unsub-title">{{t .TitleKey}}</h1>
+<p class="unsub-intro">{{t .IntroKey}}</p>
+<div class="unsub-note"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="7.500"/><path d="M10 9v5M10 6v.1"/></svg><span>{{t "mail.unsub.essential"}}</span></div>
+{{if .FlashKey}}<div class="unsub-status" role="status"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#0f4a2a" stroke-width="2.200" stroke-linecap="round"><path d="M3.500 10.500l4 3.500 9-9"/></svg><span>{{t .FlashKey}}</span></div>{{end}}
+{{if .Unsubscribed}}
+<form class="unsub-form" method="post" action="{{.Action}}">
+{{csrfField}}
+<button class="btn btn-red unsub-btn" type="submit" name="action" value="resubscribe">{{t .ResubKey}}</button>
+</form>
+{{else}}
+<form class="unsub-form" method="post" action="{{.Action}}">
+{{csrfField}}
+<button class="btn btn-red unsub-btn" type="submit">{{t .SubmitKey}}</button>
+</form>
+<a class="btn btn-ghost unsub-btn" href="{{.GroupHref}}">{{t .KeepKey}}</a>
+{{end}}
+</div>
+</div>{{end}}

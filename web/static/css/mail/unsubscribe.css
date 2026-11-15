@@ -1,0 +1,15 @@
+/* screen-desinscription : bandeau vert pleine largeur puis contenu clair.
+   Mobile d'abord ; aucun style en ligne, aucune ressource data:. */
+.unsub { display: flex; flex-direction: column; margin: -20px -16px; min-height: 70vh; background: var(--frost); color: var(--ink); }
+.unsub-head { display: flex; align-items: center; gap: 10px; padding: 18px 20px; background: var(--green); color: #fff; border-radius: 0; }
+.unsub-group { font-family: var(--font-display, "Mountains of Christmas", cursive); font-weight: 700; font-size: 24px; line-height: 1.1; }
+.unsub-body { display: flex; flex-direction: column; gap: 18px; padding: 28px 20px 24px; }
+.unsub-bell { align-self: flex-start; flex: none; }
+.unsub-title { margin: 0; font-family: var(--font-display, "Mountains of Christmas", cursive); font-weight: 700; font-size: 38px; line-height: 1.08; color: var(--red); text-wrap: balance; }
+.unsub-intro { margin: 0; font-size: 16px; line-height: 1.55; }
+.unsub-note { display: flex; gap: 10px; padding: 14px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.unsub-note svg { flex: none; margin-top: 1px; }
+.unsub-status { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 14px; background: #dff3e4; color: #0f4a2a; font-size: 14px; line-height: 1.45; font-weight: 700; }
+.unsub-status svg { flex: none; margin-top: 1px; }
+.unsub-form { margin: 0; }
+.unsub-btn { display: flex; width: 100%; min-height: 52px; font-size: 17px; }
