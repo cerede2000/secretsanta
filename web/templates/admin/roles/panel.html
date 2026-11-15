@@ -1,0 +1,78 @@
+{{/*
+  Panneau « Rôles dans le tirage » (section Tirage de screen-admin-tirage).
+  Données : roles.view (Slug, Rows, Sum, Options, DrawDone, Confirm, ErrorKey,
+  notices). Aucun nom de paire : seulement les noms des personnes (sélecteurs)
+  et des comptes. Les textes de JavaScript viennent des attributs data-*.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/roles/roles.css">
+<div class="roles" data-roles data-selected-one="{{t "admin.roles.bulk.selected_one" "count" "{n}"}}" data-selected-other="{{t "admin.roles.bulk.selected_other" "count" "{n}"}}">
+<div class="roles-head"><a class="roles-back" href="{{.BackURL}}" aria-label="{{t "admin.roles.back"}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><h1 class="roles-title">{{t "admin.roles.title"}}</h1></div>
+<div class="roles-body">
+{{if or .NoticeApplied .NoticeFuture}}<div class="roles-alert roles-alert-ok" role="status">
+{{if .NoticeApplied}}<div>{{tn "admin.roles.notice.applied" .NoticeApplied}}</div>{{end}}
+{{if .NoticeFuture}}<div>{{tn "admin.roles.notice.future" .NoticeFuture}}</div>{{end}}
+</div>{{end}}
+<section class="card-admin roles-card" aria-labelledby="roles-sum-title">
+<div class="roles-card-head"><h2 class="roles-card-title" id="roles-sum-title">{{t "admin.roles.summary.title"}}</h2>
+{{if eq .Sum.Status "ok"}}<span class="chip chip-ok">{{t "admin.roles.status.ok"}}</span>{{else if eq .Sum.Status "short"}}<span class="chip chip-error">{{t "admin.roles.status.short"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.roles.status.check"}}</span>{{end}}</div>
+<p class="roles-note">{{t "admin.roles.intro"}}</p>
+<dl class="roles-counts">
+<div><dt>{{t "admin.roles.sum.extra"}}</dt><dd>{{.Sum.Extra}}</dd></div>
+<div><dt>{{t "admin.roles.sum.offre_plus"}}</dt><dd>{{.Sum.OffrePlus}}</dd></div>
+<div><dt>{{t "admin.roles.sum.normal"}}</dt><dd>{{.Sum.Normal}}</dd></div>
+<div><dt>{{t "admin.roles.sum.un_seul"}}</dt><dd>{{.Sum.UnSeul}}</dd></div>
+<div><dt>{{t "admin.roles.sum.reception_seule"}}</dt><dd>{{.Sum.Reception}}</dd></div>
+<div><dt>{{t "admin.roles.sum.capacity"}}</dt><dd>{{.Sum.Capacity}}</dd></div>
+</dl>
+{{if eq .Sum.Status "ok"}}<p class="roles-verdict">{{tn "admin.roles.ok.text" .Sum.Extra "capacity" .Sum.Capacity}}</p>
+{{else if eq .Sum.Status "short"}}<div class="roles-alert roles-alert-error" role="alert">
+<p class="roles-verdict">{{tn .Sum.CauseKey .Sum.Missing}}</p>
+<p class="roles-proposals-title">{{t "admin.roles.short.proposals"}}</p>
+<ul class="roles-proposals"><li>{{t "admin.roles.short.p_offre_plus"}}</li><li>{{t "admin.roles.short.p_normal"}}</li><li>{{t "admin.roles.short.p_cap"}} <a class="roles-link" href="{{.SettingsURL}}">{{t "admin.roles.short.settings"}}</a></li></ul>
+</div>
+{{else}}<p class="roles-verdict">{{t "admin.roles.other.text"}}</p>{{end}}
+</section>
+{{if .Confirm}}<section class="roles-alert roles-alert-error roles-confirm" role="alert" aria-labelledby="roles-confirm-title">
+<h2 class="roles-card-title" id="roles-confirm-title">{{t "admin.roles.confirm.title"}}</h2>
+<ul class="roles-confirm-counts"><li>{{t "admin.roles.confirm.changes" "changes" .Confirm.Changes}}</li><li>{{t "admin.roles.confirm.affected" "affected" .Confirm.Affected}}</li><li>{{t "admin.roles.confirm.discovered" "discovered" .Confirm.Discovered}}</li></ul>
+<p class="roles-note-on-alert">{{t "admin.roles.confirm.explain"}}</p>
+<form class="roles-confirm-form" method="post" action="{{.Action}}">
+{{csrfField}}
+{{range .Confirm.IDs}}<input type="hidden" name="ids" value="{{.}}">{{end}}
+<input type="hidden" name="role" value="{{.Confirm.Role}}">
+<button class="btn btn-danger" type="submit" name="choice" value="repair">{{t "admin.roles.confirm.repair"}}</button>
+<button class="btn btn-ghost" type="submit" name="choice" value="future">{{t "admin.roles.confirm.future"}}</button>
+<a class="btn btn-ghost" href="{{.Action}}">{{t "admin.roles.confirm.cancel"}}</a>
+</form>
+</section>{{end}}
+<section class="card-admin roles-card" aria-labelledby="roles-list-title">
+<h2 class="roles-card-title" id="roles-list-title">{{t "admin.roles.list.title"}}</h2>
+{{if .DrawDone}}<p class="roles-note">{{t "admin.roles.after_draw"}}</p>{{end}}
+<details class="roles-details"><summary>{{t "admin.roles.help.title"}}</summary>{{template "admin/roles/help" .Options}}</details>
+<ul class="roles-list">
+{{range .Rows}}<li class="roles-row">
+<label class="roles-pick"><input type="checkbox" name="ids" value="{{.ID}}" form="roles-bulk-form" data-roles-pick><span class="roles-sr">{{t "admin.roles.row.pick" "name" .Name}}</span></label>
+<span class="roles-name">{{.Name}} {{template "admin/roles/badge" .Badge}}</span>
+{{template "admin/roles/selector" .Selector}}
+</li>
+{{end}}</ul>
+</section>
+<section class="card-admin roles-card" aria-labelledby="roles-bulk-title">
+<h2 class="roles-card-title" id="roles-bulk-title">{{t "admin.roles.bulk.title"}}</h2>
+<p class="roles-note">{{t "admin.roles.bulk.hint"}}</p>
+<form id="roles-bulk-form" class="roles-bulk" method="post" action="{{.Action}}">
+{{csrfField}}
+<label class="field-label" for="roles-bulk-role">{{t "admin.roles.bulk.role_label"}}</label>
+<div class="roles-bulk-line">
+<select class="field roles-select" id="roles-bulk-role" name="role"{{if .ErrorKey}} aria-invalid="true" aria-describedby="roles-error"{{end}}>
+{{range .Options}}<option value="{{.Value}}">{{t .LabelKey}}</option>
+{{end}}</select>
+<button class="btn btn-green roles-bulk-apply" type="submit">{{t "admin.roles.bulk.apply"}}</button>
+</div>
+<p class="roles-note" data-roles-count aria-live="polite"></p>
+{{if .ErrorKey}}<div id="roles-error" class="roles-alert roles-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+</form>
+</section>
+</div>
+</div>
+<script type="module" src="/static/js/admin/roles/roles.js"></script>{{end}}

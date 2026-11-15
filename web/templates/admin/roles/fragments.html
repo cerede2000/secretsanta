@@ -1,0 +1,29 @@
+{{/*
+  Fragments du rôle dans le tirage (F10.6), réutilisés par la fiche et la liste
+  des participants. Données : admin/roles/selector = roles.Selector,
+  admin/roles/badge = roles.Badge, admin/roles/filter = roles.Filter,
+  admin/roles/help = []roles.RoleOption. Fonctions : t, csrfField. CSP stricte :
+  ni style, ni script, ni gestionnaire en ligne.
+*/}}
+{{define "admin/roles/help"}}<ul class="roles-help">
+{{range .}}<li><b>{{t .LabelKey}}</b> : {{t .HelpKey}}</li>
+{{end}}</ul>{{end}}
+{{define "admin/roles/badge"}}<span class="chip roles-badge roles-badge-{{.Role}}">{{t .LabelKey}}</span>{{end}}
+{{define "admin/roles/selector"}}<form class="roles-row-form" method="post" action="/{{.Slug}}/admin/roles" data-roles-row>
+{{csrfField}}
+<input type="hidden" name="ids" value="{{.ID}}">
+{{if .Next}}<input type="hidden" name="next" value="{{.Next}}">{{end}}
+<label class="roles-sr" for="roles-role-{{.Suffix}}">{{t "admin.roles.row.label" "name" .Name}}</label>
+<select class="field roles-select" id="roles-role-{{.Suffix}}" name="role">
+{{range .Options}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{t .LabelKey}}</option>
+{{end}}</select>
+<button class="btn btn-ghost roles-apply" type="submit">{{t "admin.roles.row.apply"}}</button>
+</form>{{end}}
+{{define "admin/roles/filter"}}<form class="roles-filter" method="get" action="{{.Action}}">
+<label class="field-label" for="roles-filter">{{t "admin.roles.filter.label"}}</label>
+<select class="field roles-select" id="roles-filter" name="role">
+<option value=""{{if not .Current}} selected{{end}}>{{t "admin.roles.filter.all"}}</option>
+{{range .Options}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{t .LabelKey}}</option>
+{{end}}</select>
+<button class="btn btn-ghost roles-apply" type="submit">{{t "admin.roles.filter.apply"}}</button>
+</form>{{end}}
