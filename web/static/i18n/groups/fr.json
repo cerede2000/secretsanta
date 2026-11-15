@@ -35,7 +35,7 @@
   "groups.create.error.reveal": "La date de révélation n'est pas valide.",
   "groups.create.error.slug_reserved": "« {slug} » est réservé à l'appli. Essaie famille-2026.",
   "groups.create.error.slug_syntax": "« {slug} » n'est pas une adresse valide : lettres minuscules sans accent, chiffres et tirets (3 à 40 caractères). Essaie famille-2026.",
-  "groups.create.error.slug_taken": "« {slug} » est déjà pris. Choisis-en une autre.",
+  "groups.create.error.slug_taken": "Cette adresse est déjà prise : « {slug} ». Choisis-en une autre.",
   "groups.create.validated": "Validé",
   "groups.created.title": "Groupe créé",
   "groups.created.heading": "Groupe créé : accès généré",

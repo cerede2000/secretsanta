@@ -190,7 +190,7 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request) {
 	}
 	f := Form{
 		Name:      r.PostFormValue("name"),
-		Slug:      strings.ToLower(strings.TrimSpace(r.PostFormValue("slug"))),
+		Slug:      strings.TrimSpace(r.PostFormValue("slug")),
 		Budget:    r.PostFormValue("budget"),
 		RevealAt:  strings.TrimSpace(r.PostFormValue("reveal_at")),
 		EventDate: strings.TrimSpace(r.PostFormValue("event_date")),
@@ -200,7 +200,7 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request) {
 		InstancePassword: r.PostFormValue("password"),
 		ClientKey:        p.d.ClientKey(r),
 		Name:             f.Name,
-		Slug:             f.Slug,
+		Slug:             strings.ToLower(f.Slug),
 		Budget:           f.Budget,
 		EventDate:        f.EventDate,
 		AdminCanViewPair: f.AdminView,
@@ -216,7 +216,7 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request) {
 	res, err := p.d.Groups.Create(r.Context(), in)
 	if err != nil {
 		status, key := errorStatus(err)
-		if slugKey := slugErrorKey(err, f.Slug); slugKey != "" {
+		if slugKey := slugErrorKey(err, strings.ToLower(f.Slug)); slugKey != "" {
 			p.d.Render(w, r, status, TemplateCreate, Page{Lang: p.lang(r), TitleKey: "groups.create.title", Form: f, SlugErrorKey: slugKey, PasswordOK: true})
 			return
 		}

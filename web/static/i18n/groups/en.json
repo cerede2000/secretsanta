@@ -35,7 +35,7 @@
   "groups.create.error.reveal": "The reveal date is not valid.",
   "groups.create.error.slug_reserved": "“{slug}” is reserved by the app. Try family-2026.",
   "groups.create.error.slug_syntax": "“{slug}” is not a valid address: lowercase letters without accents, digits and hyphens (3 to 40 characters). Try family-2026.",
-  "groups.create.error.slug_taken": "“{slug}” is already taken. Pick another one.",
+  "groups.create.error.slug_taken": "This address is already taken: “{slug}”. Pick another one.",
   "groups.create.validated": "Validated",
   "groups.created.title": "Group created",
   "groups.created.heading": "Group created: access generated",
