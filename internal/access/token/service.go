@@ -39,18 +39,30 @@ const maxCodeAttempts = 16
 type Service struct {
 	store      Store
 	codeLength int
+	key        []byte
 }
 
 // NewService crée un service dont les codes courts font codeLength
-// caractères (LoginCodeLength pour la connexion).
-func NewService(store Store, codeLength int) (*Service, error) {
+// caractères (LoginCodeLength pour la connexion) et dont les empreintes sont
+// calculées avec key, la clé de signature de l'instance (valeur de
+// SIGNING_SECRET, obtenue par Reveal). La clé est copiée ; une clé vide est
+// refusée (ErrMissingKey).
+func NewService(store Store, codeLength int, key []byte) (*Service, error) {
 	if store == nil {
 		return nil, errors.New("token: magasin absent")
 	}
 	if codeLength < MinCodeLength || codeLength > MaxCodeLength {
 		return nil, ErrInvalidLength
 	}
-	return &Service{store: store, codeLength: codeLength}, nil
+	if len(key) == 0 {
+		return nil, ErrMissingKey
+	}
+	return &Service{store: store, codeLength: codeLength, key: append([]byte(nil), key...)}, nil
+}
+
+// hash calcule l'empreinte à clé d'un secret pour ce service.
+func (s *Service) hash(groupID string, kind Kind, secret string) string {
+	return Hash(s.key, groupID, kind, secret)
 }
 
 // errInvalidAccess est l'unique refus renvoyé, quelle qu'en soit la cause
@@ -80,7 +92,7 @@ func (s *Service) IssueLink(ctx context.Context, groupID, participantID string) 
 		}
 		err = s.store.Put(ctx, Credential{
 			GroupID: groupID, ParticipantID: participantID,
-			Kind: KindLink, Hash: Hash(groupID, KindLink, tok),
+			Kind: KindLink, Hash: s.hash(groupID, KindLink, tok),
 		})
 		if errors.Is(err, ErrDuplicate) {
 			continue
@@ -107,7 +119,7 @@ func (s *Service) IssueCode(ctx context.Context, groupID, participantID string) 
 		}
 		err = s.store.Put(ctx, Credential{
 			GroupID: groupID, ParticipantID: participantID,
-			Kind: KindCode, Hash: Hash(groupID, KindCode, code),
+			Kind: KindCode, Hash: s.hash(groupID, KindCode, code),
 		})
 		if errors.Is(err, ErrDuplicate) {
 			continue
@@ -136,7 +148,7 @@ func (s *Service) ResolveCode(ctx context.Context, groupID, input string) (strin
 func (s *Service) resolve(ctx context.Context, groupID string, kind Kind, secret string, wellFormed bool) (string, error) {
 	// L'empreinte est calculée même pour une saisie mal formée afin de ne pas
 	// distinguer les refus par leur durée.
-	h := Hash(groupID, kind, secret)
+	h := s.hash(groupID, kind, secret)
 	if groupID == "" || !wellFormed {
 		return "", errInvalidAccess()
 	}

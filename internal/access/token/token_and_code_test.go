@@ -84,7 +84,7 @@ func TestLoginCodesNeverContainAmbiguousProperty(t *testing.T) {
 func TestCodesUniqueInGroupProperty(t *testing.T) {
 	rapid.Check(t, func(t *rapid.T) {
 		n := rapid.IntRange(1, 60).Draw(t, "participants")
-		svc, err := NewService(NewMemoryStore(), LoginCodeLength)
+		svc, err := NewService(NewMemoryStore(), LoginCodeLength, testKey)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -117,7 +117,7 @@ func TestStoreRejectsDuplicateHashProperty(t *testing.T) {
 		code := rapid.StringOfN(rapid.SampledFrom([]rune(Alphabet)), 8, 8, -1).Draw(t, "code")
 		st := NewMemoryStore()
 		ctx := context.Background()
-		h := Hash("g", KindCode, code)
+		h := Hash(testKey, "g", KindCode, code)
 		if err := st.Put(ctx, Credential{GroupID: "g", ParticipantID: "a", Kind: KindCode, Hash: h}); err != nil {
 			t.Fatal(err)
 		}
@@ -144,7 +144,7 @@ func (c *collidingStore) Put(ctx context.Context, cr Credential) error {
 
 func TestIssueCodeRetriesOnCollision(t *testing.T) {
 	st := &collidingStore{MemoryStore: NewMemoryStore(), collisions: 3}
-	svc, _ := NewService(st, LoginCodeLength)
+	svc, _ := NewService(st, LoginCodeLength, testKey)
 	code, err := svc.IssueCode(context.Background(), "g", "p")
 	if err != nil {
 		t.Fatal(err)
@@ -157,7 +157,7 @@ func TestIssueCodeRetriesOnCollision(t *testing.T) {
 	}
 
 	st = &collidingStore{MemoryStore: NewMemoryStore(), collisions: 1 << 30}
-	svc, _ = NewService(st, LoginCodeLength)
+	svc, _ = NewService(st, LoginCodeLength, testKey)
 	if _, err := svc.IssueCode(context.Background(), "g", "p"); err == nil {
 		t.Fatal("collisions infinies : erreur attendue")
 	}
@@ -167,7 +167,7 @@ func TestIssueCodeRetriesOnCollision(t *testing.T) {
 // empreintes qui ne le contiennent pas.
 func TestSecretsStoredHashed(t *testing.T) {
 	rec := &recordingStore{MemoryStore: NewMemoryStore()}
-	svc, _ := NewService(rec, LoginCodeLength)
+	svc, _ := NewService(rec, LoginCodeLength, testKey)
 	ctx := context.Background()
 	tok, err := svc.IssueLink(ctx, "g", "p")
 	if err != nil {
@@ -189,7 +189,7 @@ func TestSecretsStoredHashed(t *testing.T) {
 			t.Fatalf("empreinte de %d caractères, attendu 64 (SHA-256)", len(c.Hash))
 		}
 	}
-	if rec.puts[0].Hash != Hash("g", KindLink, tok) || rec.puts[1].Hash != Hash("g", KindCode, code) {
+	if rec.puts[0].Hash != Hash(testKey, "g", KindLink, tok) || rec.puts[1].Hash != Hash(testKey, "g", KindCode, code) {
 		t.Fatal("empreintes inattendues")
 	}
 }
@@ -206,7 +206,7 @@ func (r *recordingStore) Put(ctx context.Context, c Credential) error {
 
 func TestRenewalInvalidatesPreviousSecret(t *testing.T) {
 	st := NewMemoryStore()
-	svc, _ := NewService(st, LoginCodeLength)
+	svc, _ := NewService(st, LoginCodeLength, testKey)
 	ctx := context.Background()
 	oldTok, _ := svc.IssueLink(ctx, "g", "p")
 	oldCode, _ := svc.IssueCode(ctx, "g", "p")
@@ -230,7 +230,7 @@ func TestRenewalInvalidatesPreviousSecret(t *testing.T) {
 }
 
 func TestResolveCodeToleratesFormatting(t *testing.T) {
-	svc, _ := NewService(NewMemoryStore(), LoginCodeLength)
+	svc, _ := NewService(NewMemoryStore(), LoginCodeLength, testKey)
 	ctx := context.Background()
 	code, _ := svc.IssueCode(ctx, "g", "p")
 	typed := " " + strings.ToLower(code[:4]) + "-" + code[4:] + " "
@@ -241,11 +241,11 @@ func TestResolveCodeToleratesFormatting(t *testing.T) {
 
 func TestLinkAndCodeAreNotInterchangeable(t *testing.T) {
 	st := NewMemoryStore()
-	svc, _ := NewService(st, LoginCodeLength)
+	svc, _ := NewService(st, LoginCodeLength, testKey)
 	ctx := context.Background()
 	code, _ := svc.IssueCode(ctx, "g", "p")
 	// Même secret, natures différentes : empreintes différentes.
-	if Hash("g", KindCode, code) == Hash("g", KindLink, code) {
+	if Hash(testKey, "g", KindCode, code) == Hash(testKey, "g", KindLink, code) {
 		t.Fatal("la nature n'entre pas dans l'empreinte")
 	}
 	if _, err := svc.ResolveLink(ctx, "g", code); err == nil {

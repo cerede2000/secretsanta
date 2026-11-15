@@ -70,10 +70,10 @@ func TestCodeGeneratorRejectsBadLength(t *testing.T) {
 			t.Errorf("GenerateCode(%d) sans erreur", n)
 		}
 	}
-	if _, err := NewService(NewMemoryStore(), 3); err == nil {
+	if _, err := NewService(NewMemoryStore(), 3, testKey); err == nil {
 		t.Error("NewService avec une longueur de 3 accepté")
 	}
-	if _, err := NewService(nil, LoginCodeLength); err == nil {
+	if _, err := NewService(nil, LoginCodeLength, testKey); err == nil {
 		t.Error("NewService sans magasin accepté")
 	}
 }
@@ -81,7 +81,7 @@ func TestCodeGeneratorRejectsBadLength(t *testing.T) {
 func TestServiceHonoursCodeLength(t *testing.T) {
 	ctx := context.Background()
 	for _, n := range []int{VerificationCodeLength, LoginCodeLength} {
-		svc, err := NewService(NewMemoryStore(), n)
+		svc, err := NewService(NewMemoryStore(), n, testKey)
 		if err != nil {
 			t.Fatal(err)
 		}
