@@ -1,0 +1,18 @@
+{
+  "mailbox.title": "Ta boîte aux lettres",
+  "mailbox.error.title": "Boîte aux lettres introuvable",
+  "mailbox.back": "Retour",
+  "mailbox.own.title": "Ma lettre au Père Noël",
+  "mailbox.own.state.empty": "Pas encore écrite",
+  "mailbox.own.state.draft": "Brouillon",
+  "mailbox.own.state.sent": "Pas encore lue",
+  "mailbox.own.state.read": "Lue par le Père Noël",
+  "mailbox.received.title": "Lettre reçue",
+  "mailbox.received.title_n": "Lettre reçue · cadeau {n} sur {total}",
+  "mailbox.received.state.written": "À lire",
+  "mailbox.received.state.blank": "Pas encore écrite",
+  "mailbox.note.two": "La deuxième lettre n'apparaît que si tu offres 2 cadeaux. Aucune lettre ne révèle qui s'occupe de la tienne.",
+  "mailbox.note.reception": "Sans cadeau à offrir (réception seule), seule ta lettre apparaît ici.",
+  "mailbox.info.lead": "Le Père Noël lit tout et ne répond pas.",
+  "mailbox.info.body": "Tu ne sauras jamais qui s'occupe de ta lettre, et il ne saura jamais que c'est toi qui l'as écrite à moins que tu le dises."
+}
