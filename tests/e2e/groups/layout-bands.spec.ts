@@ -1,20 +1,20 @@
 import { expect, test } from '@playwright/test';
 import { expectNoHorizontalScroll } from '../_shared/mobile';
+import { lane } from '../_shared/seed';
 
-const slug = process.env.E2E_GROUP_SLUG ?? 'e2e-acces';
 
 // L'accueil nocturne et le bandeau vert de creation vont de bord a bord,
 // sans rayon, comme dans la maquette.
-const BANDS: Array<[string, string, string]> = [
-  ['fond nocturne de l\'accueil du groupe', `/${slug}`, '.groups-home'],
-  ['bandeau vert de la creation', '/creer', '.groups-create-head'],
+const BANDS: Array<[string, (slug: string) => string, string]> = [
+  ['fond nocturne de l\'accueil du groupe', (slug) => `/${slug}`, '.groups-home'],
+  ['bandeau vert de la creation', () => '/creer', '.groups-create-head'],
 ];
 
 for (const width of [360, 390]) {
-  for (const [name, path, selector] of BANDS) {
-    test(`${name} : bord a bord a ${width} px`, async ({ page }) => {
+  for (const [name, pathOf, selector] of BANDS) {
+    test(`${name} : bord a bord a ${width} px`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 800 });
-      await page.goto(path);
+      await page.goto(pathOf(lane(testInfo).people.slug));
       const box = await page.locator(selector).boundingBox();
       expect(box, `${selector} sans boite`).not.toBeNull();
       expect(Math.round(box!.x)).toBe(0);

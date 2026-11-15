@@ -8,9 +8,16 @@ export default defineConfig({
   testDir: '.',
   testMatch: ['foundation/**/*.spec.ts', '**/*.spec.ts'],
   fullyParallel: true,
+  globalSetup: './global-setup.ts',
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  // Garde du banc : aucun test sauté (reporter), rapport JSON recoupé par
+  // scripts/e2e.sh avec _shared/check-report.mts.
+  reporter: [
+    [process.env.CI ? 'github' : 'list'],
+    ['json', { outputFile: process.env.E2E_REPORT_FILE ?? 'test-results/report.json' }],
+    ['./_shared/no-skip-reporter.ts'],
+  ],
   use: {
     baseURL,
     locale: 'fr-FR',

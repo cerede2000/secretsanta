@@ -1,11 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
 import { expectNoHorizontalScroll } from '../_shared';
+import { seed } from '../_shared/seed';
 
 // Smoke du cablage de la vague 8 sur l'application reelle : pages
 // d'administration (menu, tableau de bord, controle, journal, roles), page du
 // participant renvoyee vers la connexion, reponse neutre du lien d'inscription.
-// Le mot de passe d'instance est celui du serveur teste.
-const INSTANCE_PASSWORD = process.env.E2E_INSTANCE_PASSWORD ?? process.env.INSTANCE_PASSWORD ?? '';
+// Le mot de passe d'instance vient de l'amorcage (_shared/seed.ts).
+const instancePassword = (): string => seed().instancePassword;
 
 function uniqueSlug(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -27,12 +28,11 @@ async function watchCSP(page: Page): Promise<string[]> {
 }
 
 test('administration : pages montees, navigation resolue, CSP stricte, mobile sans debordement', async ({ page }) => {
-  test.skip(INSTANCE_PASSWORD === '', 'E2E_INSTANCE_PASSWORD (ou INSTANCE_PASSWORD) non fourni');
   const problems = await watchCSP(page);
   const slug = uniqueSlug('w8');
 
   await page.goto('/creer');
-  await page.fill('#g-password', INSTANCE_PASSWORD);
+  await page.fill('#g-password', instancePassword());
   await page.fill('#g-name', 'Vague huit');
   await page.fill('#g-slug', slug);
   await page.click('.groups-submit');
@@ -80,10 +80,9 @@ test('administration : pages montees, navigation resolue, CSP stricte, mobile sa
 });
 
 test('participant : /participant renvoie vers la connexion, le lien d\'inscription inconnu donne la reponse neutre', async ({ page }) => {
-  test.skip(INSTANCE_PASSWORD === '', 'E2E_INSTANCE_PASSWORD (ou INSTANCE_PASSWORD) non fourni');
   const slug = uniqueSlug('w8p');
   await page.goto('/creer');
-  await page.fill('#g-password', INSTANCE_PASSWORD);
+  await page.fill('#g-password', instancePassword());
   await page.fill('#g-name', 'Vague huit');
   await page.fill('#g-slug', slug);
   await page.click('.groups-submit');

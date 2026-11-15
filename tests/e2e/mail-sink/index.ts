@@ -57,6 +57,29 @@ export async function waitForMail(to: string, timeoutMs = 15000): Promise<Mail> 
   }
 }
 
+/**
+ * Attend (sondage) le premier message qui satisfait `match`, du plus récent au
+ * plus ancien. L'amorçage s'en sert pour lire le bon courriel parmi ceux d'une
+ * même adresse (code de vérification, bienvenue...).
+ */
+export async function waitForMailWhere(
+  match: (m: MailSummary) => boolean,
+  timeoutMs = 20000,
+): Promise<Mail> {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const hit = (await listMails()).find(match);
+    if (hit) return getMail(hit.ID);
+    if (Date.now() > deadline) throw new Error(`aucun courriel attendu après ${timeoutMs} ms`);
+    await new Promise((r) => setTimeout(r, 200));
+  }
+}
+
+/** Code de vérification d'inscription : six caractères après « code de vérification : ». */
+export function extractVerificationCode(mail: Pick<Mail, 'Text'>): string | null {
+  return /(?:code de v[ée]rification|verification code)\s*:\s*([A-Za-z0-9]{4,12})/i.exec(mail.Text)?.[1] ?? null;
+}
+
 /** Premier code de vérification (suite de chiffres isolée, 4 à 8 chiffres) du texte. */
 export function extractCode(mail: Pick<Mail, 'Text'>): string | null {
   return /(?<![\d])(\d{4,8})(?![\d])/.exec(mail.Text)?.[1] ?? null;

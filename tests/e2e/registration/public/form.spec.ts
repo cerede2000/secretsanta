@@ -1,12 +1,17 @@
 import { expect, test } from '@playwright/test';
 import { expectAllInteractiveTargets, expectNoHorizontalScroll, expectTouchTargets } from '../../_shared';
-import { INVITE_PATH, requireInvite } from './invite';
+import { asNewVisitor, lane } from '../../_shared/seed';
 
 // Formulaire d'inscription (screen-inscription) et saisie du code
 // (screen-inscription-code) en 360x640 et 390x844 (projets Playwright).
-test.beforeEach(requireInvite);
+// Donnees : groupe d'amorcage « reg » du couloir (lien d'invitation actif, _shared/seed.ts).
+// Chaque test se presente comme un visiteur distinct (limiteur d'inscriptions par adresse IP).
+test.beforeEach(async ({ context }) => {
+  await asNewVisitor(context);
+});
 
-test('formulaire : sans defilement horizontal, cibles de 44 px, fond nocturne de bord a bord', async ({ page }) => {
+test('formulaire : sans defilement horizontal, cibles de 44 px, fond nocturne de bord a bord', async ({ page }, testInfo) => {
+  const INVITE_PATH = lane(testInfo).reg.invitePath;
   await page.goto(INVITE_PATH);
   await expect(page.locator('input[name="prenom"]')).toBeVisible();
   await expectNoHorizontalScroll(page);
@@ -20,7 +25,8 @@ test('formulaire : sans defilement horizontal, cibles de 44 px, fond nocturne de
   expect(await page.locator('[style]').count(), 'style en ligne').toBe(0);
 });
 
-test('formulaire : un champ vide affiche son message SOUS le champ, role=alert', async ({ page }) => {
+test('formulaire : un champ vide affiche son message SOUS le champ, role=alert', async ({ page }, testInfo) => {
+  const INVITE_PATH = lane(testInfo).reg.invitePath;
   await page.goto(INVITE_PATH);
   await page.locator('form.reg-card').filter({ has: page.locator('input[name="prenom"]') }).locator('button[type="submit"]').click();
   const first = page.locator('#reg-first');
@@ -33,9 +39,10 @@ test('formulaire : un champ vide affiche son message SOUS le champ, role=alert',
   await expectNoHorizontalScroll(page);
 });
 
-test('saisie du code : affichee apres l\'envoi, sans defilement horizontal, cibles de 44 px', async ({ page }) => {
+test('saisie du code : affichee apres l\'envoi, sans defilement horizontal, cibles de 44 px', async ({ page }, testInfo) => {
+  const INVITE_PATH = lane(testInfo).reg.invitePath;
   await page.goto(INVITE_PATH);
-  const unique = Date.now().toString(36);
+  const unique = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
   await page.fill('#reg-first', 'Camille');
   await page.fill('#reg-name', `Test ${unique}`);
   await page.fill('#reg-email', `camille.${unique}@exemple.test`);

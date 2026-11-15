@@ -21,6 +21,9 @@ services:
       MAIL_EHLO_HOSTNAME: ss-test.invalid
       MAIL_TLS_MODE: none
       MAIL_ALLOW_INSECURE: "true"
+      # L'amorçage Playwright inscrit des dizaines de personnes : le débit par défaut
+      # (30 courriels par minute) retarderait les codes de vérification.
+      MAIL_MAX_PER_MINUTE: "10000"
     volumes:
       - ss-test-data:/data
     depends_on:

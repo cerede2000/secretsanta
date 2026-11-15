@@ -26,6 +26,8 @@ const PATTERNS: Array<[string, RegExp]> = [
 const ALLOW: Array<{ file: RegExp; strip: RegExp; why: string }> = [
   // Espaces de noms XML/SVG : des identifiants, jamais charges.
   { file: /\.svg$/, strip: /\bxmlns(?::[a-z]+)?\s*=\s*["']http:\/\/www\.w3\.org\/(?:2000\/svg|1999\/xlink)["']/gi, why: 'espace de noms SVG/XLink dans un .svg' },
+  // Espace de noms SVG passe a createElementNS : un identifiant, jamais charge.
+  { file: /\.m?js$/, strip: /["']http:\/\/www\.w3\.org\/2000\/svg["']/g, why: 'espace de noms SVG (createElementNS) dans un script' },
   // Texte d'une licence de police (OFL) : prose et URL de reference, jamais charge.
   { file: /^static\/fonts\/[^/]*(?:LICENSE|OFL|licen[cs]e)[^/]*\.txt$/i, strip: /.*/g, why: 'texte de licence de police' },
 ];

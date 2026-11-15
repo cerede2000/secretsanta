@@ -5,12 +5,16 @@
 #   scripts/e2e.sh [spec...]   idem avec tous les tests Playwright (ou les specs données)
 #
 # Étapes : docker build de l'image du dépôt, docker compose up --wait (application +
-# Mailpit), Playwright dans les deux profils mobiles (360x640 et 390x844), puis
-# nettoyage systématique : down -v, suppression de l'image de recette, et contrôle
-# qu'aucun conteneur ni volume « ss-test » ne subsiste.
+# Mailpit), Playwright dans les deux profils mobiles (360x640 et 390x844), garde
+# du banc (aucun test sauté, aucun échec : --forbid-only, reporter no-skip et
+# vérification du rapport JSON), puis nettoyage systématique : down -v,
+# suppression de l'image de recette, et contrôle qu'aucun conteneur ni volume
+# « ss-test » ne subsiste.
 #
 # Docker : honore DOCKER_CONTEXT et DOCKER_HOST s'ils sont définis, sinon utilise le
-# contexte courant. Les secrets de test sont générés à chaque exécution.
+# contexte courant. Les secrets de test sont générés à chaque exécution. Les
+# données de départ des specs sont créées par tests/e2e/global-setup.ts, par
+# l'application elle-même (codes lus dans Mailpit) ; --smoke s'en passe.
 # Variables facultatives : SS_TEST_APP_PORT (18080), SS_TEST_MAIL_API_PORT (18025).
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -21,7 +25,7 @@ specs=()
 for a in "$@"; do
   case "$a" in
     --smoke) smoke=1 ;;
-    -h|--help) sed -n '2,13p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,/^set -/p' "$0" | sed '$d'; exit 0 ;;
     -*) echo "option inconnue : $a" >&2; exit 2 ;;
     *) specs+=("$a") ;;
   esac
@@ -41,6 +45,9 @@ export SS_TEST_SIGNING_SECRET="t-$(openssl rand -hex 32)"
 export E2E_BASE_URL="http://127.0.0.1:$app_port"
 export E2E_MAIL_API="http://127.0.0.1:$mail_port"
 export E2E_INSTANCE_PASSWORD=$SS_TEST_INSTANCE_PASSWORD
+export E2E_SIGNING_SECRET=$SS_TEST_SIGNING_SECRET
+report=$(mktemp "${TMPDIR:-/tmp}/ss-e2e-report.XXXXXX")
+export E2E_REPORT_FILE=$report
 
 leftovers() {
   { docker ps -a --filter name='^ss-test' --format 'conteneur {{.Names}}'
@@ -52,6 +59,7 @@ cleanup() {
   trap - EXIT
   if [ "$code" -ne 0 ]; then "${compose[@]}" logs --no-color --tail=40 2>&1 || true; fi
   "${compose[@]}" down -v --remove-orphans >/dev/null 2>&1 || true
+  rm -f "$report"
   docker rmi -f "$image" >/dev/null 2>&1 || true
   left=$(leftovers)
   if [ -n "$left" ]; then
@@ -86,11 +94,15 @@ curl -fsS -o /dev/null "$E2E_MAIL_API/api/v1/info" || { echo "l'API Mailpit ne r
 echo "== Playwright (profils mobile-360x640 et mobile-390x844)"
 cd tests/e2e
 [ -d node_modules ] || npm ci
+# Garde du banc : un test sauté ne prouve rien. --forbid-only refuse test.only ;
+# le reporter _shared/no-skip-reporter.ts fait échouer l'exécution au premier test
+# sauté ; check-report.mts recoupe avec le rapport JSON (0 sauté, 0 échec, > 0 joué).
 if [ "$smoke" = 1 ]; then
-  npx playwright test foundation/home.spec.ts
+  E2E_SEED_SKIP=1 npx playwright test --forbid-only foundation/home.spec.ts
 elif [ ${#specs[@]} -gt 0 ]; then
-  npx playwright test "${specs[@]}"
+  npx playwright test --forbid-only "${specs[@]}"
 else
-  npx playwright test
+  npx playwright test --forbid-only
 fi
+node _shared/check-report.mts "$E2E_REPORT_FILE"
 echo "== recette terminée"

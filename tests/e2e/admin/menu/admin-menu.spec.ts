@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
+import { seed } from '../../_shared/seed';
 import { expectInLowerThird, expectNoHorizontalScroll, expectTouchTargets } from '../../_shared';
 
 // Routes attendues (branchees par l'orchestrateur) : GET /<slug>/admin/plus et
 // POST /<slug>/admin/deconnexion, apres la connexion administrateur.
-const INSTANCE_PASSWORD = process.env.E2E_INSTANCE_PASSWORD ?? process.env.INSTANCE_PASSWORD ?? '';
+const instancePassword = (): string => seed().instancePassword;
 
 function uniqueSlug(prefix: string): string {
   return `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -12,7 +13,7 @@ function uniqueSlug(prefix: string): string {
 async function createAndLogin(page: Page): Promise<string> {
   const slug = uniqueSlug('menu');
   await page.goto('/creer');
-  await page.fill('#g-password', INSTANCE_PASSWORD);
+  await page.fill('#g-password', instancePassword());
   await page.fill('#g-name', 'Menu test');
   await page.fill('#g-slug', slug);
   await page.click('.groups-submit');
@@ -22,10 +23,6 @@ async function createAndLogin(page: Page): Promise<string> {
   await page.click('.access-submit');
   return slug;
 }
-
-test.beforeEach(() => {
-  test.skip(INSTANCE_PASSWORD === '', 'E2E_INSTANCE_PASSWORD (ou INSTANCE_PASSWORD) non fourni');
-});
 
 test('feuille Plus : cinq entrees, deconnexion separee, cibles tactiles, pas de defilement horizontal', async ({ page }) => {
   const slug = await createAndLogin(page);

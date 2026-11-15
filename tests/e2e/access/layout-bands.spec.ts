@@ -1,20 +1,20 @@
 import { expect, test } from '@playwright/test';
 import { expectNoHorizontalScroll } from '../_shared/mobile';
+import { lane } from '../_shared/seed';
 
-const slug = process.env.E2E_GROUP_SLUG ?? 'e2e-acces';
 
 // Le fond nocturne (connexion) et le bandeau vert (connexion administrateur)
 // doivent aller de bord a bord, sans bande claire a droite.
-const BANDS: Array<[string, string, string]> = [
-  ['fond nocturne de la connexion', `/${slug}/connexion`, '.access-night'],
-  ['bandeau vert de la connexion administrateur', `/${slug}/admin/connexion`, '.access-admin-head'],
+const BANDS: Array<[string, (slug: string) => string, string]> = [
+  ['fond nocturne de la connexion', (slug) => `/${slug}/connexion`, '.access-night'],
+  ['bandeau vert de la connexion administrateur', (slug) => `/${slug}/admin/connexion`, '.access-admin-head'],
 ];
 
 for (const width of [360, 390]) {
-  for (const [name, path, selector] of BANDS) {
-    test(`${name} : bord a bord a ${width} px`, async ({ page }) => {
+  for (const [name, pathOf, selector] of BANDS) {
+    test(`${name} : bord a bord a ${width} px`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 800 });
-      await page.goto(path);
+      await page.goto(pathOf(lane(testInfo).people.slug));
       const box = await page.locator(selector).boundingBox();
       expect(box, `${selector} sans boite`).not.toBeNull();
       expect(Math.round(box!.x)).toBe(0);
@@ -26,7 +26,8 @@ for (const width of [360, 390]) {
 
 // Etagement de la neige : jamais au-dessus des champs et boutons, absente des
 // ecrans clairs.
-test('la neige reste sous le contenu de la connexion', async ({ page }) => {
+test('la neige reste sous le contenu de la connexion', async ({ page }, testInfo) => {
+  const slug = lane(testInfo).people.slug;
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto(`/${slug}/connexion`);
   await expect(page.locator('.snow')).toHaveCSS('display', 'block');
@@ -49,13 +50,13 @@ test('la neige reste sous le contenu de la connexion', async ({ page }) => {
   expect(z.card).toBeGreaterThan(z.snow);
 });
 
-for (const [name, path] of [
-  ['la connexion administrateur', `/${slug}/admin/connexion`],
-  ['la creation de groupe', '/creer'],
+for (const [name, pathOf] of [
+  ['la connexion administrateur', (slug: string) => `/${slug}/admin/connexion`],
+  ['la creation de groupe', () => '/creer'],
 ] as const) {
-  test(`pas de neige sur ${name} (ecran clair)`, async ({ page }) => {
+  test(`pas de neige sur ${name} (ecran clair)`, async ({ page }, testInfo) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await page.goto(path);
+    await page.goto(pathOf(lane(testInfo).people.slug));
     const display = await page.evaluate(() => {
       const el = document.querySelector('.snow');
       return el ? getComputedStyle(el).display : 'absent';

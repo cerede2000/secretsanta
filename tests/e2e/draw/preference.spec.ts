@@ -1,20 +1,17 @@
 import { expect, test } from '@playwright/test';
 import { expectAllInteractiveTargets, expectNoHorizontalScroll } from '../_shared/mobile';
-import { loginWithCode, slug } from './login';
+import { lane, loginPerson, person } from '../_shared/seed';
 
-// Code de connexion d'une personne au role normal, tirage pas encore fait.
-const code = process.env.E2E_DRAW_NORMAL_CODE ?? '';
-
-test.beforeEach(() => {
-  test.skip(code === '', 'E2E_DRAW_NORMAL_CODE non fourni');
-});
-
-test('preference « un seul cadeau » : decochee par defaut, bascule, mobile', async ({ page }) => {
-  await loginWithCode(page, code);
+// F4d.AC5 et AC9 : la preference « un seul cadeau » avant le tirage. Donnees :
+// groupe d'amorcage « draft » du couloir (tirage pas encore fait), personne au
+// role normal (_shared/seed.ts).
+test('preference « un seul cadeau » : decochee par defaut, bascule, mobile', async ({ page }, testInfo) => {
+  const g = lane(testInfo).draft;
+  await loginPerson(page, person(g, 'normal'));
+  await page.goto(`/${g.slug}/participant`);
   const sw = page.locator('.draw-pref [role="switch"]');
   await expect(sw).toBeVisible();
-  const before = await sw.getAttribute('aria-checked');
-  expect(before).toBe('false');
+  await expect(sw).toHaveAttribute('aria-checked', 'false');
   await expectNoHorizontalScroll(page);
   await expectAllInteractiveTargets(page);
   const box = await sw.boundingBox();
@@ -22,11 +19,18 @@ test('preference « un seul cadeau » : decochee par defaut, bascule, mobile', a
   expect(box!.width).toBeGreaterThanOrEqual(43.5);
 
   await sw.click();
-  await expect(page).toHaveURL(new RegExp(`/${slug}/participant$`));
+  await expect(page).toHaveURL(new RegExp(`/${g.slug}/participant$`));
   await expect(page.locator('.draw-pref [role="switch"]')).toHaveAttribute('aria-checked', 'true');
   await expectNoHorizontalScroll(page);
 
   // Remise a l'etat initial.
   await page.locator('.draw-pref [role="switch"]').click();
   await expect(page.locator('.draw-pref [role="switch"]')).toHaveAttribute('aria-checked', 'false');
+});
+
+test('preference : jamais proposee a une personne qui ne fait que recevoir', async ({ page }, testInfo) => {
+  const g = lane(testInfo).draft;
+  await loginPerson(page, person(g, 'reception_seule'));
+  await page.goto(`/${g.slug}/participant`);
+  await expect(page.locator('.draw-pref')).toHaveCount(0);
 });
