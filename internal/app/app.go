@@ -236,7 +236,7 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 	// Ordre : en-têtes, CSRF, sessions, négociation de langue, routes. La
 	// langue par défaut du groupe (groupsettings) sert en dernier recours.
 	lang := negotiate.Middleware(cat, cfg.DefaultLang, a.GroupSettings)
-	a.handler = websec.SecurityHeaders(policy)(csrf.Middleware(a.Sessions.Middleware(lang(a.routes()))))
+	a.handler = a.logServerErrors(websec.SecurityHeaders(policy)(csrf.Middleware(a.Sessions.Middleware(lang(a.routes())))))
 	return a, nil
 }
 

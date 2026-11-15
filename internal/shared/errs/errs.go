@@ -1,7 +1,11 @@
 // Package errs définit les erreurs typées avec messages français.
 package errs
 
-import "errors"
+import (
+	"errors"
+	"log/slog"
+	"regexp"
+)
 
 // Kind classe une erreur.
 type Kind string
@@ -80,9 +84,33 @@ func NotFound(message string) *Error   { return New(KindNotFound, message) }
 func Conflict(message string) *Error   { return New(KindConflict, message) }
 func Forbidden(message string) *Error  { return New(KindForbidden, message) }
 
-// Internal renvoie une erreur interne au message générique.
+// Internal renvoie une erreur interne au message générique. Le message
+// générique est tout ce que l'utilisateur voit : la cause est donc journalisée
+// ici, dès la création, pour qu'une erreur interne ne reste jamais muette.
 func Internal(cause error) *Error {
+	if cause != nil {
+		slog.Error("erreur interne", "cause", Redact(cause.Error()))
+	}
 	return Wrap(KindInternal, "Une erreur interne est survenue. Réessayez plus tard.", cause)
+}
+
+var (
+	redactEmail = regexp.MustCompile(`[^\s@<>"']+@[^\s@<>"']+`)
+	redactToken = regexp.MustCompile(`[A-Za-z0-9_-]{20,}`)
+	redactURL   = regexp.MustCompile(`https?://\S+`)
+)
+
+// Redact rend un message d'erreur publiable dans le journal : adresses
+// électroniques, URL (qui peuvent porter un jeton) et longues chaînes opaques
+// (jetons, secrets) sont remplacées, et la longueur est bornée.
+func Redact(msg string) string {
+	msg = redactURL.ReplaceAllString(msg, "<url>")
+	msg = redactEmail.ReplaceAllString(msg, "<adresse>")
+	msg = redactToken.ReplaceAllString(msg, "<opaque>")
+	if r := []rune(msg); len(r) > 300 {
+		msg = string(r[:300]) + "…"
+	}
+	return msg
 }
 
 // KindOf renvoie la nature d'une erreur ; KindInternal si elle n'est pas typée.
