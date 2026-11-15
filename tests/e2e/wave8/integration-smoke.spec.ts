@@ -51,6 +51,9 @@ test('administration : pages montees, navigation resolue, CSP stricte, mobile sa
     [`/${slug}/admin/plus`, 200],
     [`/${slug}/admin/roles`, 200],
     [`/${slug}/admin/journal`, 200],
+    [`/${slug}/admin/inscriptions`, 200],
+    [`/${slug}/admin/participants`, 200],
+    [`/${slug}/admin/tirage`, 200],
     [`/${slug}/admin/controle`, 409], // tirage pas encore fait : page rendue avec son message
   ];
   for (const [path, status] of pages) {
@@ -62,7 +65,7 @@ test('administration : pages montees, navigation resolue, CSP stricte, mobile sa
     await expectNoHorizontalScroll(page);
     // La navigation n'a plus de {slug} litteral et pointe vers ce groupe.
     const hrefs = await page.locator('.admin-nav a').evaluateAll((els) => els.map((e) => e.getAttribute('href') ?? ''));
-    expect(hrefs.length, `${path} : entrees de navigation`).toBe(4);
+    expect(hrefs.length, `${path} : entrees de navigation`).toBe(5);
     for (const h of hrefs) expect(h, path).toMatch(new RegExp(`^/${slug}/admin`));
     expect(await page.locator('.admin-nav [aria-current="page"]').count(), `${path} : entree active`).toBe(1);
   }
