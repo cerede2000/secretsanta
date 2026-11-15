@@ -24,6 +24,7 @@ const (
 	SettingsPath = "/{slug}/admin/reglages"
 	JournalPath  = "/{slug}/admin/journal"
 	ExportPath   = "/{slug}/admin/participants/export"
+	DataPath     = "/{slug}/admin/donnees"
 	HelpPath     = "/{slug}/admin/aide"
 	LoginPath    = "/{slug}/admin/connexion"
 	LogoutPath   = "/{slug}/admin/deconnexion"
@@ -127,6 +128,7 @@ func (p *Pages) Menu() http.Handler {
 			{Href: fill(SettingsPath, g.Slug), TitleKey: "admin.menu.settings", HintKey: "admin.menu.settings.hint", Icon: "settings"},
 			{Href: fill(JournalPath, g.Slug), TitleKey: "admin.menu.journal", HintKey: "admin.menu.journal.hint", Icon: "journal"},
 			{Href: fill(ExportPath, g.Slug), TitleKey: "admin.menu.export", HintKey: "admin.menu.export.hint", Icon: "export"},
+			{Href: fill(DataPath, g.Slug), TitleKey: "admin.menu.data", HintKey: "admin.menu.data.hint", Icon: "data"},
 			{Href: fill(HelpPath, g.Slug), TitleKey: "admin.menu.help", HintKey: "admin.menu.help.hint", Icon: "help"},
 		}
 		p.d.Render(w, r, http.StatusOK, TemplateLayout, Page{

@@ -5,6 +5,7 @@
 .letter-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; }
 .letter-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--night-muted); font-weight: 700; font-size: 15px; text-decoration: none; }
 .letter-saved { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--night-muted); }
+.letter-saved svg { color: #7fc79c; }
 .letter-welcome { padding: 12px 14px; border-radius: 14px; background: var(--warn-bg); color: var(--warn-ink); font-size: 15px; line-height: 1.45; }
 .letter-alert { padding: 10px 12px; border-radius: 12px; background: var(--danger-bg); color: var(--danger); font-size: 14px; font-weight: 700; }
 .letter-sheet { display: flex; flex-direction: column; gap: 14px; padding: 20px 16px 22px; border-radius: 22px; background: var(--frost); color: var(--ink); box-shadow: 0 10px 26px rgba(8, 14, 40, .4); position: relative; }
@@ -14,7 +15,7 @@
 .letter-label { font-size: 14px; font-weight: 800; color: var(--ink); }
 .letter-input, .letter-ta { box-sizing: border-box; width: 100%; border: 2px solid var(--field-line); border-radius: 12px; background: #fff; color: var(--ink); font: 600 16px var(--font-body); }
 .letter-input { height: 48px; padding: 0 14px; }
-.letter-ta { padding: 12px 14px; line-height: 1.5; resize: vertical; }
+.letter-ta { padding: 12px 14px; line-height: 1.5; resize: none; }
 .letter-input:focus-visible, .letter-ta:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
 .letter-invalid { border-color: var(--red); }
 .letter-error { padding: 8px 10px; border-radius: 10px; background: var(--danger-bg); color: var(--danger); font-size: 13px; font-weight: 700; line-height: 1.4; }
@@ -24,8 +25,9 @@
 .letter-h2 { margin: 0; font-family: var(--font-display); font-size: 26px; color: var(--green); }
 .letter-count { font-size: 13px; font-weight: 700; color: var(--ink-2); }
 .letter-empty { margin: 0; font-size: 14px; color: var(--ink-2); }
-.letter-idea { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
-.letter-idea-read { min-height: 76px; box-sizing: border-box; }
+.letter-idea { display: flex; gap: 12px; align-items: stretch; padding: 12px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); min-width: 0; }
+.letter-idea-read { align-items: center; min-height: 76px; box-sizing: border-box; }
+.letter-sheet-read { padding: 22px 16px; }
 .letter-thumb { flex: none; width: 64px; height: 64px; border-radius: 10px; object-fit: cover; }
 .letter-thumb-small { width: 52px; height: 52px; }
 .letter-idea-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; overflow-wrap: anywhere; }
@@ -39,7 +41,8 @@
 .letter-file { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 .letter-photo:focus-within { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
 .letter-add { flex: 1; min-width: 120px; }
-.letter-grouped { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--frost); color: var(--warn-ink); font-size: 13px; font-weight: 700; line-height: 1.45; }
+.letter-grouped { display: flex; gap: 8px; margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--frost); color: var(--warn-ink); font-size: 13px; font-weight: 700; line-height: 1.45; }
+.letter-grouped svg { flex: none; margin-top: 1px; }
 .letter-send { display: flex; flex-direction: column; gap: 10px; }
 .letter-send-btn { width: 100%; min-height: 54px; font-size: 17px; }
 .letter-foot { margin: 0; text-align: center; font-size: 13px; line-height: 1.45; color: var(--night-muted); }

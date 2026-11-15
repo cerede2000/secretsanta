@@ -1,0 +1,15 @@
+/* Exploitation de l'administration (/{slug}/admin/donnees). Mobile d'abord ;
+   aucune ressource data:, aucun style en ligne. Complète admin/menu/menu.css. */
+.adminops-section { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.adminops-section h2, .adminops-section h3 { margin: 0; font-family: var(--font-display); color: var(--green); }
+.adminops-section h2 { font-size: 22px; }
+.adminops-section h3 { font-size: 18px; }
+.adminops-section p, .adminops-section form { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.adminops-section form { display: flex; flex-direction: column; gap: 10px; }
+.adminops-section .btn { align-self: flex-start; }
+.adminops-section input[type="file"].field { height: auto; min-height: 48px; padding: 10px 14px; }
+/* Case « purger » : toute la ligne est la cible tactile (44 px au moins). */
+.adminops-check { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 6px 0; cursor: pointer; font-size: 15px; line-height: 1.35; }
+.adminops-check input[type="checkbox"] { flex: none; width: 24px; height: 24px; margin: 0; accent-color: var(--danger); }
+.adminops-check input[type="checkbox"]:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
+.adminops-back { align-self: flex-start; }

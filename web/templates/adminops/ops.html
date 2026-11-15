@@ -7,6 +7,7 @@
 */}}
 {{define "adminops/msg"}}{{t .Key "n" .N "participants" .Participants "households" .Households}}{{end}}
 {{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/menu/menu.css">
+<link rel="stylesheet" href="/static/css/adminops/ops.css">
 <section class="admin-menu" aria-labelledby="adminops-title">
 <header class="admin-menu-head">
 <p class="admin-menu-kicker">{{t "adminops.kicker"}}</p>
@@ -41,7 +42,7 @@
 <p class="chip chip-ok" role="status">{{template "adminops/msg" .}}</p>
 {{- end}}
 
-<section class="card-admin" aria-labelledby="adminops-data">
+<section class="card-admin adminops-section" aria-labelledby="adminops-data">
 <h2 id="adminops-data">{{t "adminops.data.title"}}</h2>
 <p><a class="btn btn-ghost" href="{{.ExportURL}}" download>{{t "adminops.export.button"}}</a></p>
 <p class="text-secondary">{{t "adminops.export.hint"}}</p>
@@ -74,7 +75,7 @@
 {{- end}}
 </section>
 
-<section class="card-admin" aria-labelledby="adminops-access">
+<section class="card-admin adminops-section" aria-labelledby="adminops-access">
 <h2 id="adminops-access">{{t "adminops.access.title"}}</h2>
 <p class="text-secondary">{{t "adminops.access.hint"}}</p>
 <form method="post" action="{{.ResetAction}}">
@@ -83,7 +84,7 @@
 </form>
 </section>
 
-<section class="card-admin" aria-labelledby="adminops-danger">
+<section class="card-admin adminops-section" aria-labelledby="adminops-danger">
 <h2 id="adminops-danger">{{t "adminops.danger.title"}}</h2>
 <form method="post" action="{{.DeleteAction}}">
 {{csrfField}}
@@ -94,7 +95,7 @@
 {{- with .DeleteError}}
 <p id="adminops-confirm-error" class="field-error" role="alert">{{template "adminops/msg" .}}</p>
 {{- end}}
-<p><label><input type="checkbox" name="purge" value="1"{{if .Purge}} checked{{end}}> {{t "adminops.delete.purge"}}</label></p>
+<label class="adminops-check"><input type="checkbox" name="purge" value="1"{{if .Purge}} checked{{end}}><span>{{t "adminops.delete.purge"}}</span></label>
 <button class="btn btn-danger" type="submit">{{t "adminops.delete.button"}}</button>
 </form>
 </section>

@@ -26,15 +26,15 @@ for (const rel of PAGES) {
   });
 }
 
-test('feuille « Plus » : cinq entrees dont la deconnexion separee, tout atteignable sans defilement', async ({ page }, testInfo) => {
+test('feuille « Plus » : six entrees dont la deconnexion separee, tout atteignable sans defilement', async ({ page }, testInfo) => {
   const g = lane(testInfo).people;
   await loginAdmin(page, g);
   await open(page, `/${g.slug}/admin/plus`);
-  await expect(page.locator('.admin-menu-item')).toHaveCount(5);
+  await expect(page.locator('.admin-menu-item')).toHaveCount(6);
   const logout = page.locator('.admin-menu-sensitive .admin-menu-logout');
   await expect(logout).toBeVisible();
-  // La deconnexion est visuellement separee des quatre autres entrees.
-  const [last, out] = [await page.locator('.admin-menu-item').nth(3).boundingBox(), await logout.boundingBox()];
+  // La deconnexion est visuellement separee des cinq autres entrees.
+  const [last, out] = [await page.locator('.admin-menu-item').nth(4).boundingBox(), await logout.boundingBox()];
   expect(out!.y - (last!.y + last!.height), 'espace entre les entrees et la deconnexion').toBeGreaterThan(8);
   // La feuille tient dans la fenetre (rien a defiler pour atteindre une entree) et la barre est sous elle.
   const vh = page.viewportSize()!.height;

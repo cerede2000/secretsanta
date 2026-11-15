@@ -35,7 +35,7 @@
   "letter.recue.of": "Letter from {name}",
   "letter.recue.greeting": "Dear Santa,",
   "letter.recue.empty": "This letter is still blank: {name} has not written yet.",
-  "letter.recue.budget": "Group budget: {budget}",
+  "letter.recue.budget": "budget {budget}",
   "letter.recue.ideas": "Their ideas",
   "letter.recue.ideas_empty": "No ideas yet.",
   "letter.recue.tabs": "Choose the gift",

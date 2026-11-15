@@ -7,6 +7,8 @@
   "admin.menu.journal.hint": "Adjustments, lookups, validations",
   "admin.menu.export": "Export participants",
   "admin.menu.export.hint": "JSON file, without the pairs",
+  "admin.menu.data": "Data",
+  "admin.menu.data.hint": "Import, backup, duplication, deletion",
   "admin.menu.consult": "Look up a pair",
   "admin.menu.consult.hint": "One person at a time, recorded in the log",
   "admin.menu.help": "Help",

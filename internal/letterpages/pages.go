@@ -276,7 +276,11 @@ func (p *Pages) writeData(r *http.Request, s session, l *letter.Letter) writeDat
 		Intro:      l.Intro, Count: len(l.Ideas), MaxReached: len(l.Ideas) >= letter.MaxIdeas,
 	}
 	if l.Version > 0 && !l.UpdatedAt.IsZero() {
-		d.SavedAt = l.UpdatedAt.In(p.o.Location).Format("15:04")
+		layout := "15:04"
+		if d.Lang == "fr" {
+			layout = "15 h 04" // maquette : « Enregistré à 14 h 32 »
+		}
+		d.SavedAt = l.UpdatedAt.In(p.o.Location).Format(layout)
 	}
 	for _, i := range l.Ideas {
 		v := ideaView{ID: i.ID, Title: i.Title, Text: i.Text,

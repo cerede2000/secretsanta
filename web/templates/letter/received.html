@@ -8,8 +8,8 @@
 <div class="letter-top"><a class="letter-back" href="{{.BackURL}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>{{t "letter.back.target"}}</a></div>
 {{if .Tabs}}<nav class="letter-tabs" aria-label="{{t "letter.recue.tabs"}}">{{range .Tabs}}<a class="letter-tab"{{if .Current}} aria-current="page"{{end}} href="{{.URL}}">{{t "letter.recue.tab" "n" .N "total" .Total "name" .Name}}</a>{{end}}</nav>
 <p class="letter-tabs-hint">{{t "letter.recue.tabs_hint"}}</p>{{end}}
-<article class="letter-sheet">
-<div class="letter-sheet-head"><div class="letter-kicker">{{t "letter.recue.of" "name" .Name}}</div>{{if .Budget}}<span class="chip chip-warn letter-budget">{{t "letter.recue.budget" "budget" .Budget}}</span>{{end}}</div>
+<article class="letter-sheet letter-sheet-read">
+<div class="letter-sheet-head"><div class="letter-kicker">{{t "letter.recue.of" "name" .Name}}</div></div>
 <h1 class="theme-title letter-title">{{t "letter.recue.greeting"}}</h1>
 {{if .Intro}}<p class="letter-intro">{{.Intro}}</p>{{else}}<p class="letter-intro letter-intro-empty">{{t "letter.recue.empty" "name" .Name}}</p>{{end}}
 <div class="letter-signature">{{.Name}}</div>
@@ -23,5 +23,5 @@
 </div>
 </article>
 <div class="letter-silent"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="12" rx="2.5"/><path d="M3.5 7l7.5 6 7.5-6"/></svg><div><b>{{t "letter.recue.silent"}}</b> {{t "letter.recue.silent_detail" "name" .Name}}</div></div>
-<p class="letter-foot">{{t "letter.recue.foot"}}</p>
+<p class="letter-foot">{{t "letter.recue.foot"}}{{if .Budget}} · <span class="letter-budget">{{t "letter.recue.budget" "budget" .Budget}}</span>{{end}}</p>
 </div>{{end}}
