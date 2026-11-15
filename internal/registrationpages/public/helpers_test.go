@@ -44,6 +44,7 @@ func (f *fakeGroups) BySlug(_ context.Context, slug string) (*groups.Group, erro
 type fakeInvites struct {
 	mu          sync.Mutex
 	closed      invite.ClosedReason
+	roleChoice  bool
 	result      *invite.Result
 	submissions []invite.Submission
 	verifyErr   error
@@ -55,7 +56,7 @@ func (f *fakeInvites) Open(_ context.Context, slug, tok string) (*invite.Invite,
 	}
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	return &invite.Invite{GroupID: 1, Slug: "noel", Name: "Noël en famille", Closed: f.closed}, nil
+	return &invite.Invite{GroupID: 1, Slug: "noel", Name: "Noël en famille", Closed: f.closed, RoleChoice: f.roleChoice}, nil
 }
 
 func (f *fakeInvites) Submit(_ context.Context, slug, tok string, sub invite.Submission) (*invite.Result, error) {

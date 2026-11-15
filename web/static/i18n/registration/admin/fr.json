@@ -59,5 +59,13 @@
   "registration.admin.err.notfound": "Cette inscription n'existe plus.",
   "registration.admin.err.capacity": "Le nombre de places doit être compris entre 1 et 1000, et la date doit être valide.",
   "registration.admin.err.forbidden": "Action impossible dans l'état actuel du groupe.",
-  "registration.admin.err.generic": "Une erreur est survenue. Réessaie."
+  "registration.admin.err.generic": "Une erreur est survenue. Réessaie.",
+  "registration.admin.role.label": "Proposer aux inscrits de choisir leur rôle",
+  "registration.admin.role.on": "Activé",
+  "registration.admin.role.off": "Désactivé",
+  "registration.admin.role.hint": "Quand c'est activé, le formulaire d'inscription propose deux choix volontaires et exclusifs : recevoir sans offrir, ou offrir des cadeaux en plus pour ceux qui ne peuvent pas en acheter. Sans choix, la personne participe comme tout le monde. Modifiable à tout moment.",
+  "registration.admin.role.own_bold": "Tu pourras toujours définir ou changer les rôles toi-même,",
+  "registration.admin.role.own_text": "depuis la fiche d'une personne ou depuis l'écran Tirage, même si cette option reste désactivée.",
+  "registration.admin.notice.role_on": "Le choix du rôle est proposé aux inscrits.",
+  "registration.admin.notice.role_off": "Le choix du rôle n'est plus proposé aux inscrits."
 }

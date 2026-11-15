@@ -40,5 +40,13 @@
   "registration.public.month.10": "October",
   "registration.public.month.11": "November",
   "registration.public.month.12": "December",
-  "registration.public.error.bad_request": "This request could not be read. Reload the page and try again."
+  "registration.public.error.bad_request": "This request could not be read. Reload the page and try again.",
+  "registration.public.form.role.title": "A helping hand?",
+  "registration.public.form.role.optional": "(optional)",
+  "registration.public.form.role.intro": "You do not have to choose: without a choice, you take part like everyone else. Only one choice at a time; touching the same choice again cancels it.",
+  "registration.public.form.role.recv": "I cannot give a gift, I will receive mine",
+  "registration.public.form.role.recv_sub": "Without giving one.",
+  "registration.public.form.role.extra": "I agree to give extra gifts for those who cannot buy one",
+  "registration.public.form.role.extra_sub": "On top of your own gift to give.",
+  "registration.public.form.role.foot": "You can always talk to the organiser to change this. They can also set roles themselves, at any time."
 }

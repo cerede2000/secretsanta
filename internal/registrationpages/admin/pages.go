@@ -34,6 +34,7 @@ const (
 	PathMode     = RegistrationPath + "/mode"
 	PathRenew    = RegistrationPath + "/renouveler"
 	PathLimits   = RegistrationPath + "/limites"
+	PathRole     = RegistrationPath + "/choix-role"
 	PathQR       = RegistrationPath + "/qr.png"
 	PathValidate = RegistrationPath + "/{id}/valider"
 	PathResend   = RegistrationPath + "/{id}/renvoyer"
@@ -56,6 +57,7 @@ type InviteService interface {
 	Renew(ctx context.Context, a participants.Actor, groupID int64) (*invite.Link, error)
 	Disable(ctx context.Context, a participants.Actor, groupID int64) error
 	SetLimits(ctx context.Context, a participants.Actor, groupID int64, capacity int, closesAt *time.Time) error
+	SetRoleChoice(ctx context.Context, a participants.Actor, groupID int64, enabled bool) error
 }
 
 // VerifyService gère les inscriptions en attente (satisfait par *verify.Service).
@@ -131,6 +133,10 @@ type Page struct {
 	AdjustPath     string
 	BackPath       string
 	NextEnabledVal string
+	// Option « Proposer aux inscrits de choisir leur rôle » (F11e).
+	RoleChoice     bool
+	RoleAction     string
+	NextRoleChoice string
 }
 
 // Pages construit les gestionnaires.
@@ -166,6 +172,7 @@ func (p *Pages) Register(mux *http.ServeMux) {
 	mux.Handle("POST "+PathMode, p.Mode())
 	mux.Handle("POST "+PathRenew, p.Renew())
 	mux.Handle("POST "+PathLimits, p.Limits())
+	mux.Handle("POST "+PathRole, p.RoleChoice())
 	mux.Handle("POST "+PathValidate, p.Validate())
 	mux.Handle("POST "+PathResend, p.Resend())
 	mux.Handle("POST "+PathDelete, p.Delete())
@@ -214,6 +221,8 @@ var notices = map[string]string{
 	"disabled":  "registration.admin.notice.disabled",
 	"renewed":   "registration.admin.notice.renewed",
 	"limits":    "registration.admin.notice.limits",
+	"role_on":   "registration.admin.notice.role_on",
+	"role_off":  "registration.admin.notice.role_off",
 	"validated": "registration.admin.notice.validated",
 	"resent":    "registration.admin.notice.resent",
 	"deleted":   "registration.admin.notice.deleted",
@@ -272,7 +281,10 @@ func (p *Pages) build(r *http.Request, g *groups.Group) (Page, error) {
 		ModeAction: fill(PathMode, g.Slug), RenewAction: fill(PathRenew, g.Slug),
 		LimitsAction: fill(PathLimits, g.Slug), RenewCancel: fill(RegistrationPath, g.Slug),
 		AdjustPath: fill(adjustPath, g.Slug), BackPath: fill("/{slug}/admin", g.Slug),
-		NextEnabledVal: "1",
+		NextEnabledVal: "1", RoleChoice: st.RoleChoice, RoleAction: fill(PathRole, g.Slug), NextRoleChoice: "1",
+	}
+	if st.RoleChoice {
+		pg.NextRoleChoice = "0"
 	}
 	if st.Enabled {
 		pg.NextEnabledVal = "0"
@@ -405,6 +417,21 @@ func (p *Pages) Mode() http.Handler {
 		}
 		p.setLink(g.ID, "")
 		return "disabled", nil
+	})
+}
+
+// RoleChoice active ou désactive l'option « Proposer aux inscrits de choisir
+// leur rôle » (champ enabled=1|0), à tout moment.
+func (p *Pages) RoleChoice() http.Handler {
+	return p.act(func(w http.ResponseWriter, r *http.Request, g *groups.Group) (string, error) {
+		on := r.PostForm.Get("enabled") == "1"
+		if err := p.d.Invite.SetRoleChoice(r.Context(), p.actor(g), g.ID, on); err != nil {
+			return "", err
+		}
+		if on {
+			return "role_on", nil
+		}
+		return "role_off", nil
 	})
 }
 

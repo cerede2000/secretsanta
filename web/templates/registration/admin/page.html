@@ -14,6 +14,7 @@
 {{if .NoticeKey}}<p class="regadm-notice" role="status">{{t .NoticeKey}}</p>{{end}}
 
 {{if .Closed}}
+{{template "regadm-role" .}}
 <div class="regadm-card regadm-closed">
 <div class="regadm-row"><span class="chip chip-mute">{{t "registration.admin.closed.chip"}}</span><b>{{t "registration.admin.closed.title"}}</b></div>
 <p class="regadm-hint">{{t "registration.admin.closed.hint"}}</p>
@@ -30,6 +31,7 @@
 <p class="regadm-hint">{{t "registration.admin.mode.hint"}}</p>
 </div>
 
+{{template "regadm-role" .}}
 <div class="regadm-stats">
 <div class="regadm-card regadm-stat"><div class="regadm-num">{{.Verified}}</div><div class="regadm-cap">{{t "registration.admin.stat.verified"}}</div></div>
 <div class="regadm-card regadm-stat"><div class="regadm-num">{{.PendingCount}}</div><div class="regadm-cap">{{t "registration.admin.stat.pending"}}</div></div>
@@ -98,3 +100,14 @@
 </section>
 <script type="module" src="/static/js/registration/admin/copy.js"></script>
 {{end}}
+
+{{define "regadm-role"}}<div class="regadm-card">
+<form class="regadm-row regadm-switchrow" method="post" action="{{.RoleAction}}">
+{{csrfField}}
+<input type="hidden" name="enabled" value="{{.NextRoleChoice}}">
+<div><div class="regadm-label" id="regadm-role">{{t "registration.admin.role.label"}}</div><div class="regadm-state{{if .RoleChoice}} regadm-state-on{{end}}">{{if .RoleChoice}}{{t "registration.admin.role.on"}}{{else}}{{t "registration.admin.role.off"}}{{end}}</div></div>
+<button class="regadm-switch regadm-role-switch{{if .RoleChoice}} regadm-switch-on{{end}}" type="submit" role="switch" aria-checked="{{if .RoleChoice}}true{{else}}false{{end}}" aria-labelledby="regadm-role"><span class="regadm-knob"></span></button>
+</form>
+<p class="regadm-hint">{{t "registration.admin.role.hint"}}</p>
+<p class="regadm-hint regadm-note"><b>{{t "registration.admin.role.own_bold"}}</b> {{t "registration.admin.role.own_text"}}</p>
+</div>{{end}}

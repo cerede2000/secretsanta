@@ -59,5 +59,13 @@
   "registration.admin.err.notfound": "This sign-up no longer exists.",
   "registration.admin.err.capacity": "The number of places must be between 1 and 1000, and the date must be valid.",
   "registration.admin.err.forbidden": "Not possible in the group's current state.",
-  "registration.admin.err.generic": "Something went wrong. Try again."
+  "registration.admin.err.generic": "Something went wrong. Try again.",
+  "registration.admin.role.label": "Let people who sign up choose their role",
+  "registration.admin.role.on": "On",
+  "registration.admin.role.off": "Off",
+  "registration.admin.role.hint": "When on, the sign-up form offers two voluntary, exclusive choices: receive without giving, or give extra gifts for those who cannot buy one. Without a choice, the person takes part like everyone else. Can be changed at any time.",
+  "registration.admin.role.own_bold": "You can always set or change roles yourself,",
+  "registration.admin.role.own_text": "from a person's page or from the Draw screen, even if this option stays off.",
+  "registration.admin.notice.role_on": "Sign-ups are now offered the role choice.",
+  "registration.admin.notice.role_off": "Sign-ups are no longer offered the role choice."
 }
