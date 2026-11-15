@@ -12,9 +12,11 @@ import (
 	"syscall"
 	"time"
 
+	"secretsanta/internal/app"
 	"secretsanta/internal/config"
 	"secretsanta/internal/db"
 	"secretsanta/internal/health"
+	"secretsanta/internal/shared/clock"
 )
 
 // version est injectée à la compilation (-ldflags "-X main.version=...").
@@ -45,16 +47,20 @@ func run() error {
 	}
 	defer database.Close()
 
-	mux := http.NewServeMux()
-	mux.Handle("/health", health.Handler(database, version))
+	application, err := app.New(*cfg, database, clock.Real{}, version)
+	if err != nil {
+		return fmt.Errorf("assemblage : %w", err)
+	}
+	defer application.Close()
 
 	srv := &http.Server{
 		Addr:              cfg.ListenAddr,
-		Handler:           mux,
+		Handler:           application.Handler(),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
+	application.Start(ctx)
 
 	errc := make(chan error, 1)
 	go func() { errc <- srv.ListenAndServe() }()

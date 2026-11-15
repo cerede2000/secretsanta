@@ -1,0 +1,6 @@
+{
+  "_meta": {"code": "en", "name": "English"},
+  "core.csrf.reject": "The request was refused: the form has expired or comes from another site. Reload the page and try again.",
+  "core.http.method_not_allowed": "Method not allowed.",
+  "core.http.internal_error": "An internal error occurred. Please try again later."
+}

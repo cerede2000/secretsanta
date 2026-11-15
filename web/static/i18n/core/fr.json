@@ -1,0 +1,6 @@
+{
+  "_meta": {"code": "fr", "name": "Français"},
+  "core.csrf.reject": "La requête a été refusée : le formulaire a expiré ou provient d'un autre site. Rechargez la page et réessayez.",
+  "core.http.method_not_allowed": "Méthode non autorisée.",
+  "core.http.internal_error": "Une erreur interne est survenue. Réessayez plus tard."
+}
