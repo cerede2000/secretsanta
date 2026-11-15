@@ -1,0 +1,53 @@
+{{/*
+  Consultation de paire (F10b.1) et journal des consultations.
+  Données : .Mode ("form", "result" ou "journal"), .Slug, .People ([]Person),
+  .Selected, .Result (*Consultation : UNE personne et ses cibles), .Journal
+  (dates déjà formatées), .ErrorKey, .PasswordError, .PersonError.
+  Jamais de tableau complet des paires : le formulaire ne liste que des noms,
+  le résultat ne porte que sur la personne choisie, le journal ne nomme
+  personne.
+*/}}
+{{define "layout/content"}}{{if eq .Mode "journal"}}
+<section class="theme-night adminconsult-journal" aria-labelledby="ac-journal">
+<h1 id="ac-journal" class="theme-title">{{t "adminconsult.journal.heading"}}</h1>
+{{if .ErrorKey}}<p role="alert">{{t .ErrorKey}}</p>{{end}}
+{{if .Journal}}<ul class="adminconsult-list">
+{{range .Journal}}<li class="adminconsult-entry"><b>{{.}}</b><br>{{t "adminconsult.journal.entry"}}</li>
+{{end}}</ul>{{else}}<p>{{t "adminconsult.journal.empty"}}</p>{{end}}
+<p class="adminconsult-note">{{t "adminconsult.journal.no_names"}}</p>
+</section>
+{{else if eq .Mode "result"}}
+<section class="card-admin adminconsult-card" aria-labelledby="ac-result">
+<h1 id="ac-result" class="theme-title">{{t "adminconsult.result.heading"}}</h1>
+{{with .Result}}<p class="adminconsult-giver"><b>{{.Giver.FirstName}} {{.Giver.Name}}</b></p>
+{{if .Targets}}<p>{{tn "adminconsult.result.gives_to" (len .Targets)}}</p>
+<ul class="adminconsult-list">
+{{range .Targets}}<li class="adminconsult-target">{{if .FirstName}}{{.FirstName}} {{.Name}}{{else}}{{t "adminconsult.result.removed"}}{{end}}</li>
+{{end}}</ul>{{else}}<p>{{t "adminconsult.result.no_target"}}</p>{{end}}{{end}}
+<p class="text-secondary">{{t "adminconsult.result.logged"}}</p>
+<a class="btn btn-ghost" href="/{{.Slug}}/admin/consultation">{{t "adminconsult.result.another"}}</a>
+<a class="btn btn-green" href="/{{.Slug}}/admin">{{t "adminconsult.back"}}</a>
+</section>
+{{else}}
+<section class="card-admin adminconsult-card" aria-labelledby="ac-form-title">
+<h1 id="ac-form-title" class="theme-title">{{t "adminconsult.heading"}}</h1>
+<p>{{t "adminconsult.intro"}}</p>
+<p class="chip chip-warn">{{t "adminconsult.warning"}}</p>
+{{if .ErrorKey}}<p class="field-error" role="alert">{{t .ErrorKey}}</p>{{end}}
+<form class="adminconsult-form" method="post" action="/{{.Slug}}/admin/consultation">{{csrfField}}
+<label class="field-label" for="ac-person">{{t "adminconsult.person.label"}}</label>
+<select id="ac-person" class="field" name="person" required{{if .PersonError}} aria-invalid="true" aria-describedby="ac-person-error"{{end}}>
+<option value="">{{t "adminconsult.person.placeholder"}}</option>
+{{$sel := .Selected}}{{range .People}}<option value="{{.ID}}"{{if eq .ID $sel}} selected{{end}}>{{.FirstName}} {{.Name}}</option>
+{{end}}</select>
+{{if .PersonError}}<p id="ac-person-error" class="field-error" role="alert">{{t .PersonError}}</p>{{end}}
+<label class="field-label" for="ac-password">{{t "adminconsult.password.label"}}</label>
+<input id="ac-password" class="field" type="password" name="password" required autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="512"{{if .PasswordError}} aria-invalid="true" aria-describedby="ac-password-error"{{end}}>
+{{if .PasswordError}}<p id="ac-password-error" class="field-error" role="alert">{{t .PasswordError}}</p>{{end}}
+<p class="text-secondary">{{t "adminconsult.password.help"}}</p>
+<button class="btn btn-red" type="submit">{{t "adminconsult.submit"}}</button>
+</form>
+<p class="text-secondary">{{t "adminconsult.no_mail"}}</p>
+<a class="btn btn-ghost" href="/{{.Slug}}/admin">{{t "adminconsult.back"}}</a>
+</section>
+{{end}}{{end}}
