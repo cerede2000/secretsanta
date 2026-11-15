@@ -1,0 +1,8 @@
+{{/*
+  Style carte à gratter (screen-revelation-c). À inclure par la page de
+  révélation après le gabarit commun : {{template "reveal/scratch/assets" .}}.
+  Les textes passent par t et sont lus par le script en attributs data-t-*.
+*/}}
+{{define "reveal/scratch/assets"}}<link rel="stylesheet" href="/static/css/reveal/scratch/scratch.css">
+<div hidden data-reveal-scratch data-t-label="{{t "reveal.scratch.label"}}" data-t-card="{{t "reveal.scratch.card"}}" data-t-scratch="{{t "reveal.scratch.scratch"}}" data-t-all="{{t "reveal.scratch.all"}}" data-t-note="{{t "reveal.scratch.note"}}"></div>
+<script type="module" src="/static/js/reveal/scratch/scratch.js"></script>{{end}}
