@@ -141,12 +141,12 @@ type Settings struct {
 // Messages français.
 const (
 	msgAuth           = "Authentification requise."
-	msgForbidden      = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden      = "Tu n'as pas le droit d'effectuer cette action."
 	msgRenewDisabled  = "Activez d'abord l'inscription par lien."
 	msgCapacity       = "Le nombre de places doit être compris entre 1 et 1000."
 	msgClosedFull     = "Les inscriptions sont closes : toutes les places sont prises."
 	msgClosedDate     = "Les inscriptions sont closes : la date de clôture est passée."
-	msgClosedDraw     = "Les inscriptions sont closes : le tirage est fait. Demandez à l'organisateur de vous ajouter avec « Ajuster le tirage »."
+	msgClosedDraw     = "Les inscriptions sont closes : le tirage est fait. Demande à l'organisateur de t'ajouter avec « Ajuster le tirage »."
 	codeClosedFull    = "registration.closed_full"
 	codeClosedDate    = "registration.closed_date"
 	codeClosedDraw    = "registration.closed_draw"

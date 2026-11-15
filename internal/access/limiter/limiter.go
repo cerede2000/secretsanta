@@ -92,7 +92,7 @@ var ErrLimited = errors.New("limiter: trop de demandes")
 // Error renvoie l'erreur typée à présenter quand la demande est refusée.
 // Elle enveloppe ErrLimited (errors.Is) pour qu'une couche HTTP réponde 429.
 func Error() *errs.Error {
-	return errs.Wrap(errs.KindForbidden, "Trop de demandes. Réessayez dans quelques minutes.", ErrLimited)
+	return errs.Wrap(errs.KindForbidden, "Trop de demandes. Réessaie dans quelques minutes.", ErrLimited)
 }
 
 type bucket struct {

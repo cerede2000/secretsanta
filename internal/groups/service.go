@@ -28,7 +28,7 @@ var ErrTooManyAttempts = errors.New("groups: trop de tentatives")
 // Messages d'erreur d'accès.
 const (
 	msgInstancePassword = "Mot de passe d'instance incorrect."
-	msgTooManyAttempts  = "Trop de tentatives. Réessayez dans quelques minutes."
+	msgTooManyAttempts  = "Trop de tentatives. Réessaie dans quelques minutes."
 	msgAdminAccess      = "Accès administrateur refusé : vérifiez l'adresse du groupe et le secret d'administration."
 	msgGroupNotFound    = "Ce groupe n'existe pas."
 	msgMaxGiftsRange    = "Le plafond de cadeaux par personne doit être compris entre 2 et 5."

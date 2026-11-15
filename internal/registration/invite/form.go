@@ -119,11 +119,11 @@ type Result struct {
 
 // Messages et codes du formulaire.
 const (
-	msgCodeSent      = "Un code de vérification vient de partir à votre adresse."
-	msgInvalid       = "Vérifiez les champs signalés."
+	msgCodeSent      = "Un code de vérification vient de partir à ton adresse."
+	msgInvalid       = "Vérifie les champs signalés."
 	msgNameTaken     = "Ce nom est déjà inscrit."
 	msgOfferLink     = "Recevoir mon lien"
-	msgOfferPrecise  = "Ajoutez une précision à votre nom, par exemple Camille M."
+	msgOfferPrecise  = "Ajoute une précision à ton nom, par exemple Camille M."
 	msgSharedConfirm = "Cette adresse est déjà utilisée dans le groupe. Cochez « Cette adresse est partagée avec un proche » pour recevoir le code."
 	msgFirstRequired = "Le prénom est obligatoire."
 	msgFirstTooLong  = "Le prénom ne doit pas dépasser 80 caractères."
@@ -133,7 +133,7 @@ const (
 	msgEmailTooLong  = "L'adresse mail ne doit pas dépasser 254 caractères."
 	msgEmailInvalid  = "L'adresse mail n'est pas valide."
 	msgRoleInvalid   = "Ce choix de rôle n'est pas proposé : choisissez offrir et recevoir, seulement recevoir ou offrir plus."
-	msgRoleExclusive = "Choisissez seulement recevoir ou offrir plus, pas les deux."
+	msgRoleExclusive = "Choisis seulement recevoir ou offrir plus, pas les deux."
 
 	codeCodeSent      = "registration.code_sent"
 	codeInvalid       = "registration.invalid"

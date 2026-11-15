@@ -75,7 +75,7 @@ func New(o Options) (*Service, error) {
 
 // Messages français des erreurs du service.
 const (
-	msgForbidden = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden = "Tu n'as pas le droit d'effectuer cette action."
 	msgNotDone   = "Le tirage n'est pas encore fait."
 	msgNoPerson  = "Cette personne n'existe pas dans ce groupe."
 	msgNoEmail   = "Seule une personne sans courriel a un lien à remettre."

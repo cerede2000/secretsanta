@@ -17,24 +17,24 @@ const (
 
 const (
 	msgAuth          = "Authentification requise."
-	msgForbidden     = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden     = "Tu n'as pas le droit d'effectuer cette action."
 	msgNotDone       = "Le tirage n'est pas encore fait : il n'y a rien à ajuster."
 	msgConfirm       = "L'ajustement doit être confirmé après lecture de l'aperçu."
-	msgChanged       = "Le tirage a changé entre-temps. Rechargez l'aperçu et recommencez."
-	msgUnknownKind   = "Choisissez de retirer ou d'ajouter une personne."
+	msgChanged       = "Le tirage a changé entre-temps. Recharge l'aperçu et recommence."
+	msgUnknownKind   = "Choisis de retirer ou d'ajouter une personne."
 	msgNotInGroup    = "Cette personne n'existe pas dans le groupe."
 	msgNotInDraw     = "Cette personne ne fait pas partie du tirage actuel."
 	msgAlreadyInDraw = "Cette personne fait déjà partie du tirage actuel."
 	msgNoRemover     = "Le retrait d'une personne n'est pas disponible pour le moment."
-	msgFullDraw      = "Vous pouvez refaire un tirage complet après avoir assoupli les règles : l'ancien tirage sera archivé et toutes les cibles changeront."
+	msgFullDraw      = "Tu peux refaire un tirage complet après avoir assoupli les règles : l'ancien tirage sera archivé et toutes les cibles changeront."
 	msgNoFix         = "Aucun ajustement du tirage n'est possible sans enfreindre une règle."
 )
 
 const (
 	mailSubject      = "Le tirage a été ajusté"
-	mailNewTarget    = "L'organisateur a ajusté le tirage de votre groupe : vous avez une nouvelle cible à découvrir. Connectez-vous à votre espace personnel pour la découvrir."
-	mailFewerTargets = "L'organisateur a ajusté le tirage de votre groupe : vous avez désormais une cible en moins. Connectez-vous à votre espace personnel pour voir votre cible."
-	mailDiscretion   = "Par discrétion, ce message ne nomme personne d'autre que vous."
+	mailNewTarget    = "L'organisateur a ajusté le tirage de ton groupe : tu as une nouvelle cible à découvrir. Connecte-toi à ton espace personnel pour la découvrir."
+	mailFewerTargets = "L'organisateur a ajusté le tirage de ton groupe : tu as désormais une cible en moins. Connecte-toi à ton espace personnel pour voir ta cible."
+	mailDiscretion   = "Par discrétion, ce message ne nomme personne d'autre que toi."
 )
 
 func mailGreeting(first string) string {

@@ -50,10 +50,10 @@ const (
 // Messages français.
 const (
 	msgAuth         = "Authentification requise."
-	msgForbidden    = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden    = "Tu n'as pas le droit d'effectuer cette action."
 	msgNoGroup      = "Ce groupe n'existe pas."
 	msgNotDone      = "Le tirage n'est pas encore fait."
-	msgChanged      = "Le tirage a changé entre-temps. Rechargez la page et recommencez."
+	msgChanged      = "Le tirage a changé entre-temps. Recharge la page et recommence."
 	msgConfirmOpen  = "L'ouverture doit être confirmée : les cibles deviendront visibles tout de suite pour chaque participant."
 	msgDateLocked   = "La date de révélation ne peut plus être modifiée : la révélation est déjà ouverte ou une cible a déjà été découverte."
 	msgDatePast     = "La date de révélation doit être dans le futur."

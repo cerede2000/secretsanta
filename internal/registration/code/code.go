@@ -77,7 +77,7 @@ var ErrRefused = errors.New("code: vérification refusée")
 var ErrTooSoon = errors.New("code: renvoi trop rapproché")
 
 // refusedMessage est le seul message de refus présenté à l'utilisateur.
-const refusedMessage = "Ce code n'est pas valide ou n'est plus valable. Vérifiez-le ou demandez un nouveau code."
+const refusedMessage = "Ce code n'est pas valide ou n'est plus valable. Vérifie-le ou demande un nouveau code."
 
 // errRefused renvoie le refus uniforme (même nature, même message, même cause).
 func errRefused() *errs.Error {
@@ -86,7 +86,7 @@ func errRefused() *errs.Error {
 
 // errTooSoon renvoie le refus d'un renvoi trop rapproché.
 func errTooSoon() *errs.Error {
-	return errs.Wrap(errs.KindForbidden, "Patientez une minute avant de demander un nouveau code.", ErrTooSoon)
+	return errs.Wrap(errs.KindForbidden, "Patiente une minute avant de demander un nouveau code.", ErrTooSoon)
 }
 
 // IsRefused rapporte si err est le refus uniforme de vérification.

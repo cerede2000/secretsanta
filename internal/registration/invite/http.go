@@ -142,7 +142,7 @@ func (h *Handlers) submit(w http.ResponseWriter, r *http.Request, inv *Invite, s
 		return
 	case err != nil:
 		h.logger().Error("inscription", "erreur", err)
-		http.Error(w, "Une erreur interne est survenue. Réessayez plus tard.", http.StatusInternalServerError)
+		http.Error(w, "Une erreur interne est survenue. Réessaie plus tard.", http.StatusInternalServerError)
 		return
 	}
 	status := http.StatusOK

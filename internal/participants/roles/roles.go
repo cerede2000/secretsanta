@@ -32,7 +32,7 @@ func (v Verdict) Explain() string {
 	case SetByAdmin:
 		return "Ce rôle a été fixé par l'administrateur : seul l'administrateur peut le changer."
 	case SelfValueOnly:
-		return "Vous pouvez seulement choisir entre offrir normalement et n'offrir qu'un seul cadeau."
+		return "Tu peux seulement choisir entre offrir normalement et n'offrir qu'un seul cadeau."
 	}
 	return ""
 }

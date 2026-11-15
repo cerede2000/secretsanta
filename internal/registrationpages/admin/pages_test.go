@@ -70,7 +70,7 @@ func TestResendTooSoonShowsInlineError(t *testing.T) {
 	e.ver.resend = errTooSoon()
 	w := e.post(t, "famille", "/famille/admin/inscriptions/7/renvoyer", nil)
 	if w.Code != http.StatusTooManyRequests || !strings.Contains(w.Body.String(), `role="alert"`) ||
-		!strings.Contains(w.Body.String(), "Patientez une minute") {
+		!strings.Contains(w.Body.String(), "Patiente une minute") {
 		t.Errorf("%d %s", w.Code, w.Body.String())
 	}
 }

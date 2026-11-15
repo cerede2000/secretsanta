@@ -135,7 +135,7 @@ var UniformResponse = Response{
 func (s *Service) RequestLink(ctx context.Context, req Request) (Response, error) {
 	email, ok := normaliseEmail(req.Email)
 	if !ok {
-		return Response{}, errs.Validation("Saisissez une adresse de courriel valide.")
+		return Response{}, errs.Validation("Saisis une adresse de courriel valide.")
 	}
 	if d := s.lim.Allow(limiter.IPKey(req.GroupID, req.IP), limiter.TargetKey(req.GroupID, email)); !d.Allowed {
 		return Response{}, limiter.Error()
@@ -220,7 +220,7 @@ func (s *Service) Issue(ctx context.Context, groupID, participantID int64) (stri
 // invalidLink est l'erreur unique d'un lien inconnu, expiré, déjà utilisé,
 // d'un autre groupe ou mal formé : rien ne dit lequel.
 func invalidLink() *errs.Error {
-	return errs.New(errs.KindUnauthorized, "Ce lien de connexion n'est plus valable. Demandez-en un nouveau.")
+	return errs.New(errs.KindUnauthorized, "Ce lien de connexion n'est plus valable. Demande-en un nouveau.")
 }
 
 // Consume utilise le lien magique : il renvoie le participant si le jeton est

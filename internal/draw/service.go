@@ -19,14 +19,14 @@ import (
 // Messages français.
 const (
 	msgAuth           = "Authentification requise."
-	msgForbidden      = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden      = "Tu n'as pas le droit d'effectuer cette action."
 	msgConfirmDraw    = "Le tirage doit être confirmé avant d'être lancé."
 	msgConfirmRedraw  = "Le nouveau tirage doit être confirmé : l'ancien tirage sera archivé et toutes les cibles changeront."
 	msgAlreadyDone    = "Le tirage est déjà fait. Pour tout recommencer, lancez un nouveau tirage."
 	msgNotDone        = "Le tirage n'est pas encore fait."
-	msgChanged        = "Le tirage a changé entre-temps. Rechargez la page et recommencez."
+	msgChanged        = "Le tirage a changé entre-temps. Recharge la page et recommence."
 	msgRosterChanged  = "La liste des participants a changé pendant le tirage. Relancez-le."
-	msgResolution     = "Choisissez d'ignorer ou de supprimer les inscriptions en attente."
+	msgResolution     = "Choisis d'ignorer ou de supprimer les inscriptions en attente."
 	msgNotYourTarget  = "Cette cible n'existe pas."
 	msgNotOpen        = "La cible n'est pas encore révélée."
 	msgAdjustInvalid  = "L'ajustement est incohérent : chaque personne doit recevoir exactement un cadeau et personne ne peut s'offrir son propre cadeau."

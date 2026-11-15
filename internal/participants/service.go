@@ -41,7 +41,7 @@ func ParticipantActor(groupID, participantID int64) Actor {
 // Messages français.
 const (
 	msgAuth          = "Authentification requise."
-	msgForbidden     = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden     = "Tu n'as pas le droit d'effectuer cette action."
 	msgNotFound      = "Ce participant n'existe pas."
 	msgNameTaken     = "Une personne porte déjà ce nom dans le groupe (sans tenir compte des majuscules ni des accents)."
 	msgEmail         = "L'adresse courriel n'est pas valide."
@@ -51,7 +51,7 @@ const (
 	msgDeleteAfter   = "Le tirage est fait : la suppression passe par « Ajuster le tirage »."
 	msgRoleLocked    = "Le tirage est fait : la préférence ne peut plus être changée par la personne elle-même ; contactez l'administrateur."
 	msgRoleNotYours  = "Ce rôle a été fixé par l'administrateur : seul l'administrateur peut le changer."
-	msgRoleSelfValue = "Vous pouvez seulement choisir entre offrir normalement et n'offrir qu'un seul cadeau."
+	msgRoleSelfValue = "Tu peux seulement choisir entre offrir normalement et n'offrir qu'un seul cadeau."
 )
 
 // Service gère les participants.

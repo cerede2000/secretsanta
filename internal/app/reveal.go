@@ -83,7 +83,7 @@ func (d *Drawing) Adjust(ctx context.Context, a participants.Actor, groupID int6
 	case a.Kind == participants.ActorAnonymous:
 		return errs.New(errs.KindUnauthorized, "Authentification requise.")
 	case a.Kind != participants.ActorAdmin || a.GroupID != groupID:
-		return errs.Forbidden("Vous n'avez pas le droit d'effectuer cette action.")
+		return errs.Forbidden("Tu n'as pas le droit d'effectuer cette action.")
 	}
 	tx, err := d.db.BeginTx(ctx, nil)
 	if err != nil {

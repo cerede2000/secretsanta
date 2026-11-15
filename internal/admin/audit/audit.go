@@ -52,7 +52,7 @@ func New(d *sql.DB, c clock.Clock) *Service { return &Service{db: d, clk: c} }
 
 func requireAdmin(a participants.Actor, groupID int64) error {
 	if a.Kind != participants.ActorAdmin || a.GroupID != groupID || groupID == 0 {
-		return errs.Forbidden("Vous n'avez pas le droit d'effectuer cette action.")
+		return errs.Forbidden("Tu n'as pas le droit d'effectuer cette action.")
 	}
 	return nil
 }

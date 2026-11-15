@@ -243,7 +243,7 @@ func (s *Sessions) Middleware(next http.Handler) http.Handler {
 				continue
 			}
 			if !errors.Is(err, ErrNoSession) {
-				http.Error(w, "Une erreur interne est survenue. Réessayez plus tard.", http.StatusInternalServerError)
+				http.Error(w, "Une erreur interne est survenue. Réessaie plus tard.", http.StatusInternalServerError)
 				return
 			}
 		}

@@ -28,7 +28,7 @@ func assertInvalid(t *testing.T, err error, what string) {
 	if !errs.Is(err, errs.KindUnauthorized) {
 		t.Fatalf("%s : refus uniforme attendu, obtenu %v", what, err)
 	}
-	if got, want := errs.UserMessage(err), "Ce lien de connexion n'est plus valable. Demandez-en un nouveau."; got != want {
+	if got, want := errs.UserMessage(err), "Ce lien de connexion n'est plus valable. Demande-en un nouveau."; got != want {
 		t.Fatalf("%s : message %q, attendu %q", what, got, want)
 	}
 }

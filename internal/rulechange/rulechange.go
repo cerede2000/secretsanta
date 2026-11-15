@@ -128,7 +128,7 @@ type change struct {
 }
 
 const (
-	explainPreview = "Ce changement contredit le tirage actuel : %s. Vous pouvez demander une réparation avec le moins de changements possible ; les personnes concernées en seront prévenues. Aucun nom n'est affiché ici."
+	explainPreview = "Ce changement contredit le tirage actuel : %s. Tu peux demander une réparation avec le moins de changements possible ; les personnes concernées en seront prévenues. Aucun nom n'est affiché ici."
 	explainFuture  = "Ce changement est conservé mais il n'affecte pas le tirage actuel : il vaudra pour les futurs ajustements et pour les nouveaux tirages. Aucune paire n'a été modifiée."
 	explainNoFix   = "Aucune réparation du tirage actuel n'est possible sans enfreindre une règle. " + explainFuture
 	explainRefused = "La réparation a été refusée. " + explainFuture

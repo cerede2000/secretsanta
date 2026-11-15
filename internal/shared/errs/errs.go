@@ -91,7 +91,7 @@ func Internal(cause error) *Error {
 	if cause != nil {
 		slog.Error("erreur interne", "cause", Redact(cause.Error()))
 	}
-	return Wrap(KindInternal, "Une erreur interne est survenue. Réessayez plus tard.", cause)
+	return Wrap(KindInternal, "Une erreur interne est survenue. Réessaie plus tard.", cause)
 }
 
 var (

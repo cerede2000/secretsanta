@@ -98,7 +98,7 @@ func (h ConfirmHandler) SubmitHandler() http.Handler {
 				h.refuse(w, r)
 				return
 			}
-			http.Error(w, "Une erreur interne est survenue. Réessayez plus tard.", http.StatusInternalServerError)
+			http.Error(w, "Une erreur interne est survenue. Réessaie plus tard.", http.StatusInternalServerError)
 			return
 		}
 		h.Done(w, r, res)

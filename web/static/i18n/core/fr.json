@@ -1,12 +1,12 @@
 {
   "_meta": {"code": "fr", "name": "Français"},
-  "core.csrf.reject": "La requête a été refusée : le formulaire a expiré ou provient d'un autre site. Rechargez la page et réessayez.",
+  "core.csrf.reject": "La requête a été refusée : le formulaire a expiré ou provient d'un autre site. Recharge la page et réessaie.",
   "core.http.method_not_allowed": "Méthode non autorisée.",
-  "core.http.internal_error": "Une erreur interne est survenue. Réessayez plus tard.",
+  "core.http.internal_error": "Une erreur interne est survenue. Réessaie plus tard.",
   "core.errors.validation": "Les informations saisies ne sont pas valides.",
   "core.errors.not_found": "Élément introuvable.",
-  "core.errors.conflict": "Cette action entre en conflit avec l'état actuel. Rechargez la page et réessayez.",
-  "core.errors.forbidden": "Vous n'avez pas le droit de faire cela.",
-  "core.errors.unauthorized": "Accès refusé : identifiez-vous pour continuer.",
-  "core.errors.internal": "Une erreur interne est survenue. Réessayez plus tard."
+  "core.errors.conflict": "Cette action entre en conflit avec l'état actuel. Recharge la page et réessaie.",
+  "core.errors.forbidden": "Tu n'as pas le droit de faire cela.",
+  "core.errors.unauthorized": "Accès refusé : identifie-toi pour continuer.",
+  "core.errors.internal": "Une erreur interne est survenue. Réessaie plus tard."
 }

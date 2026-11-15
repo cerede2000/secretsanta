@@ -125,7 +125,7 @@ type Success struct {
 // Messages français.
 const (
 	msgAuth      = "Authentification requise."
-	msgForbidden = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden = "Tu n'as pas le droit d'effectuer cette action."
 	msgNotFound  = "Cette inscription n'existe pas ou a expiré."
 	msgIgnored   = "Cette inscription est fermée : elle a été ignorée avant le tirage."
 	msgResolve   = "Choix inconnu : « ignorer » ou « supprimer »."

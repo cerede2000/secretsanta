@@ -47,7 +47,7 @@ func Migrations() ([]db.Migration, error) {
 // Messages français.
 const (
 	msgAuth        = "Authentification requise."
-	msgForbidden   = "Vous n'avez pas le droit d'effectuer cette action."
+	msgForbidden   = "Tu n'as pas le droit d'effectuer cette action."
 	msgUnavailable = "Cette lettre n'est pas disponible."
 )
 

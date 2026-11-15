@@ -18,7 +18,7 @@ const (
 	// CSRFHeaderName est l'en-tête des appels JavaScript.
 	CSRFHeaderName = "X-CSRF-Token"
 	// CSRFRejectMessage est le message français renvoyé avec le refus 403.
-	CSRFRejectMessage = "La requête a été refusée : le formulaire a expiré ou provient d'un autre site. Rechargez la page et réessayez."
+	CSRFRejectMessage = "La requête a été refusée : le formulaire a expiré ou provient d'un autre site. Recharge la page et réessaie."
 
 	csrfCookieBase = "ss_csrf"
 	csrfTokenBytes = 32
@@ -74,7 +74,7 @@ func (c *CSRF) Middleware(next http.Handler) http.Handler {
 		if !ok {
 			b, err := random.Bytes(csrfTokenBytes)
 			if err != nil {
-				http.Error(w, "Une erreur interne est survenue. Réessayez plus tard.", http.StatusInternalServerError)
+				http.Error(w, "Une erreur interne est survenue. Réessaie plus tard.", http.StatusInternalServerError)
 				return
 			}
 			secret = b

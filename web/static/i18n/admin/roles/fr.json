@@ -23,7 +23,7 @@
   "admin.roles.short.p_normal": "Demander à quelqu'un de passer en « Normal ».",
   "admin.roles.short.p_cap": "Relever le plafond de cadeaux par personne (confirmation au-delà de 2).",
   "admin.roles.short.settings": "Ouvrir les réglages",
-  "admin.roles.other.text": "Le contrôle du tirage signale un autre blocage que les rôles : consultez le rapport de contrôle.",
+  "admin.roles.other.text": "Le contrôle du tirage signale un autre blocage que les rôles : consulte le rapport de contrôle.",
   "admin.roles.role.normal": "Normal",
   "admin.roles.role.reception_seule": "Reçoit seulement",
   "admin.roles.role.offre_plus": "Offre plus",

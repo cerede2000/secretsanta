@@ -63,8 +63,8 @@ var (
 	msgSlugRequired = "L'adresse du groupe est obligatoire."
 	msgSlugLength   = fmt.Sprintf("L'adresse du groupe doit compter entre %d et %d caractères.", SlugMinLen, SlugMaxLen)
 	msgSlugCharset  = "L'adresse du groupe ne peut contenir que des lettres minuscules sans accent, des chiffres et des tirets (pas de tiret au début, à la fin ni deux à la suite)."
-	msgSlugReserved = "Cette adresse est réservée par l'application. Choisissez-en une autre."
-	msgSlugTaken    = "Cette adresse est déjà prise. Choisissez-en une autre."
+	msgSlugReserved = "Cette adresse est réservée par l'application. Choisis-en une autre."
+	msgSlugTaken    = "Cette adresse est déjà prise. Choisis-en une autre."
 )
 
 // ValidateSlug vérifie la syntaxe d'un slug (espaces de bord retirés, aucune
