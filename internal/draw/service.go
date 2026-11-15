@@ -47,6 +47,15 @@ type Options struct {
 	Gate RevealGate
 	// Engine règle le moteur ; nil vaut drawengine.DefaultOptions().
 	Engine *drawengine.Options
+	// Settings donne les options de tirage du groupe (exclure l'année
+	// précédente, anti-échange) ; nil les désactive toutes les deux.
+	Settings OptionSource
+}
+
+// OptionSource lit les options de tirage d'un groupe (satisfait par
+// *groupsettings.Service). Elles ne valent que pour les tirages à venir.
+type OptionSource interface {
+	DrawOptions(ctx context.Context, groupID int64) (excludePreviousYear, antiSwap bool, err error)
 }
 
 // Service exécute et expose le tirage.
@@ -61,6 +70,7 @@ type Service struct {
 	gate          RevealGate
 	loc           *time.Location
 	engine        drawengine.Options
+	settings      OptionSource
 }
 
 // NewService construit le service du tirage.
@@ -69,6 +79,7 @@ func NewService(d *sql.DB, c clock.Clock, g GroupSource, r RosterSource, cs Cons
 	s := &Service{
 		State: NewState(d), db: d, clock: c, groups: g, roster: r, constraints: cs,
 		registrations: reg, gate: opts.Gate, loc: opts.Location, engine: drawengine.DefaultOptions(),
+		settings: opts.Settings,
 	}
 	if s.loc == nil {
 		s.loc = time.UTC
@@ -271,7 +282,57 @@ func (s *Service) input(ctx context.Context, groupID int64, capConfirmed bool) (
 	for _, p := range c.Forced {
 		in.Forced = append(in.Forced, drawengine.Pair{Giver: p.Giver, Receiver: p.Receiver})
 	}
+	if err := s.applyOptions(ctx, groupID, &in); err != nil {
+		return drawengine.Input{}, nil, 0, err
+	}
 	return in, ro, capN, nil
+}
+
+// applyOptions passe au moteur les options du groupe : l'anti-échange, et les
+// paires du tirage de l'année précédente (le dernier tirage de l'année civile
+// précédente, dans le fuseau du service) quand elles sont exclues. Sans source
+// d'options, rien n'est ajouté.
+func (s *Service) applyOptions(ctx context.Context, groupID int64, in *drawengine.Input) error {
+	if s.settings == nil {
+		return nil
+	}
+	excludePrevious, antiSwap, err := s.settings.DrawOptions(ctx, groupID)
+	if err != nil {
+		return err
+	}
+	in.AntiSwap = antiSwap
+	if !excludePrevious {
+		return nil
+	}
+	prev, err := s.previousYearPairs(ctx, groupID, s.clock.Now().In(s.loc).Year()-1)
+	if err != nil {
+		return err
+	}
+	in.PreviousYear, in.ExcludePreviousYear = prev, true
+	return nil
+}
+
+// previousYearPairs lit les paires du dernier tirage de l'année donnée, actuel
+// ou archivé (un tirage refait remplace le précédent de la même année).
+func (s *Service) previousYearPairs(ctx context.Context, groupID int64, year int) ([]drawengine.Pair, error) {
+	rows, err := s.db.QueryContext(ctx, `SELECT p.giver_id, p.receiver_id FROM draw_pairs p
+		WHERE p.draw_id = (SELECT id FROM draws WHERE group_id = ? AND year = ? ORDER BY id DESC LIMIT 1)`, groupID, year)
+	if err != nil {
+		return nil, errs.Internal(err)
+	}
+	defer rows.Close()
+	var out []drawengine.Pair
+	for rows.Next() {
+		var p drawengine.Pair
+		if err := rows.Scan(&p.Giver, &p.Receiver); err != nil {
+			return nil, errs.Internal(err)
+		}
+		out = append(out, p)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, errs.Internal(err)
+	}
+	return out, nil
 }
 
 // run exécute le tirage ; replace est l'identifiant du tirage actuel à

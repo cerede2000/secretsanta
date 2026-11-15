@@ -182,7 +182,7 @@ func (s *Service) HandleUpdated(ctx context.Context, e ports.Event) error {
 	}
 	if _, err := s.o.Queue.EnqueueMail(ctx, queue.Item{
 		GroupID: g.ID, ParticipantID: p.ID, To: p.Email, ToName: p.FirstName,
-		Type: mailunsub.TypeNouvelleIdee, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Type: mailunsub.TypeNouvelleIdee, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 		UnsubscribeURL: d.UnsubscribeURL, CoalesceKey: CoalesceKey(g.ID, p.ID),
 	}); err != nil {
 		return err
@@ -395,7 +395,7 @@ func (s *Service) remind(ctx context.Context, g reminders.GroupInfo, p participa
 	}
 	if _, err := s.o.Queue.EnqueueMail(ctx, queue.Item{
 		GroupID: g.ID, ParticipantID: p.ID, To: p.Email, ToName: p.FirstName,
-		Type: mailunsub.TypeRelances, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Type: mailunsub.TypeRelances, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 		UnsubscribeURL: d.UnsubscribeURL,
 	}); err != nil {
 		_ = s.o.Rules.Release(ctx, g.ID, p.ID)

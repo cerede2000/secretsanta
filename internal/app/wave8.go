@@ -100,7 +100,7 @@ func registerAdminPages(a *App) error {
 		return err
 	}
 	mp, err := menu.New(menu.Deps{
-		Groups: a.Groups, Sessions: a.Sessions, Render: a.consultMenuRender(menuSet.render), Nav: a.AdminNav,
+		Groups: a.Groups, Sessions: a.Sessions, Render: a.plusMenuRender(menuSet.render), Nav: a.AdminNav,
 		DefaultLang: a.Cfg.DefaultLang,
 	})
 	if err != nil {

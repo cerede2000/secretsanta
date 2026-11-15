@@ -200,7 +200,7 @@ func (m readyMailer) EnqueueReady(ctx context.Context, n reveal.ReadyNotice) err
 	}
 	_, err = m.q.EnqueueMail(ctx, queue.Item{
 		GroupID: g.ID, ParticipantID: p.ID, To: p.Email, ToName: first, Type: string(kind),
-		Essential: msg.Essential, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Essential: msg.Essential, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 	})
 	return err
 }

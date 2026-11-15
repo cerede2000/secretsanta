@@ -17,6 +17,7 @@ func TestDuplicateCreatesNextYearGroup(t *testing.T) {
 	src, srcSecret := f.group(t, "noel-2026", "Noël en famille 2026", "2026-12-24")
 	f.exec(t, `UPDATE groups SET reveal_at = ?, admin_can_view_pair = 1, max_gifts_per_giver = 3 WHERE id = ?`, "2026-12-01T17:00:00Z", src)
 	f.exec(t, `INSERT INTO group_settings(group_id, default_lang) VALUES (?, 'en')`, src)
+	f.exec(t, `INSERT INTO group_draw_options(group_id, exclude_previous_year, anti_swap) VALUES (?, 1, 1)`, src)
 	f.exec(t, `INSERT INTO reminder_group_rules(group_id, enabled, first_delay_days, spacing_days, max_per_type) VALUES (?, 0, 5, 6, 2)`, src)
 	a := f.person(t, src, "Élodie", "Martin", "elodie@exemple.fr", "")
 	b := f.person(t, src, "Paul", "Martin", "", "")
@@ -56,6 +57,9 @@ func TestDuplicateCreatesNextYearGroup(t *testing.T) {
 	}
 	if n := f.count(t, `SELECT COUNT(*) FROM group_settings WHERE group_id = ? AND default_lang = 'en'`, g.ID); n != 1 {
 		t.Error("langue du groupe non copiée")
+	}
+	if n := f.count(t, `SELECT COUNT(*) FROM group_draw_options WHERE group_id = ? AND exclude_previous_year = 1 AND anti_swap = 1`, g.ID); n != 1 {
+		t.Errorf("options du tirage non recopiées : %d ligne(s)", n)
 	}
 	if n := f.count(t, `SELECT COUNT(*) FROM reminder_group_rules WHERE group_id = ? AND enabled = 0 AND first_delay_days = 5 AND spacing_days = 6 AND max_per_type = 2`, g.ID); n != 1 {
 		t.Error("relances non copiées")

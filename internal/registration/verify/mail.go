@@ -71,7 +71,7 @@ func (t TemplateMailer) SendWelcome(ctx context.Context, w Welcome) error {
 	_, err = t.Queue.EnqueueMail(ctx, queue.Item{
 		GroupID: w.GroupID, ParticipantID: w.ParticipantID, To: msg.To, ToName: msg.ToName,
 		Type: WelcomeMailType, Essential: true,
-		Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 	})
 	return err
 }

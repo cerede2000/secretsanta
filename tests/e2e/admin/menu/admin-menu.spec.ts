@@ -24,11 +24,11 @@ async function createAndLogin(page: Page): Promise<string> {
   return slug;
 }
 
-test('feuille Plus : six entrees, deconnexion separee, cibles tactiles, pas de defilement horizontal', async ({ page }) => {
+test('feuille Plus : sept entrees, deconnexion separee, cibles tactiles, pas de defilement horizontal', async ({ page }) => {
   const slug = await createAndLogin(page);
   const res = await page.goto(`/${slug}/admin/plus`);
   expect(res?.status()).toBe(200);
-  await expect(page.locator('.admin-menu-item')).toHaveCount(6);
+  await expect(page.locator('.admin-menu-item')).toHaveCount(7);
   await expect(page.locator('.admin-menu-sensitive .admin-menu-logout')).toBeVisible();
   await expect(page.locator('.admin-nav-item[aria-current="page"]')).toHaveCount(1);
   await expectNoHorizontalScroll(page);

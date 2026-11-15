@@ -24,6 +24,13 @@ services:
       # L'amorçage Playwright inscrit des dizaines de personnes : le débit par défaut
       # (30 courriels par minute) retarderait les codes de vérification.
       MAIL_MAX_PER_MINUTE: "10000"
+      # Serveur de recherche factice de tests/e2e/suggestions/outbound-privacy.spec.ts :
+      # il tourne sur l'hôte (port E2E_FAKE_SEARCH_PORT, 18090 par défaut) et reçoit
+      # toutes les requêtes sortantes des suggestions. Depuis le conteneur, l'hôte
+      # se joint par host.docker.internal (127.0.0.1 y désignerait le conteneur).
+      SEARXNG_URL: http://host.docker.internal:${E2E_FAKE_SEARCH_PORT:-18090}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ss-test-data:/data
     depends_on:

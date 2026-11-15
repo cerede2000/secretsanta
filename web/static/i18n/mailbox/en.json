@@ -10,6 +10,8 @@
   "mailbox.received.title": "Letter received",
   "mailbox.received.title_n": "Letter received · gift {n} of {total}",
   "mailbox.received.state.written": "Ready to read",
+  "mailbox.received.state.new": "New idea",
+  "mailbox.received.state.seen": "Nothing new",
   "mailbox.received.state.blank": "Not written yet",
   "mailbox.note.two": "The second letter only appears if you give 2 gifts. No letter reveals who looks after yours.",
   "mailbox.note.reception": "With no gift to give (reception only), only your own letter appears here.",

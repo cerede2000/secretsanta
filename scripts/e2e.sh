@@ -15,7 +15,9 @@
 # contexte courant. Les secrets de test sont générés à chaque exécution. Les
 # données de départ des specs sont créées par tests/e2e/global-setup.ts, par
 # l'application elle-même (codes lus dans Mailpit) ; --smoke s'en passe.
-# Variables facultatives : SS_TEST_APP_PORT (18080), SS_TEST_MAIL_API_PORT (18025).
+# Variables facultatives : SS_TEST_APP_PORT (18080), SS_TEST_MAIL_API_PORT (18025),
+# E2E_FAKE_SEARCH_PORT (18090 : serveur de recherche factice des specs de suggestions,
+# démarré par Playwright sur l'hôte ; l'application l'atteint par SEARXNG_URL).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 root=$(pwd)
@@ -42,6 +44,7 @@ mail_port=${SS_TEST_MAIL_API_PORT:-18025}
 export SS_TEST_APP_PORT=$app_port SS_TEST_MAIL_API_PORT=$mail_port
 export SS_TEST_INSTANCE_PASSWORD="t-$(openssl rand -hex 12)"
 export SS_TEST_SIGNING_SECRET="t-$(openssl rand -hex 32)"
+export E2E_FAKE_SEARCH_PORT=${E2E_FAKE_SEARCH_PORT:-18090}
 export E2E_BASE_URL="http://127.0.0.1:$app_port"
 export E2E_MAIL_API="http://127.0.0.1:$mail_port"
 export E2E_INSTANCE_PASSWORD=$SS_TEST_INSTANCE_PASSWORD

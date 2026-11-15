@@ -69,7 +69,7 @@ func TestNoReplyRoutes(t *testing.T) {
 
 	// Le service n'offre au tireur que la lecture : la liste des méthodes
 	// exportées est figée, et aucune ne répond, ne commente ni n'écrit.
-	allowed := []string{"AdminRead", "ArchiveTx", "Image", "Read", "Stamp"}
+	allowed := []string{"AdminRead", "ArchiveTx", "Image", "Read", "ReceivedStates", "Stamp"}
 	var got []string
 	typ := reflect.TypeOf(e.svc)
 	for i := 0; i < typ.NumMethod(); i++ {

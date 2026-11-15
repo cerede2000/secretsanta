@@ -138,6 +138,10 @@ type Item struct {
 	Subject   string
 	Text      string
 	HTML      string
+	// Lang est la langue du message (« fr », « en »...) : elle fixe l'en-tête
+	// Content-Language et la balise <html lang>. Vide : langue par défaut de
+	// mailmsg (« fr »). Les producteurs reprennent mailmsg.Message.Lang.
+	Lang string
 	// UnsubscribeURL est le lien signé d'un courriel non essentiel.
 	UnsubscribeURL string
 	// CoalesceKey remplace le message en attente de même clé et repousse son envoi.
@@ -172,11 +176,11 @@ func (s *Service) EnqueueMail(ctx context.Context, it Item) (int64, error) {
 	for i := 0; i < 3; i++ {
 		res, err := s.o.DB.ExecContext(ctx, `UPDATE mail_queue SET
 			group_id=?, participant_id=?, recipient=?, recipient_name=?, mail_type=?, essential=?,
-			subject=?, body_text=?, body_html=?, unsubscribe_url=?, updated_at=?,
+			subject=?, body_text=?, body_html=?, lang=?, unsubscribe_url=?, updated_at=?,
 			send_after=MIN(?, created_at+?)
 			WHERE coalesce_key=? AND status='pending'`,
 			it.GroupID, it.ParticipantID, it.To, it.ToName, it.Type, boolInt(it.Essential),
-			it.Subject, it.Text, it.HTML, it.UnsubscribeURL, nanos(now),
+			it.Subject, it.Text, it.HTML, it.Lang, it.UnsubscribeURL, nanos(now),
 			nanos(now.Add(s.o.CoalesceWait)), int64(s.o.CoalesceMax), it.CoalesceKey)
 		if err != nil {
 			return 0, errs.Internal(err)
@@ -203,10 +207,10 @@ func (s *Service) EnqueueMail(ctx context.Context, it Item) (int64, error) {
 func (s *Service) insert(ctx context.Context, it Item, now, sendAfter time.Time) (int64, error) {
 	res, err := s.o.DB.ExecContext(ctx, `INSERT INTO mail_queue
 		(group_id, participant_id, recipient, recipient_name, mail_type, essential, subject, body_text, body_html,
-		 unsubscribe_url, coalesce_key, status, created_at, updated_at, send_after)
-		VALUES (?,?,?,?,?,?,?,?,?,?,?,'pending',?,?,?)`,
+		 lang, unsubscribe_url, coalesce_key, status, created_at, updated_at, send_after)
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'pending',?,?,?)`,
 		it.GroupID, it.ParticipantID, it.To, it.ToName, it.Type, boolInt(it.Essential), it.Subject, it.Text, it.HTML,
-		it.UnsubscribeURL, it.CoalesceKey, nanos(now), nanos(now), nanos(sendAfter))
+		it.Lang, it.UnsubscribeURL, it.CoalesceKey, nanos(now), nanos(now), nanos(sendAfter))
 	if err != nil {
 		return 0, err
 	}

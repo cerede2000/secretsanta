@@ -128,7 +128,17 @@ func (r repairing) Apply(ctx context.Context, groupID int64, rule ports.Proposed
 	return nil
 }
 
-var _ ports.RuleChangeRepair = repairing{}
+// PreviewRole implémente rulechange.RolePreviewer : l'aperçu exact d'un
+// changement de rôle (comptes seulement), au lieu de l'aperçu prudent de
+// Preview qui ne connaît pas le rôle demandé.
+func (r repairing) PreviewRole(ctx context.Context, groupID, participantID int64, role participants.DrawRole) (ports.RepairPreview, error) {
+	return r.svc.PreviewRole(ctx, groupID, participantID, role)
+}
+
+var (
+	_ ports.RuleChangeRepair   = repairing{}
+	_ rulechange.RolePreviewer = repairing{}
+)
 
 // registerRuleChange construit le service des modifications de règles et de
 // rôles avec la réparation réelle du tirage (repair.Service) : même lecture du
@@ -136,10 +146,11 @@ var _ ports.RuleChangeRepair = repairing{}
 // d'envoi, archivage des lettres des anciennes cibles par letterread. Elle
 // suit registerLetterRead et registerReveal.
 //
-// Écart connu : ports.ProposedRule ne porte pas le nouveau rôle, donc
-// rulechange.SetRole ne peut pas appeler repair.Service.PreviewRole ;
-// l'aperçu du port est celui, prudent, de repair.Service.Preview (le plus fort
-// impact parmi les autres rôles). Apply calcule la réparation exacte.
+// ports.ProposedRule ne porte pas le nouveau rôle : rulechange.SetRole passe
+// donc par le port facultatif rulechange.RolePreviewer, que repairing
+// implémente avec repair.Service.PreviewRole (aperçu exact). Preview (prudent :
+// le plus fort impact parmi les autres rôles) ne sert plus qu'aux autres
+// appelants du port. Apply calcule la réparation exacte.
 func registerRuleChange(a *App) error {
 	a.Repair = repair.NewService(a.DB, repair.Deps{
 		Draw: a.Draw, Groups: a.Groups, Roster: a.Participants, Constraints: a.Rules,
@@ -267,7 +278,7 @@ func (a *App) noticeBudget(ctx context.Context, e ports.Event) error {
 		}
 		if _, err := a.mail.q.EnqueueMail(ctx, queue.Item{
 			GroupID: g.ID, ParticipantID: p.ID, To: p.Email, ToName: p.FirstName,
-			Type: string(templates.BudgetUpdated), Essential: m.Essential, Subject: m.Subject, Text: m.Text, HTML: m.HTML,
+			Type: string(templates.BudgetUpdated), Essential: m.Essential, Subject: m.Subject, Text: m.Text, HTML: m.HTML, Lang: m.Lang,
 		}); err != nil {
 			slog.Error("avis de changement de budget non mis en file", "groupe", g.ID, "participant", p.ID, "erreur", err)
 		}

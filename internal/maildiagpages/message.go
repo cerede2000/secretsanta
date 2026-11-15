@@ -7,6 +7,6 @@ import (
 
 // messageOf reproduit le message que la file fabrique pour un élément.
 func messageOf(it queue.Item) mailmsg.Message {
-	return mailmsg.Message{To: it.To, ToName: it.ToName, Subject: it.Subject, Text: it.Text, HTML: it.HTML,
+	return mailmsg.Message{To: it.To, ToName: it.ToName, Subject: it.Subject, Text: it.Text, HTML: it.HTML, Lang: it.Lang,
 		Essential: it.Essential, UnsubscribeURL: it.UnsubscribeURL}
 }

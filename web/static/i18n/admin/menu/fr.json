@@ -11,6 +11,8 @@
   "admin.menu.data.hint": "Import, sauvegarde, duplication, suppression",
   "admin.menu.consult": "Consulter une paire",
   "admin.menu.consult.hint": "Une personne à la fois, notée dans le journal",
+  "admin.menu.maildiag": "Délivrabilité du courrier",
+  "admin.menu.maildiag.hint": "Diagnostic DNS, courriel de test, adresses refusées",
   "admin.menu.help": "Aide",
   "admin.menu.help.hint": "Comment ça marche, en quelques lignes",
   "admin.menu.logout": "Se déconnecter",

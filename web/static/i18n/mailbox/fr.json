@@ -10,6 +10,8 @@
   "mailbox.received.title": "Lettre reçue",
   "mailbox.received.title_n": "Lettre reçue · cadeau {n} sur {total}",
   "mailbox.received.state.written": "À lire",
+  "mailbox.received.state.new": "Nouvelle idée",
+  "mailbox.received.state.seen": "Rien de nouveau",
   "mailbox.received.state.blank": "Pas encore écrite",
   "mailbox.note.two": "La deuxième lettre n'apparaît que si tu offres 2 cadeaux. Aucune lettre ne révèle qui s'occupe de la tienne.",
   "mailbox.note.reception": "Sans cadeau à offrir (réception seule), seule ta lettre apparaît ici.",

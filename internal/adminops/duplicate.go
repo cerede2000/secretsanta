@@ -335,9 +335,13 @@ func copyGroupRows(ctx context.Context, tx *sql.Tx, from, to int64, now time.Tim
 		}
 	}
 
-	// Réglages : langue par défaut et rythme des relances.
+	// Réglages : langue par défaut, options du tirage et rythme des relances.
 	if _, err := tx.ExecContext(ctx, `INSERT INTO group_settings(group_id, default_lang)
 		SELECT ?, default_lang FROM group_settings WHERE group_id = ?`, to, from); err != nil {
+		return errs.Internal(err)
+	}
+	if _, err := tx.ExecContext(ctx, `INSERT INTO group_draw_options(group_id, exclude_previous_year, anti_swap)
+		SELECT ?, exclude_previous_year, anti_swap FROM group_draw_options WHERE group_id = ?`, to, from); err != nil {
 		return errs.Internal(err)
 	}
 	if _, err := tx.ExecContext(ctx, `INSERT INTO reminder_group_rules(group_id, enabled, first_delay_days, spacing_days, max_per_type)

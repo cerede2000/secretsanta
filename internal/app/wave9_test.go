@@ -491,10 +491,9 @@ var (
 // une route existante. wildcard est vrai quand un motif existant (par exemple
 // /{slug}/admin/participants/{id}) retient déjà l'adresse sans la servir.
 var futureRoutes = map[string]struct{ wildcard bool }{
-	"/{slug}/admin/ajuster":    {}, // ajustement du tirage (F10c)
-	"/{slug}/admin/reglages":   {}, // réglages du groupe
-	"/{slug}/admin/aide":       {}, // aide de l'administration
-	"/{slug}/suggestions/{id}": {}, // suggestions de cadeaux (F8c)
+	"/{slug}/admin/ajuster":  {}, // ajustement du tirage (F10c)
+	"/{slug}/admin/reglages": {}, // réglages du groupe
+	"/{slug}/admin/aide":     {}, // aide de l'administration
 }
 
 func normalizeLink(p string) string {

@@ -88,6 +88,13 @@ var features = []func(*App) error{
 	// navigation, journal).
 	registerAdminConsult,
 	registerAdminOps,
+	// Les pages et services de la vague 11 : la page de délivrabilité suit
+	// registerAdminPages (navigation) ; la page des suggestions suit
+	// registerSuggestionService ; la notification du tireur suit registerLetter
+	// et registerReminders.
+	registerMailDiagPages,
+	registerSuggestionPages,
+	registerGiverNotify,
 }
 
 // publicBase renvoie PUBLIC_URL sans barre finale.
@@ -138,7 +145,8 @@ func registerRules(a *App) error {
 	return nil
 }
 
-// registerDraw construit le service du tirage. Les inscriptions en attente
+// registerDraw construit le service du tirage ; les options du groupe (exclure
+// l'année précédente, anti-échange) viennent de groupsettings. Les inscriptions en attente
 // viennent du service de vérification (verify.Service, port RegistrationState :
 // compteur réel hors inscriptions ignorées) ; la porte de
 // révélation est celle du paquet reveal (ouverture enregistrée, absence de
@@ -146,7 +154,7 @@ func registerRules(a *App) error {
 // elle précède le service de révélation, qui a besoin du service du tirage.
 func registerDraw(a *App) error {
 	a.Draw = draw.NewService(a.DB, a.Clock, a.Groups, a.Participants, a.Rules,
-		a.Verify, draw.Options{Location: a.Cfg.Location, Gate: reveal.NewGate(a.DB, a.Clock)})
+		a.Verify, draw.Options{Location: a.Cfg.Location, Gate: reveal.NewGate(a.DB, a.Clock), Settings: a.GroupSettings})
 	return nil
 }
 
@@ -209,11 +217,19 @@ func registerSuppression(a *App) error {
 }
 
 // registerMailDiag construit le diagnostic de délivrabilité (DNS, SPF, DKIM,
-// DMARC, TLS) sur la configuration ; aucune page encore.
+// DMARC, TLS) sur la configuration ; la page est celle de registerMailDiagPages.
 func registerMailDiag(a *App) error {
-	a.MailDiag = maildiag.New(maildiag.Options{Config: &a.Cfg, Clock: a.Clock})
+	o := maildiag.Options{Config: &a.Cfg, Clock: a.Clock}
+	if mailDiagOptions != nil {
+		mailDiagOptions(&o)
+	}
+	a.MailDiag = maildiag.New(o)
 	return nil
 }
+
+// mailDiagOptions ajuste les options du diagnostic (nil en production) : les
+// tests y mettent un résolveur DNS sans réseau.
+var mailDiagOptions func(*maildiag.Options)
 
 // registerReminderRules construit les règles de relance (fenêtre d'envoi dans
 // le fuseau APP_TIMEZONE) ; aucune route encore.

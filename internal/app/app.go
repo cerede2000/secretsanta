@@ -27,6 +27,7 @@ import (
 	"secretsanta/internal/draw"
 	"secretsanta/internal/enrich"
 	"secretsanta/internal/enrolment"
+	"secretsanta/internal/givernotify"
 	"secretsanta/internal/grouppages"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/groupsettings"
@@ -118,7 +119,8 @@ type App struct {
 	MailQueue *queue.Service
 	// Suppress est la liste des adresses refusées définitivement (consultée
 	// par la file d'envoi) ; MailDiag le diagnostic de délivrabilité ;
-	// ReminderRules les règles de relance. Aucune page encore.
+	// ReminderRules les règles de relance. La page de MailDiag est montée par
+	// registerMailDiagPages.
 	Suppress      *mailsuppress.Store
 	MailDiag      *maildiag.Diagnostic
 	ReminderRules *reminderrules.Service
@@ -127,8 +129,11 @@ type App struct {
 	// du lien personnel, même sans moteur.
 	Reminders     *reminders.Engine
 	ReminderFacts reminders.SQLFacts
-	// Suggestions est le service des suggestions de cadeaux (aucune route
-	// encore) ; Repair la réparation du tirage après un changement de règle ou
+	// GiverNotify prévient le tireur d'une lettre nouvelle ou modifiée et le
+	// relance (même condition que Reminders : une file d'envoi qui tourne).
+	GiverNotify *givernotify.Service
+	// Suggestions est le service des suggestions de cadeaux (page montée par
+	// registerSuggestionPages) ; Repair la réparation du tirage après un changement de règle ou
 	// de rôle (injectée dans RuleChange).
 	Suggestions *suggestions.Service
 	Repair      *repair.Service

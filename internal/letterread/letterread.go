@@ -250,6 +250,60 @@ func (s *Service) Stamp(ctx context.Context, a participants.Actor, groupID int64
 	return Stamp{Read: n == 1}, nil
 }
 
+// Réponses de ReceivedStates : l'état de lecture, pour le tireur, de la lettre
+// de l'une de ses cibles.
+const (
+	// ReceivedUnread : lettre écrite, jamais ouverte par ce tireur.
+	ReceivedUnread = "unread"
+	// ReceivedNew : une version plus récente que celle qu'il a lue (idée
+	// ajoutée ou lettre modifiée depuis sa dernière lecture).
+	ReceivedNew = "new"
+	// ReceivedSeen : il a lu la version actuelle, rien de nouveau.
+	ReceivedSeen = "seen"
+)
+
+// ReceivedStates renvoie, par identifiant de paire (cible) de la personne
+// connectée, l'état de lecture de la lettre reçue : jamais lue, nouvelle
+// version depuis la dernière lecture, ou rien de nouveau. Seules les lettres
+// écrites (version 1 ou plus) des paires de la personne dans le tirage actuel
+// sont listées ; aucune date, aucun nom. La porte de révélation et la
+// découverte restent contrôlées par l'appelant (la page n'affiche que les
+// cibles découvertes) : le cachet ne dit rien d'une cible non lue.
+func (s *Service) ReceivedStates(ctx context.Context, a participants.Actor, groupID int64) (map[int64]string, error) {
+	if err := requireParticipant(a, groupID); err != nil {
+		return nil, err
+	}
+	rows, err := s.db.QueryContext(ctx, `SELECT p.id, l.version, s.version FROM draw_pairs p
+		JOIN draws d ON d.id = p.draw_id AND d.group_id = ? AND d.status = 'actuel'
+		JOIN letters l ON l.participant_id = p.receiver_id AND l.group_id = d.group_id AND l.version > 0
+		LEFT JOIN letterread_stamps s ON s.letter_id = l.id AND s.pair_id = p.id
+		WHERE p.giver_id = ?`, groupID, a.ParticipantID)
+	if err != nil {
+		return nil, errs.Internal(err)
+	}
+	defer rows.Close()
+	out := map[int64]string{}
+	for rows.Next() {
+		var pair, version int64
+		var read sql.NullInt64
+		if err := rows.Scan(&pair, &version, &read); err != nil {
+			return nil, errs.Internal(err)
+		}
+		switch {
+		case !read.Valid:
+			out[pair] = ReceivedUnread
+		case read.Int64 < version:
+			out[pair] = ReceivedNew
+		default:
+			out[pair] = ReceivedSeen
+		}
+	}
+	if err := rows.Err(); err != nil {
+		return nil, errs.Internal(err)
+	}
+	return out, nil
+}
+
 // AdminRead renvoie à l'administrateur, pour chaque tiré dont la lettre
 // actuelle a été lue, « lettre lue » (vrai). Aucun tireur, aucune paire.
 func (s *Service) AdminRead(ctx context.Context, a participants.Actor, groupID int64) (map[int64]bool, error) {

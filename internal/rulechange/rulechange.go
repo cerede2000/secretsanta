@@ -116,9 +116,21 @@ type execer interface {
 	QueryRowContext(ctx context.Context, q string, args ...any) *sql.Row
 }
 
+// RolePreviewer est un port facultatif d'une implémentation de
+// ports.RuleChangeRepair : l'aperçu exact d'un changement de rôle, que
+// ProposedRule ne peut pas exprimer (elle ne porte pas le rôle demandé). Quand
+// la réparation l'offre (repair.Service.PreviewRole), SetRole l'utilise à la
+// place de l'aperçu prudent de Preview.
+type RolePreviewer interface {
+	PreviewRole(ctx context.Context, groupID, participantID int64, role participants.DrawRole) (ports.RepairPreview, error)
+}
+
 // change décrit un changement à écrire.
 type change struct {
 	rule ports.ProposedRule
+	// previewRole est le rôle demandé d'un changement de rôle (vide sinon) :
+	// il sert à l'aperçu exact quand la réparation est un RolePreviewer.
+	previewRole participants.DrawRole
 	// flagA et flagB identifient l'indicateur « n'affecte pas le tirage actuel ».
 	flagA, flagB int64
 	// write écrit le changement ; il renvoie l'identifiant créé éventuel.
@@ -187,7 +199,12 @@ func (s *Service) run(ctx context.Context, groupID int64, c change, choice Choic
 		}
 		return finish(StatusSaved, "")
 	}
-	prev, err := s.repair.Preview(ctx, groupID, c.rule)
+	var prev ports.RepairPreview
+	if rp, ok := s.repair.(RolePreviewer); ok && c.previewRole != "" && len(c.rule.Members) == 1 {
+		prev, err = rp.PreviewRole(ctx, groupID, c.rule.Members[0], c.previewRole)
+	} else {
+		prev, err = s.repair.Preview(ctx, groupID, c.rule)
+	}
 	if err != nil {
 		return out, errs.Internal(err)
 	}
@@ -604,7 +621,8 @@ func (s *Service) checkForced(ctx context.Context, groupID int64, members []int6
 // l'administrateur : l'appelant a déjà contrôlé la session). Avant le tirage
 // l'écriture est directe ; après, le port RuleChangeRepair décide. Jamais de
 // nouveau tirage silencieux. Note : ProposedRule ne porte pas le nouveau rôle ;
-// la réparation le lit dans le rôle écrit par le rappel d'écriture.
+// la réparation le lit dans le rôle écrit par le rappel d'écriture, et l'aperçu
+// passe par RolePreviewer quand la réparation l'offre.
 func (s *Service) SetRole(ctx context.Context, groupID, participantID int64, role participants.DrawRole, choice Choice) (Outcome, error) {
 	if !role.Valid() {
 		return Outcome{}, errs.Validation("Ce rôle n'existe pas : choisissez normal, réception seule, offre plus ou un seul.")
@@ -617,8 +635,9 @@ func (s *Service) SetRole(ctx context.Context, groupID, participantID int64, rol
 		return Outcome{Status: StatusSaved}, nil
 	}
 	return s.run(ctx, groupID, change{
-		rule:  ports.ProposedRule{Kind: ports.RuleRoleChange, Members: []int64{participantID}},
-		flagA: participantID,
+		rule:        ports.ProposedRule{Kind: ports.RuleRoleChange, Members: []int64{participantID}},
+		previewRole: role,
+		flagA:       participantID,
 		write: func(ctx context.Context, ex execer) (int64, error) {
 			if _, err := ex.ExecContext(ctx, `UPDATE participants SET draw_role=? WHERE group_id=? AND id=?`, string(role), groupID, participantID); err != nil {
 				return 0, errs.Internal(err)

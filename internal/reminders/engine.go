@@ -168,7 +168,7 @@ func (e *Engine) send(ctx context.Context, g GroupInfo, p participants.Participa
 	}
 	_, err = e.o.Queue.EnqueueMail(ctx, queue.Item{
 		GroupID: g.ID, ParticipantID: p.ID, To: p.Email, ToName: p.FirstName,
-		Type: mailunsub.TypeRelances, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Type: mailunsub.TypeRelances, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 		UnsubscribeURL: d.UnsubscribeURL,
 	})
 	if err != nil {

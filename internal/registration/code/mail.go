@@ -39,7 +39,7 @@ func (t TemplateMailer) SendVerification(ctx context.Context, m Mail) error {
 	_, err = t.Queue.EnqueueMail(ctx, queue.Item{
 		GroupID: m.GroupID, To: msg.To, ToName: msg.ToName,
 		Type: MailType, Essential: true,
-		Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 	})
 	return err
 }

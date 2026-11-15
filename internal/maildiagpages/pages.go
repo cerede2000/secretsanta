@@ -331,7 +331,7 @@ func (p *Pages) SendTest() http.Handler {
 
 func (p *Pages) sendTest(ctx context.Context, g *groups.Group, lang, to string) *TestResult {
 	text := p.t(lang, "maildiag.mail.text", "group", g.Name)
-	it := queue.Item{GroupID: g.ID, To: to, Type: "test", Essential: true,
+	it := queue.Item{GroupID: g.ID, To: to, Type: "test", Essential: true, Lang: lang,
 		Subject: p.t(lang, "maildiag.mail.subject"), Text: text, HTML: queue.HTMLFromText(text)}
 	res := &TestResult{To: to}
 	st, err := p.d.Mailer.SendTest(ctx, it)

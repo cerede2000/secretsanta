@@ -8,6 +8,8 @@
 # même API de lecture que Mailpit), arrêt et nettoyage à la sortie. L'amorçage
 # (tests/e2e/global-setup.ts) crée ses données par l'application elle-même.
 # La garde du banc (aucun test sauté) s'applique comme dans scripts/e2e.sh.
+# SEARXNG_URL vise le serveur de recherche factice des specs de suggestions
+# (http://127.0.0.1:${E2E_FAKE_SEARCH_PORT:-18090}), démarré par Playwright.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 free_port() { python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1])'; }
@@ -37,6 +39,7 @@ PUBLIC_URL="http://127.0.0.1:$app_port" LISTEN_ADDR="127.0.0.1:$app_port" DATA_D
   INSTANCE_PASSWORD="$instance_password" SIGNING_SECRET="$signing_secret" \
   SMTP_HOST=127.0.0.1 SMTP_PORT="$smtp_port" MAIL_FROM=noel@ss-test.invalid \
   MAIL_EHLO_HOSTNAME=ss-test.invalid MAIL_TLS_MODE=none MAIL_ALLOW_INSECURE=true MAIL_MAX_PER_MINUTE=10000 \
+  SEARXNG_URL="http://127.0.0.1:${E2E_FAKE_SEARCH_PORT:-18090}" \
   "$work/secretsanta" >"$work/server.log" 2>&1 &
 pids+=($!)
 for _ in $(seq 1 100); do

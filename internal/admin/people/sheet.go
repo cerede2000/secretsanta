@@ -157,7 +157,7 @@ func (p *Pages) sendLink(ctx context.Context, g *groups.Group, pt *participants.
 	}
 	_, err = p.o.Mail.EnqueueMail(ctx, queue.Item{
 		GroupID: g.ID, ParticipantID: pt.ID, To: pt.Email, ToName: pt.FirstName,
-		Type: mailTypeInvitation, Essential: true, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML,
+		Type: mailTypeInvitation, Essential: true, Subject: msg.Subject, Text: msg.Text, HTML: msg.HTML, Lang: msg.Lang,
 	})
 	if err != nil {
 		return errs.Internal(err)

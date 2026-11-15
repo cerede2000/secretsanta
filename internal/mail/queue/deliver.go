@@ -23,6 +23,7 @@ type row struct {
 	essential     bool
 	subject       string
 	text, html    string
+	lang          string
 	unsubURL      string
 	attempts      int
 	token         string
@@ -126,8 +127,8 @@ func (s *Service) claim(ctx context.Context, id int64) (row, bool, error) {
 		r := row{token: tok}
 		var ess int
 		err = s.o.DB.QueryRowContext(ctx, `SELECT id, group_id, participant_id, recipient, recipient_name, mail_type, essential,
-			subject, body_text, body_html, unsubscribe_url, attempts FROM mail_queue WHERE id=?`, cand).
-			Scan(&r.id, &r.groupID, &r.participantID, &r.to, &r.toName, &r.mailType, &ess, &r.subject, &r.text, &r.html, &r.unsubURL, &r.attempts)
+			subject, body_text, body_html, lang, unsubscribe_url, attempts FROM mail_queue WHERE id=?`, cand).
+			Scan(&r.id, &r.groupID, &r.participantID, &r.to, &r.toName, &r.mailType, &ess, &r.subject, &r.text, &r.html, &r.lang, &r.unsubURL, &r.attempts)
 		if err != nil {
 			return row{}, false, errs.Internal(err)
 		}
@@ -154,7 +155,7 @@ func (s *Service) process(ctx context.Context, r row, force bool) (attempted, th
 		}
 	}
 	built, berr := s.o.Builder.Build(mailmsg.Message{
-		To: r.to, ToName: r.toName, Subject: r.subject, Text: r.text, HTML: r.html,
+		To: r.to, ToName: r.toName, Subject: r.subject, Text: r.text, HTML: r.html, Lang: r.lang,
 		Essential: r.essential, UnsubscribeURL: r.unsubURL,
 	})
 	if berr != nil {

@@ -41,7 +41,7 @@
 {{range .Received}}<a class="mb-entry" href="{{.URL}}">
 <svg aria-hidden="true" width="44" height="44" viewBox="0 0 44 44" class="mb-entry-icon"><rect x="5" y="9" width="34" height="26" rx="4" fill="#fff" stroke="#c41e3a" stroke-width="2.2"/><path d="M6 12l16 12 16-12" fill="none" stroke="#c41e3a" stroke-width="2.2" stroke-linejoin="round"/></svg>
 <div class="mb-entry-body"><div class="mb-entry-title mb-recv">{{if gt .Total 1}}{{t "mailbox.received.title_n" "n" .N "total" .Total}}{{else}}{{t "mailbox.received.title"}}{{end}}</div>
-{{if .Written}}<span class="mb-chip mb-chip-wait">{{t "mailbox.received.state.written"}}</span>{{else}}<span class="mb-chip mb-chip-todo">{{t "mailbox.received.state.blank"}}</span>{{end}}</div>
+{{if .Written}}{{if eq .Read "new"}}<span class="mb-chip mb-chip-wait">{{t "mailbox.received.state.new"}}</span>{{else if eq .Read "seen"}}<span class="mb-chip mb-chip-ok">{{t "mailbox.received.state.seen"}}</span>{{else}}<span class="mb-chip mb-chip-wait">{{t "mailbox.received.state.written"}}</span>{{end}}{{else}}<span class="mb-chip mb-chip-todo">{{t "mailbox.received.state.blank"}}</span>{{end}}</div>
 <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4a5a50" stroke-width="2.2" stroke-linecap="round" class="mb-chevron"><path d="M7 4l6 6-6 6"/></svg>
 </a>{{end}}
 {{if .TwoTargets}}<p class="mb-note">{{t "mailbox.note.two"}}</p>{{end}}

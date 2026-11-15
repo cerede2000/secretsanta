@@ -76,6 +76,9 @@ type LetterSource interface {
 // StampSource : *letterread.Service (cachet de la lettre de la personne).
 type StampSource interface {
 	Stamp(ctx context.Context, a participants.Actor, groupID int64) (letterread.Stamp, error)
+	// ReceivedStates donne, par paire, l'état de lecture de la lettre reçue
+	// (letterread.ReceivedUnread, ReceivedNew, ReceivedSeen).
+	ReceivedStates(ctx context.Context, a participants.Actor, groupID int64) (map[int64]string, error)
 }
 
 // Renderer écrit la page name avec le statut donné.
@@ -106,6 +109,10 @@ type Received struct {
 	N, Total int
 	Written  bool
 	URL      string
+	// Read est l'état de lecture d'une lettre écrite : letterread.ReceivedUnread
+	// (« À lire »), ReceivedNew (« Nouvelle idée ») ou ReceivedSeen (« Rien de
+	// nouveau »). Vide quand la lettre n'est pas écrite.
+	Read string
 }
 
 // Page est la donnée des gabarits du paquet.
@@ -234,6 +241,11 @@ func (p *Pages) Handler() http.Handler {
 				return
 			}
 			if mine.Ready {
+				states, err := p.d.Stamps.ReceivedStates(ctx, actor, g.ID)
+				if err != nil {
+					p.fail(w, r, http.StatusInternalServerError, "core.errors.internal")
+					return
+				}
 				total := len(mine.Targets)
 				pg.TwoTargets = total > 1
 				for i, t := range mine.Targets {
@@ -247,7 +259,7 @@ func (p *Pages) Handler() http.Handler {
 					}
 					pg.Received = append(pg.Received, Received{
 						N: i + 1, Total: total, Written: l.Version > 0,
-						URL: p.d.TargetLetterPath(g.Slug, t.PairID),
+						URL: p.d.TargetLetterPath(g.Slug, t.PairID), Read: states[t.PairID],
 					})
 				}
 			}
