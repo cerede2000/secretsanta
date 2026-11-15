@@ -1516,10 +1516,10 @@ W11: pending
 W12: pending
 W13: pending
 W14: pending
-P1a: running
-P1b-db: running
-P1b-sh1: running
-P1b-sh2: running
+P1a: gated
+P1b-db: gated
+P1b-sh1: gated
+P1b-sh2: gated
 P1c-ci: pending
 P1c-entry: pending
 P1c-infra: pending
