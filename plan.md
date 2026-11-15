@@ -1631,7 +1631,7 @@ W10: done
 W11: done
 W12: done
 W13: done
-W14: pending
+W14: running
 P1a: done
 P1b-db: done
 P1b-sh1: done
@@ -1722,7 +1722,7 @@ P12b-jA: done
 P12b-jB: done
 P12b-jC: done
 P13b-review: done
-P12b-zza: pending
-P12b-zzb: pending
-P12b-zzc: pending
+P12b-zza: running
+P12b-zzb: running
+P12b-zzc: running
 ```
