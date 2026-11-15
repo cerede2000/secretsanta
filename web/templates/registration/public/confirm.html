@@ -1,0 +1,17 @@
+{{/*
+  Lien de confirmation en un clic : le GET affiche le code déjà saisi et un
+  bouton, le POST consomme le lien. Données : .Slug, .GroupName, .Action,
+  .Code. CSP stricte : ni style ni script en ligne.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/registration/public/public.css">
+<div class="reg reg-night theme-night">
+<div class="reg-hero">
+<h1 class="theme-title reg-title">{{t "registration.confirm.title"}}</h1>
+</div>
+<form class="card reg-card" method="post" action="{{.Action}}">
+{{csrfField}}
+<p class="reg-intro">{{t "registration.confirm.intro" "group" .GroupName}}</p>
+<p class="reg-code-shown">{{.Code}}</p>
+<button class="btn btn-red reg-submit" type="submit">{{t "registration.confirm.submit"}}</button>
+</form>
+</div>{{end}}

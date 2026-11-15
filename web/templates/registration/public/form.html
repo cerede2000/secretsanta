@@ -1,0 +1,52 @@
+{{/*
+  screen-inscription : formulaire d'inscription par lien. Données : .Slug,
+  .GroupName, .Action, .Closed (clé du message de fermeture, vide si ouvert),
+  .Values, .FirstErr, .NameErr, .EmailErr (clés de message par champ),
+  .NameTaken, .LoginPath, .AskShared. CSP stricte : ni style ni script en
+  ligne ; le jeton CSRF vient de csrfField.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/registration/public/public.css">
+<div class="reg reg-night theme-night">
+<div class="reg-hero">
+<svg class="reg-icon" aria-hidden="true" width="76" height="76" viewBox="0 0 76 76"><circle cx="38" cy="38" r="24" fill="none" stroke="#165b33" stroke-width="13"/><circle cx="38" cy="38" r="24" fill="none" stroke="#1f7a45" stroke-width="4" stroke-dasharray="3 9" stroke-linecap="round"/><circle cx="20" cy="26" r="4" fill="#c41e3a"/><circle cx="54" cy="30" r="4" fill="#c41e3a"/><circle cx="40" cy="62" r="4" fill="#ffd700"/><path d="M38 12l-14-8v14zM38 12l14-8v14z" fill="#c41e3a"/><circle cx="38" cy="12" r="3.5" fill="#ffd700"/></svg>
+<div>
+<div class="reg-caption">{{.GroupName}}</div>
+<h1 class="theme-title reg-title">{{t "registration.public.form.title"}}</h1>
+</div>
+</div>
+{{if .Closed}}<div class="card reg-card" role="status">
+<h2 class="reg-card-title">{{t "registration.form.closed_title"}}</h2>
+<p class="reg-intro">{{t .Closed}}</p>
+</div>
+{{else}}<form class="card reg-card" method="post" action="{{.Action}}" novalidate>
+{{csrfField}}
+<p class="reg-intro">{{t "registration.public.form.intro"}}</p>
+<div class="reg-field">
+<label class="reg-label" for="reg-first">{{t "registration.form.first_name"}}</label>
+<input id="reg-first" class="field" type="text" name="prenom" value="{{.Values.FirstName}}" required autocomplete="given-name" maxlength="200"{{if .FirstErr}} aria-invalid="true" aria-describedby="reg-first-err"{{end}}>
+{{if .FirstErr}}<div id="reg-first-err" class="reg-msg reg-msg-error" role="alert"><svg class="reg-msg-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4.5M9 12.5v.1"/></svg><span>{{t .FirstErr}}</span></div>{{end}}
+</div>
+<div class="reg-field">
+<label class="reg-label" for="reg-name">{{t "registration.form.name"}}</label>
+<input id="reg-name" class="field" type="text" name="nom" value="{{.Values.Name}}" required autocomplete="family-name" maxlength="200"{{if .NameErr}} aria-invalid="true" aria-describedby="reg-name-err"{{end}}>
+{{if .NameErr}}<div id="reg-name-err" class="reg-msg reg-msg-error" role="alert"><svg class="reg-msg-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4.5M9 12.5v.1"/></svg><span>{{t .NameErr}}{{if .NameTaken}} {{t "registration.offer_precision"}} <a class="reg-link" href="{{.LoginPath}}">{{t "registration.offer_magic_link"}}</a>{{end}}</span></div>{{end}}
+</div>
+<div class="reg-field">
+<label class="reg-label" for="reg-email">{{t "registration.form.email"}}</label>
+<input id="reg-email" class="field" type="email" name="email" value="{{.Values.Email}}" required autocomplete="email" maxlength="400"{{if .EmailErr}} aria-invalid="true" aria-describedby="reg-email-err"{{else if .AskShared}} aria-describedby="reg-shared"{{end}}>
+{{if .EmailErr}}<div id="reg-email-err" class="reg-msg reg-msg-error" role="alert"><svg class="reg-msg-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4.5M9 12.5v.1"/></svg><span>{{t .EmailErr}}</span></div>{{end}}
+{{if .AskShared}}<div id="reg-shared" class="reg-shared" role="status">
+<div class="reg-shared-note"><svg class="reg-msg-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 8v4.5M9 5.5v.1"/></svg><span>{{t "registration.public.form.shared_known"}}</span></div>
+<label class="reg-check" for="reg-shared-box"><input id="reg-shared-box" class="reg-check-box" type="checkbox" name="adresse_partagee" value="1"><span>{{t "registration.form.shared"}}</span></label>
+<div class="reg-hint">{{t "registration.public.form.shared_hint"}}</div>
+</div>{{end}}
+</div>
+<div class="reg-hp" aria-hidden="true">
+<label for="reg-site">{{t "registration.form.honeypot"}}</label>
+<input id="reg-site" type="text" name="site_web" value="" tabindex="-1" autocomplete="off">
+</div>
+<button class="btn btn-red reg-submit" type="submit">{{t "registration.form.submit"}}</button>
+<div class="reg-privacy"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="7" width="11" height="7" rx="2"/><path d="M5 7V5a3 3 0 016 0v2"/></svg><span>{{t "registration.public.form.privacy"}}</span></div>
+</form>
+{{end}}<p class="reg-foot">{{t "registration.public.form.foot"}}</p>
+</div>{{end}}
