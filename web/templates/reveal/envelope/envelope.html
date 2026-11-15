@@ -1,0 +1,9 @@
+{{/*
+  Style enveloppe à sceau de cire (screen-revelation-b). Fragment à inclure
+  dans la page de révélation (après le gabarit de cœur) :
+  {{template "reveal/envelope/assets" .}}
+  Les textes passent par t et sont lus par le module en attributs data-t-*.
+*/}}
+{{define "reveal/envelope/assets"}}<link rel="stylesheet" href="/static/css/reveal/envelope/envelope.css">
+<div hidden data-envelope-labels data-t-seal="{{t "reveal.envelope.seal"}}" data-t-envelope-hint="{{t "reveal.envelope.hint"}}"></div>
+<script type="module" src="/static/js/reveal/envelope/envelope.js"></script>{{end}}
