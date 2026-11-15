@@ -1,0 +1,15 @@
+{
+  "admin.menu.kicker": "Organiser area",
+  "admin.menu.title": "More",
+  "admin.menu.settings": "Settings",
+  "admin.menu.settings.hint": "Group, mail, reminders, data",
+  "admin.menu.journal": "Group log",
+  "admin.menu.journal.hint": "Adjustments, lookups, validations",
+  "admin.menu.export": "Export participants",
+  "admin.menu.export.hint": "JSON file, without the pairs",
+  "admin.menu.help": "Help",
+  "admin.menu.help.hint": "How it works, in a few lines",
+  "admin.menu.logout": "Sign out",
+  "admin.menu.logout.hint": "Your token or password stays valid",
+  "admin.menu.note": "Nothing in this menu shows who gives to whom."
+}
