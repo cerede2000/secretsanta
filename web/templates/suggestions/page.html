@@ -1,0 +1,59 @@
+{{/*
+  Page du tireur (screen-suggestions) : idées de cadeaux pour une cible.
+  Données : Page de internal/suggestionpages. Aucun style en ligne : classes de
+  web/static/css/suggestions/suggestions.css. Les images viennent du volume
+  local (route de même origine), jamais d'un lien externe.
+*/}}
+{{define "suggestions/page"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/suggestions/suggestions.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<section class="sugg-night theme-night">
+<div class="sugg-top"><a class="sugg-back" href="{{.LetterURL}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#c9d3f0" stroke-width="2.2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>{{t "suggestions.back"}}</a></div>
+<h1 class="sugg-title">{{t "suggestions.title"}}</h1>
+{{if .ErrorKey}}<p class="sugg-alert" role="alert">{{t .ErrorKey}}</p>{{end}}
+{{if .Gifts}}<div class="sugg-gifts" role="group" aria-label="{{t "suggestions.gift.group"}}">
+<div class="sugg-label">{{t "suggestions.gift.group"}}</div>
+<div class="sugg-chips">{{range .Gifts}}<a class="sugg-chip{{if .Current}} is-on{{end}}" href="{{.URL}}"{{if .Current}} aria-current="true"{{end}}>{{if .Name}}{{t "suggestions.gift.label_named" "n" .N "name" .Name}}{{else}}{{t "suggestions.gift.label" "n" .N}}{{end}}</a>{{end}}</div>
+<div class="sugg-help">{{t "suggestions.gift.help"}}</div>
+</div>{{end}}
+{{if .Name}}<p class="sugg-intro">{{if .HasBudget}}{{t "suggestions.intro.budget" "name" .Name "amount" .Budget}}{{else}}{{t "suggestions.intro.free" "name" .Name}}{{end}}</p>{{end}}
+{{if .FromLetter}}<p class="sugg-help">{{t "suggestions.letter_based"}}</p>{{end}}
+{{if .Chips}}<div class="sugg-chips" role="group" aria-label="{{t "suggestions.chips.label"}}">{{range .Chips}}<a class="sugg-chip{{if .On}} is-on{{end}}" href="{{.URL}}"{{if .On}} aria-current="true"{{end}}>{{if eq .Kind "all"}}{{t "suggestions.chips.all"}}{{else if eq .Kind "up_to"}}{{t "suggestions.chips.up_to" "max" .Max}}{{else}}{{t "suggestions.chips.between" "min" .Min "max" .Max}}{{end}}</a>{{end}}</div>{{end}}
+{{if .Throttled}}<div class="sugg-status" role="status"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6b4b00" stroke-width="2" stroke-linecap="round" class="sugg-status-icon"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.5M10 13.5v.1"/></svg><span>{{t "suggestions.notice.throttled"}}</span></div>{{end}}
+{{if .Unavailable}}<div class="sugg-status" role="status"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6b4b00" stroke-width="2" stroke-linecap="round" class="sugg-status-icon"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.5M10 13.5v.1"/></svg><span><b>{{t "suggestions.unavailable.title"}}</b><br>{{t "suggestions.unavailable.text"}}</span></div>{{end}}
+{{range .Items}}<article class="sugg-card">
+{{if .Image}}<img class="sugg-img" src="{{.Image}}" alt="{{t "suggestions.item.image_alt"}}" width="84" height="84" loading="lazy" referrerpolicy="no-referrer">{{else}}<svg class="sugg-img" aria-hidden="true" width="84" height="84" viewBox="0 0 84 84"><rect width="84" height="84" rx="12" fill="#dff3e4"/><rect x="18" y="30" width="48" height="30" rx="4" fill="#165b33"/><path d="M18 40h48M30 30v30M54 30v30" stroke="#ffd700" stroke-width="3"/><path d="M34 24c0 4 4 6 8 6s8-2 8-6" fill="none" stroke="#c41e3a" stroke-width="4" stroke-linecap="round"/></svg>{{end}}
+<div class="sugg-body">
+<b class="sugg-card-title">{{.Title}}</b>
+<div class="sugg-caption">{{if .Source}}{{t "suggestions.item.caption" "source" .Source}}{{else}}{{t "suggestions.item.caption_plain"}}{{end}}</div>
+<div class="sugg-card-foot"><b class="sugg-price">{{if .Price}}{{.Price}}{{else}}<span class="sugg-price-unknown">{{t "suggestions.item.price_unknown"}}</span>{{end}}</b>{{if .URL}}<a class="btn btn-red sugg-see" href="{{.URL}}" target="_blank" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer" aria-label="{{t "suggestions.item.see_label" "title" .Title}}">{{t "suggestions.item.see"}}</a>{{end}}</div>
+</div>
+</article>{{end}}
+{{if .Empty}}<div class="sugg-status" role="status"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#6b4b00" stroke-width="2" stroke-linecap="round" class="sugg-status-icon"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.5M10 13.5v.1"/></svg><span><b>{{t "suggestions.empty.title"}}</b><br>{{t "suggestions.empty.text"}}</span></div>{{end}}
+{{if .RefreshAction}}<form class="sugg-refresh" method="post" action="{{.RefreshAction}}">{{csrfField}}
+<input type="hidden" name="min" value="{{.Min}}"><input type="hidden" name="max" value="{{.Max}}">
+<button class="btn btn-green sugg-refresh-btn" type="submit">{{t "suggestions.refresh"}}</button>
+</form>{{end}}
+{{if .FilterAction}}<form class="sugg-free" method="get" action="{{.FilterAction}}" novalidate>
+<div class="sugg-free-kicker">{{t "suggestions.free.kicker"}}</div>
+<b class="sugg-free-title">{{if .HasBudget}}{{t "suggestions.free.title_budget"}}{{else}}{{t "suggestions.free.title_free"}}{{end}}</b>
+<div class="sugg-note">{{if .HasBudget}}{{t "suggestions.free.help_budget"}}{{else}}{{t "suggestions.free.help"}}{{end}}</div>
+<div class="sugg-fields">
+<div class="sugg-field"><label for="pmin">{{t "suggestions.free.min"}}</label><input id="pmin" name="min" type="text" inputmode="decimal" autocomplete="off" placeholder="{{t "suggestions.free.min_placeholder"}}" value="{{.Min}}"{{if .MinErrKey}} class="is-invalid" aria-invalid="true" aria-describedby="pmin-err"{{end}}>{{if .MinErrKey}}<p class="sugg-field-error" id="pmin-err" role="alert">{{t .MinErrKey}}</p>{{end}}</div>
+<div class="sugg-field"><label for="pmax">{{t "suggestions.free.max"}}</label><input id="pmax" name="max" type="text" inputmode="decimal" autocomplete="off" placeholder="{{t "suggestions.free.max_placeholder"}}" value="{{.Max}}"{{if .MaxErrKey}} class="is-invalid" aria-invalid="true" aria-describedby="pmax-err"{{end}}>{{if .MaxErrKey}}<p class="sugg-field-error" id="pmax-err" role="alert">{{t .MaxErrKey}}</p>{{end}}</div>
+</div>
+<button class="btn btn-gold sugg-apply" type="submit">{{t "suggestions.free.apply"}}</button>
+{{if not .HasBudget}}<div class="sugg-note">{{t "suggestions.free.later"}}</div>{{end}}
+</form>{{end}}
+<p class="sugg-privacy">{{t "suggestions.privacy"}}</p>
+</section>
+</main>
+{{template "layout/footer" .}}
+<script type="module" src="/static/js/theme/snow.js"></script>
+</body>
+</html>{{end}}
