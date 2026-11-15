@@ -1,0 +1,115 @@
+{{define "admin/people/list"}}
+<section class="card-admin ppl-card" aria-labelledby="ppl-search-title">
+<h2 class="ppl-card-title" id="ppl-search-title">{{t "admin.people.search.title"}}</h2>
+<form class="ppl-filter" method="get" action="{{.Base}}" role="search">
+<label class="field-label" for="ppl-q">{{t "admin.people.search.label"}}</label>
+<input class="field" id="ppl-q" name="q" type="search" maxlength="120" placeholder="{{t "admin.people.search.placeholder"}}" value="{{.Query}}">
+<div class="ppl-two">
+<div class="ppl-fld"><label class="field-label" for="ppl-access">{{t "admin.people.filter.access"}}</label>
+<select class="field ppl-select" id="ppl-access" name="acces"><option value=""{{if not .AccessSel}} selected{{end}}>{{t "admin.people.filter.all"}}</option>
+{{range .AccessOpts}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{t .LabelKey}}</option>{{end}}</select></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-household">{{t "admin.people.filter.household"}}</label>
+<select class="field ppl-select" id="ppl-household" name="foyer"><option value=""{{if not .HouseholdSel}} selected{{end}}>{{t "admin.people.filter.all"}}</option><option value="aucun"{{if eq .HouseholdSel "aucun"}} selected{{end}}>{{t "admin.people.filter.no_household"}}</option>
+{{range .HouseholdOpts}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>{{end}}</select></div>
+</div>
+<div class="ppl-two">
+<div class="ppl-fld"><label class="field-label" for="ppl-role">{{t "admin.roles.filter.label"}}</label>
+<select class="field ppl-select" id="ppl-role" name="role"><option value=""{{if not .RoleSel}} selected{{end}}>{{t "admin.roles.filter.all"}}</option>
+{{range .RoleOpts}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{t .LabelKey}}</option>{{end}}</select></div>
+<label class="ppl-check"><input type="checkbox" name="sans_courriel" value="1"{{if .NoEmailSel}} checked{{end}}><span>{{t "admin.people.filter.no_email"}}</span></label>
+</div>
+<button class="btn btn-ghost ppl-wide" type="submit">{{t "admin.people.filter.apply"}}</button>
+</form>
+<p class="ppl-note" role="status">{{tn "admin.people.count" .Shown "total" .Total}}</p>
+</section>
+{{if .DeleteName}}<section class="ppl-alert ppl-alert-error ppl-confirm" role="alertdialog" aria-labelledby="ppl-del-title">
+<h2 class="ppl-card-title" id="ppl-del-title">{{t "admin.people.delete.title" "name" .DeleteName}}</h2>
+{{if .DrawDone}}<p class="ppl-note-on-alert">{{t "admin.people.delete.after_draw"}}</p>{{else}}<p class="ppl-note-on-alert">{{t "admin.people.delete.explain"}}</p>{{end}}
+{{if .DeleteError}}<div class="field-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+<form class="ppl-actions" method="post" action="{{.Base}}/{{.DeleteID}}/supprimer">{{csrfField}}<input type="hidden" name="confirm" value="1">
+{{if not .DrawDone}}<button class="btn btn-danger" type="submit">{{t "admin.people.delete.confirm"}}</button>{{end}}
+<a class="btn btn-ghost" href="{{.Base}}">{{t "admin.people.delete.cancel"}}</a></form>
+</section>{{end}}
+{{if .RuleConfirm}}<section class="ppl-alert ppl-alert-error ppl-confirm" role="alertdialog" aria-labelledby="ppl-rule-title">
+<h2 class="ppl-card-title" id="ppl-rule-title">{{t "admin.people.rule.confirm.title"}}</h2>
+<ul class="ppl-counts"><li>{{t "admin.people.rule.confirm.affected" "affected" .RuleConfirm.Affected}}</li><li>{{t "admin.people.rule.confirm.discovered" "discovered" .RuleConfirm.Discovered}}</li></ul>
+<p class="ppl-note-on-alert">{{t "admin.people.rule.confirm.explain"}}</p>
+<form class="ppl-actions" method="post" action="{{.Base}}/regles">{{csrfField}}
+{{range .RuleConfirm.Fields}}<input type="hidden" name="{{.Name}}" value="{{.Value}}">{{end}}
+<button class="btn btn-danger" type="submit" name="choice" value="repair">{{t "admin.people.rule.confirm.repair"}}</button>
+<button class="btn btn-ghost" type="submit" name="choice" value="future">{{t "admin.people.rule.confirm.future"}}</button>
+<a class="btn btn-ghost" href="{{.Base}}">{{t "admin.people.delete.cancel"}}</a></form>
+</section>{{end}}
+<section class="card-admin ppl-card" aria-labelledby="ppl-add-title">
+<h2 class="ppl-card-title" id="ppl-add-title">{{t "admin.people.add.title"}}</h2>
+{{template "admin/people/form" .}}
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-roles-title">
+<h2 class="ppl-card-title" id="ppl-roles-title">{{t "admin.people.roles.title"}}</h2>
+<p class="ppl-note">{{t "admin.people.roles.intro"}}</p>
+<details class="roles-details"><summary>{{t "admin.roles.help.title"}}</summary>{{template "admin/roles/help" .RoleHelp}}</details>
+{{if .DrawDone}}<p class="ppl-note">{{t "admin.roles.after_draw"}}</p>{{end}}
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-list-title">
+<h2 class="ppl-card-title" id="ppl-list-title">{{t "admin.people.list.title"}}</h2>
+{{if not .Sections}}<p class="ppl-note">{{t "admin.people.list.empty"}}</p>{{end}}
+{{range .Sections}}<div class="ppl-section">
+{{if .Name}}<h3 class="ppl-household">{{t "admin.people.household.label" "name" .Name}}</h3>{{else}}<h3 class="ppl-household">{{t "admin.people.household.none"}}</h3>{{end}}
+<ul class="ppl-list">
+{{range .Rows}}<li class="ppl-row" id="p-{{.ID}}">
+<img class="ppl-av" data-avatar-name="{{.Name}}" alt="" width="38" height="38">
+<div class="ppl-id"><a class="ppl-name" href="{{.Href}}">{{.Name}}</a>
+<div class="ppl-sub">{{if .HasEmail}}{{.Email}}{{if .SharedEmail}} · {{t "admin.people.row.shared_email"}}{{end}}{{else}}{{t "admin.people.row.no_email"}}{{end}}</div>
+<div class="ppl-chips">{{if .ShowBadge}}{{template "admin/roles/badge" .Badge}}{{end}}<span class="chip {{.MailClass}}">{{t .Mail}}</span>{{if .Opened}}<span class="chip chip-ok">{{t "admin.people.row.opened"}}</span>{{end}}</div></div>
+<details class="ppl-menu"><summary class="ppl-more" aria-haspopup="menu" aria-label="{{t "admin.people.row.actions" "name" .Name}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><circle cx="4" cy="11" r="2"/><circle cx="11" cy="11" r="2"/><circle cx="18" cy="11" r="2"/></svg></summary>
+<div class="ppl-menu-list" role="menu" aria-label="{{t "admin.people.row.actions" "name" .Name}}">
+<a role="menuitem" class="ppl-item" href="{{.Href}}">{{t "admin.people.row.sheet"}}</a>
+{{if .HasEmail}}<form method="post" action="{{.ResendHref}}">{{csrfField}}<button role="menuitem" class="ppl-item" type="submit">{{t "admin.people.row.resend"}}</button></form>{{end}}
+<a role="menuitem" class="ppl-item" href="{{.EditHref}}">{{t "admin.people.row.edit"}}</a>
+<a role="menuitem" class="ppl-item ppl-item-danger" href="{{.DeleteHref}}">{{t "admin.people.row.delete"}}</a>
+<div class="ppl-menu-role">{{template "admin/roles/selector" .Selector}}</div>
+</div></details>
+</li>
+{{end}}</ul></div>{{end}}
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-hh-title">
+<h2 class="ppl-card-title" id="ppl-hh-title">{{t "admin.people.household.title"}}</h2>
+<p class="ppl-note">{{t "admin.people.household.intro"}}</p>
+{{range .Households}}<div class="ppl-hh"><b>{{.Name}}</b>
+<ul class="ppl-members">{{$hid := .ID}}{{range .Members}}<li><span>{{.Name}}</span>
+<form method="post" action="{{$.Base}}/regles/retirer">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Member}}"><input type="hidden" name="household" value="{{$hid}}"><input type="hidden" name="a" value="{{.ID}}"><button class="btn btn-ghost ppl-small" type="submit">{{t "admin.people.household.remove" "name" .Name}}</button></form></li>{{end}}</ul>
+</div>{{end}}
+{{if eq .ErrorField "rule"}}<div class="field-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+<form class="ppl-form" method="post" action="{{.Base}}/regles">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Household}}">
+<div class="ppl-fld"><label class="field-label" for="ppl-hh-name">{{t "admin.people.household.name"}}</label><input class="field" id="ppl-hh-name" name="name" type="text" maxlength="80" required></div>
+<fieldset class="ppl-fieldset"><legend class="field-label">{{t "admin.people.household.members"}}</legend>
+{{range .People}}<label class="ppl-check"><input type="checkbox" name="members" value="{{.Value}}"><span>{{.Label}}</span></label>{{end}}</fieldset>
+<button class="btn btn-ghost ppl-wide" type="submit">{{t "admin.people.household.create"}}</button></form>
+{{if .Households}}<form class="ppl-form" method="post" action="{{.Base}}/regles">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Member}}">
+<div class="ppl-two"><div class="ppl-fld"><label class="field-label" for="ppl-m-hh">{{t "admin.people.household.pick"}}</label><select class="field ppl-select" id="ppl-m-hh" name="household">{{range .HouseholdOpts}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-m-p">{{t "admin.people.household.person"}}</label><select class="field ppl-select" id="ppl-m-p" name="a">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div></div>
+<button class="btn btn-ghost ppl-wide" type="submit">{{t "admin.people.household.add_member"}}</button></form>{{end}}
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-rules-title">
+<h2 class="ppl-card-title" id="ppl-rules-title">{{t "admin.people.rules.title"}}</h2>
+{{if .DrawDone}}<p class="ppl-note">{{t "admin.people.rules.after_draw"}}</p>{{end}}
+{{if not .Exclusions}}<p class="ppl-note">{{t "admin.people.rules.no_exclusion"}}</p>{{end}}
+<ul class="ppl-rules">{{range .Exclusions}}<li><span class="chip">{{t "admin.people.rules.exclude"}}</span><span class="ppl-rule-text">{{if .Both}}{{t "admin.people.rules.both" "a" .A "b" .B}}{{else}}{{t "admin.people.rules.one_way" "a" .A "b" .B}}{{end}}</span>
+<form method="post" action="{{$.Base}}/regles/retirer">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Exclusion}}"><input type="hidden" name="a" value="{{.AID}}"><input type="hidden" name="b" value="{{.BID}}">{{if .Both}}<input type="hidden" name="both" value="1">{{end}}<button class="btn btn-ghost ppl-small" type="submit">{{t "admin.people.rules.remove"}}</button></form></li>{{end}}</ul>
+<p class="ppl-note">{{tn "admin.people.rules.forced_count" .ForcedCount}}</p>
+<form class="ppl-form" method="post" action="{{.Base}}/regles">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Exclusion}}">
+<div class="ppl-two"><div class="ppl-fld"><label class="field-label" for="ppl-x-a">{{t "admin.people.rules.first"}}</label><select class="field ppl-select" id="ppl-x-a" name="a">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-x-b">{{t "admin.people.rules.second"}}</label><select class="field ppl-select" id="ppl-x-b" name="b">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div></div>
+<label class="ppl-check"><input type="checkbox" name="both" value="1" checked><span>{{t "admin.people.rules.both_ways"}}</span></label>
+<button class="btn btn-ghost ppl-wide" type="submit">{{t "admin.people.rules.add_exclusion"}}</button></form>
+<form class="ppl-form" method="post" action="{{.Base}}/regles">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Forced}}">
+<div class="ppl-two"><div class="ppl-fld"><label class="field-label" for="ppl-f-a">{{t "admin.people.rules.forced_giver"}}</label><select class="field ppl-select" id="ppl-f-a" name="a">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-f-b">{{t "admin.people.rules.forced_receiver"}}</label><select class="field ppl-select" id="ppl-f-b" name="b">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div></div>
+<button class="btn btn-ghost ppl-wide" type="submit">{{t "admin.people.rules.add_forced"}}</button></form>
+<details class="roles-details"><summary>{{t "admin.people.rules.unforce"}}</summary>
+<form class="ppl-form" method="post" action="{{.Base}}/regles/retirer">{{csrfField}}<input type="hidden" name="kind" value="{{$.Kinds.Forced}}">
+<div class="ppl-two"><div class="ppl-fld"><label class="field-label" for="ppl-u-a">{{t "admin.people.rules.forced_giver"}}</label><select class="field ppl-select" id="ppl-u-a" name="a">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-u-b">{{t "admin.people.rules.forced_receiver"}}</label><select class="field ppl-select" id="ppl-u-b" name="b">{{range .People}}<option value="{{.Value}}">{{.Label}}</option>{{end}}</select></div></div>
+<button class="btn btn-ghost ppl-wide" type="submit">{{t "admin.people.rules.remove_forced"}}</button></form></details>
+</section>
+{{end}}

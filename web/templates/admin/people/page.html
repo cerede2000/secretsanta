@@ -1,0 +1,17 @@
+{{/*
+  Pages d'administration des participants (F10.3). Données : people.view
+  (Page = list, edit ou sheet). Fonctions : t, tn, csrfField. Aucune cible
+  n'est affichée. CSP stricte : ni style, ni script, ni gestionnaire en ligne,
+  ni ressource data: ; les textes de JavaScript viennent d'attributs data-*.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/roles/roles.css">
+<link rel="stylesheet" href="/static/css/admin/people/people.css">
+<div class="ppl" data-people data-copied="{{t "admin.people.sheet.copied"}}">
+<div class="ppl-head"><a class="ppl-back" href="{{.BackURL}}" aria-label="{{t "admin.people.back"}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><h1 class="ppl-title">{{if eq .Page "list"}}{{t "admin.people.title"}}{{else if eq .Page "edit"}}{{t "admin.people.edit.title"}}{{else}}{{.Sheet.Name}}{{end}}</h1></div>
+<div class="ppl-body">
+{{if .NoticeKey}}<div class="ppl-alert ppl-alert-ok" role="status">{{t .NoticeKey}}</div>{{end}}
+{{if and .ErrorKey (not .ErrorField) (not .DeleteError)}}<div class="ppl-alert ppl-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+{{if eq .Page "list"}}{{template "admin/people/list" .}}{{else if eq .Page "edit"}}{{template "admin/people/editcard" .}}{{else}}{{template "admin/people/sheet" .}}{{end}}
+</div>
+</div>
+<script type="module" src="/static/js/admin/people/people.js"></script>{{end}}

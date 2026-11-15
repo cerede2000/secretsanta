@@ -1,0 +1,56 @@
+{{define "admin/people/sheet"}}{{with .Sheet}}
+{{if .NewLink}}<section class="card-admin ppl-card ppl-newlink" aria-labelledby="ppl-link-title">
+<h2 class="ppl-card-title" id="ppl-link-title">{{t "admin.people.sheet.link.title"}}</h2>
+<p class="ppl-note">{{t "admin.people.sheet.link.explain"}}</p>
+<div class="ppl-qrrow"><img class="ppl-qr" src="{{.QRSrc}}" alt="{{t "admin.people.sheet.qr.alt" "name" .FirstName}}" width="168" height="168">
+<div class="ppl-linkbox"><input class="field ppl-linkfield" type="text" readonly value="{{.NewLink}}" aria-label="{{t "admin.people.sheet.link.label"}}" data-people-link>
+<button class="btn btn-ghost ppl-copy" type="button" data-people-copy>{{t "admin.people.sheet.copy"}}</button><span class="ppl-copied" role="status" data-people-copied></span></div></div>
+</section>{{end}}
+<section class="card-admin ppl-card" aria-labelledby="ppl-access-title">
+<h2 class="ppl-card-title" id="ppl-access-title">{{t "admin.people.sheet.access.title"}}</h2>
+<dl class="ppl-facts">
+<div><dt>{{t "admin.people.sheet.last_mail"}}</dt><dd><span class="chip {{.MailClass}}">{{t .Mail}}</span></dd></div>
+{{if .MailFailed}}<div class="ppl-alert ppl-alert-error" role="alert">{{t "admin.people.sheet.mail_failed"}}</div>{{end}}
+<div><dt>{{t "admin.people.sheet.sent_at"}}</dt><dd>{{if .LastSent}}{{.LastSent}}{{else}}{{t "admin.people.sheet.never"}}{{end}}</dd></div>
+<div><dt>{{t "admin.people.sheet.opened"}}</dt><dd>{{if .Opened}}<span class="chip chip-ok">{{t "admin.people.sheet.yes"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.people.sheet.never"}}</span>{{end}}</dd></div>
+<div><dt>{{t "admin.people.sheet.last_login"}}</dt><dd>{{if .LastLogin}}{{.LastLogin}}{{else}}{{t "admin.people.sheet.none"}}{{end}}</dd></div>
+<div><dt>{{t "admin.people.sheet.revealed"}}</dt><dd>{{if .Revealed}}<span class="chip chip-ok">{{t "admin.people.sheet.yes"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.people.sheet.not_yet"}}</span>{{end}}</dd></div>
+</dl>
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-unsub-title">
+<h2 class="ppl-card-title" id="ppl-unsub-title">{{t "admin.people.sheet.unsub.title"}}</h2>
+<dl class="ppl-facts">
+{{range .Unsub}}<div><dt>{{t .LabelKey}}</dt><dd>{{if .Off}}<span class="chip chip-warn">{{t "admin.people.sheet.unsub.off"}}</span>{{else}}<span class="chip chip-ok">{{t "admin.people.sheet.unsub.on"}}</span>{{end}}</dd></div>{{end}}
+<div><dt>{{t "admin.people.sheet.unsub.essential"}}</dt><dd><span class="chip">{{t "admin.people.sheet.unsub.always"}}</span></dd></div>
+</dl>
+<p class="ppl-note">{{t "admin.people.sheet.unsub.note"}}</p>
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-role-title">
+<h2 class="ppl-card-title" id="ppl-role-title">{{t "admin.people.sheet.role.title"}} {{if .ShowBadge}}{{template "admin/roles/badge" .Badge}}{{end}}</h2>
+{{template "admin/roles/selector" .Selector}}
+<p class="ppl-note">{{t "admin.people.sheet.role.note"}}</p>
+</section>
+<section class="card-admin ppl-card" aria-labelledby="ppl-addr-title">
+<h2 class="ppl-card-title" id="ppl-addr-title">{{t "admin.people.sheet.address.title"}}</h2>
+<form class="ppl-form" method="post" action="{{.AddressURL}}">{{csrfField}}
+<div class="ppl-fld"><span class="field-label">{{t "admin.people.sheet.address.current"}}</span><span class="ppl-current">{{if .HasEmail}}{{.Email}}{{else}}{{t "admin.people.row.no_email"}}{{end}}</span></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-newmail">{{t "admin.people.sheet.address.new"}}</label>
+<input class="field" id="ppl-newmail" name="email" type="email" maxlength="254" autocomplete="off" required{{if eq $.ErrorField "email"}} aria-invalid="true" aria-describedby="ppl-newmail-err"{{end}}>
+{{if eq $.ErrorField "email"}}<div class="field-error" id="ppl-newmail-err" role="alert">{{t $.ErrorKey}}</div>{{end}}</div>
+<button class="btn btn-green ppl-wide" type="submit">{{t "admin.people.sheet.address.submit"}}</button>
+<p class="ppl-note">{{t "admin.people.sheet.address.journal"}}</p></form>
+</section>
+<section class="card-admin ppl-card" id="actions" aria-labelledby="ppl-actions-title">
+<h2 class="ppl-card-title" id="ppl-actions-title">{{t "admin.people.sheet.actions.title"}}</h2>
+<div class="ppl-actions">
+{{if .HasEmail}}<form method="post" action="{{.ResendURL}}">{{csrfField}}<button class="btn btn-green" type="submit">{{t "admin.people.sheet.resend"}}</button></form>{{end}}
+<a class="btn btn-ghost" href="{{.EditURL}}">{{t "admin.people.row.edit"}}</a>
+<a class="btn btn-ghost" href="{{.RegenAsk}}">{{t "admin.people.sheet.regen"}}</a>
+</div>
+{{if not .HasEmail}}<p class="ppl-note">{{t "admin.people.sheet.no_email_note"}}</p>{{end}}
+{{if .ConfirmRegen}}<div class="ppl-alert ppl-alert-error" role="alertdialog" aria-labelledby="ppl-regen-title"><h3 class="ppl-card-title" id="ppl-regen-title">{{t "admin.people.sheet.regen.title"}}</h3>
+<p class="ppl-note-on-alert">{{t "admin.people.sheet.regen.explain"}}</p>
+<form class="ppl-actions" method="post" action="{{.RegenURL}}">{{csrfField}}<button class="btn btn-danger" type="submit">{{t "admin.people.sheet.regen.confirm"}}</button><a class="btn btn-ghost" href="{{.SheetURL}}">{{t "admin.people.delete.cancel"}}</a></form></div>{{end}}
+</section>
+<p class="ppl-never">{{t "admin.people.sheet.never_target" "name" .FirstName}}</p>
+{{end}}{{end}}

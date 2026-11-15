@@ -1,0 +1,23 @@
+{{define "admin/people/fielderr"}}{{end}}
+{{define "admin/people/form"}}<form class="ppl-form" method="post" action="{{.Form.Action}}">
+{{csrfField}}
+<div class="ppl-two">
+<div class="ppl-fld"><label class="field-label" for="ppl-first">{{t "admin.people.form.first_name"}}</label>
+<input class="field" id="ppl-first" name="first_name" type="text" maxlength="80" autocomplete="off" value="{{.Form.FirstName}}" required{{if eq .ErrorField "first_name"}} aria-invalid="true" aria-describedby="ppl-first-err"{{end}}>
+{{if eq .ErrorField "first_name"}}<div class="field-error" id="ppl-first-err" role="alert">{{t .ErrorKey}}</div>{{end}}</div>
+<div class="ppl-fld"><label class="field-label" for="ppl-name">{{t "admin.people.form.name"}}</label>
+<input class="field" id="ppl-name" name="name" type="text" maxlength="80" autocomplete="off" value="{{.Form.Name}}" required{{if eq .ErrorField "name"}} aria-invalid="true" aria-describedby="ppl-name-err"{{end}}>
+{{if eq .ErrorField "name"}}<div class="field-error" id="ppl-name-err" role="alert">{{t .ErrorKey}}</div>{{end}}</div>
+</div>
+<div class="ppl-fld"><label class="field-label" for="ppl-email">{{t "admin.people.form.email"}} <span class="ppl-opt">{{t "admin.people.form.optional"}}</span></label>
+<input class="field" id="ppl-email" name="email" type="email" maxlength="254" autocomplete="off" value="{{.Form.Email}}"{{if eq .ErrorField "email"}} aria-invalid="true" aria-describedby="ppl-email-err"{{end}}>
+{{if eq .ErrorField "email"}}<div class="field-error" id="ppl-email-err" role="alert">{{t .ErrorKey}}</div>{{end}}
+<p class="ppl-note">{{t "admin.people.form.no_email_hint"}}</p></div>
+<div class="ppl-fld"><label class="field-label" for="ppl-hint">{{t "admin.people.form.gift_hint"}} <span class="ppl-opt">{{t "admin.people.form.hint_seen"}}</span></label>
+<input class="field" id="ppl-hint" name="gift_hint" type="text" maxlength="200" autocomplete="off" value="{{.Form.GiftHint}}"></div>
+<button class="btn btn-red ppl-wide" type="submit">{{t .Form.SubmitKey}}</button>
+</form>{{end}}
+{{define "admin/people/editcard"}}<section class="card-admin ppl-card" aria-labelledby="ppl-edit-title">
+<h2 class="ppl-card-title" id="ppl-edit-title">{{t "admin.people.edit.title"}}</h2>
+{{template "admin/people/form" .}}
+</section>{{end}}
