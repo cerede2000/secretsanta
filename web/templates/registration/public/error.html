@@ -1,0 +1,13 @@
+{{/*
+  Refus uniforme (lien ou code invalide, plafond, erreur). Données : .ErrorKey.
+  CSP stricte : ni style ni script en ligne.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/registration/public/public.css">
+<div class="reg reg-night theme-night">
+<div class="reg-hero">
+<h1 class="theme-title reg-title">{{t "registration.error.title"}}</h1>
+</div>
+<div class="card reg-card" role="alert">
+<p class="reg-intro">{{t .ErrorKey}}</p>
+</div>
+</div>{{end}}

@@ -1,0 +1,28 @@
+{{/*
+  screen-inscription-reussie : réussite de l'inscription. Données : .Slug,
+  .GroupName, .Success (FirstName, Budget, RevealDate, LetterHref, LaterHref,
+  Already). Le budget et la date de révélation ne sont écrits que s'ils sont
+  définis : sans budget, ni mention ni espace réservé. Aucune paire, aucun
+  secret. CSP stricte : ni style ni script en ligne.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/registration/public/public.css">
+<div class="reg reg-night reg-center theme-night">
+<svg class="reg-gifts" aria-hidden="true" width="210" height="130" viewBox="0 0 210 130"><ellipse cx="105" cy="120" rx="96" ry="9" fill="#e6ecff" opacity=".95"/><rect x="22" y="70" width="58" height="48" rx="4" fill="#c41e3a"/><rect x="45" y="70" width="12" height="48" fill="#ffd700"/><path d="M51 70c-12-18-24-8-16 0zM51 70c12-18 24-8 16 0z" fill="#ffd700"/><rect x="86" y="50" width="62" height="68" rx="4" fill="#165b33"/><rect x="110" y="50" width="12" height="68" fill="#ffd700"/><path d="M116 50c-12-20-26-8-17 0zM116 50c12-20 26-8 17 0z" fill="#ffd700"/><rect x="152" y="82" width="42" height="36" rx="4" fill="#ffd700"/><rect x="167" y="82" width="12" height="36" fill="#c41e3a"/><path d="M105 4l5 11 12 1.5-9 8 2.5 12-10.5-6-10.5 6 2.5-12-9-8 12-1.5z" fill="#ffd700"/></svg>
+<div class="reg-hero-center">
+<div class="reg-caption">{{.GroupName}}</div>
+<h1 class="theme-title reg-title reg-title-big">{{t "registration.public.done.title"}}</h1>
+</div>
+<div class="card reg-card reg-card-full" role="status">
+{{with .Success}}{{if .Budget}}<div class="reg-row"><svg class="reg-row-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M12.5 7.5C12 6.5 11 6 10 6c-1.5 0-2.5.8-2.5 2s1 1.8 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5"/></svg><div><b>{{t "registration.public.done.budget" "amount" .Budget}}</b><br>{{t "registration.public.done.budget_note"}}</div></div>
+{{end}}{{if .RevealDate}}<div class="reg-row"><svg class="reg-row-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><rect x="3" y="4.5" width="14" height="12.5" rx="2"/><path d="M3 8.5h14M7 2.5v3M13 2.5v3"/></svg><div><b>{{t "registration.public.done.reveal"}}</b><br>{{.RevealDate}}</div></div>
+{{end}}<div class="reg-row"><svg class="reg-row-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="4.5" width="15" height="11" rx="2.5"/><path d="M3 6.5l7 5.5 7-5.5"/></svg><div><b>{{t "registration.public.done.mail"}}</b><br>{{t "registration.public.done.mail_note"}}</div></div>
+{{end}}</div>
+<div class="card reg-card reg-card-full reg-letter">
+<h2 class="reg-letter-title">{{t "registration.public.done.letter_title"}}</h2>
+<p class="reg-intro">{{t "registration.public.done.letter_text"}}</p>
+<div class="reg-pills"><span class="reg-pill">{{t "registration.public.done.pill_wish"}}</span><span class="reg-pill">{{t "registration.public.done.pill_size"}}</span><span class="reg-pill">{{t "registration.public.done.pill_avoid"}}</span></div>
+{{with .Success}}<a class="btn btn-red reg-submit reg-cta" href="{{.LetterHref}}">{{t "registration.public.done.cta"}}</a>
+<a class="btn btn-ghost reg-later" href="{{.LaterHref}}">{{t "registration.public.done.later"}}</a>{{end}}
+<div class="reg-hint reg-hint-center">{{t "registration.public.done.letter_note"}}</div>
+</div>
+</div>{{end}}

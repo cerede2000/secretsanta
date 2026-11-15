@@ -1,0 +1,29 @@
+{{/*
+  screen-inscription-code : saisie du code de vérification. Données : .Slug,
+  .Action, .Ref, .Back (adresse du formulaire, peut être vide), .CodeLen,
+  .ErrorKey. CSP stricte : ni style ni script en ligne.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/registration/public/public.css">
+<div class="reg reg-night theme-night">
+{{if .Back}}<a class="reg-back" href="{{.Back}}"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4l-6 6 6 6"/></svg>{{t "registration.public.code.back"}}</a>{{end}}
+<div class="reg-hero">
+<svg class="reg-icon" aria-hidden="true" width="64" height="64" viewBox="0 0 64 64"><rect x="10" y="22" width="44" height="32" rx="4" fill="#eaf4ee"/><path d="M10 26l22 16 22-16" fill="none" stroke="#c41e3a" stroke-width="3" stroke-linejoin="round"/><circle cx="32" cy="42" r="7" fill="#c41e3a"/><path d="M32 6l2.5 5.5 6 .8-4.4 4.1 1.1 5.9L32 19.5l-5.2 2.8 1.1-5.9-4.4-4.1 6-.8z" fill="#ffd700"/></svg>
+<h1 class="theme-title reg-title">{{t "registration.public.code.title"}}</h1>
+</div>
+<form class="card reg-card" method="post" action="{{.Action}}" novalidate>
+{{csrfField}}
+<input type="hidden" name="ref" value="{{.Ref}}">
+{{if .Back}}<input type="hidden" name="retour" value="{{.Back}}">{{end}}
+<p class="reg-intro">{{t "registration.public.code.intro"}}</p>
+<div class="reg-field">
+<label class="reg-label" for="reg-code">{{t "registration.public.code.label" "n" .CodeLen}}</label>
+<input id="reg-code" class="field reg-code" type="text" name="code" required autocomplete="one-time-code" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="20"{{if .ErrorKey}} aria-invalid="true" aria-describedby="reg-code-err"{{end}}>
+{{if .ErrorKey}}<div id="reg-code-err" class="reg-msg reg-msg-error" role="alert"><svg class="reg-msg-icon" aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v4.5M9 12.5v.1"/></svg><span>{{t .ErrorKey}}</span></div>{{end}}
+</div>
+<button class="btn btn-red reg-submit" type="submit">{{t "registration.public.code.submit"}}</button>
+</form>
+<div class="reg-panel">
+<h2 class="reg-panel-title">{{t "registration.public.code.nothing_title"}}</h2>
+<p class="reg-panel-text">{{t "registration.public.code.nothing_text"}}</p>
+</div>
+</div>{{end}}
