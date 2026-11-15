@@ -1,0 +1,32 @@
+/* Navigation d'administration : barre basse sur téléphone, latérale dès 1024 px. */
+.admin-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.admin-body { flex: 1; min-width: 0; padding-bottom: 72px; }
+.admin-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: #fff; box-shadow: 0 -1px 0 var(--line); padding: 0 4px;
+}
+.admin-nav-item {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  min-height: 60px; min-width: var(--target); text-decoration: none;
+  color: var(--ink-2); font-family: inherit; font-weight: 600; font-size: 12px; line-height: 1.1; border-top: 4px solid transparent;
+}
+.admin-nav-item[aria-current="page"] {
+  color: var(--green); font-weight: 800; border-top-color: var(--green); background: #f1f8f3;
+}
+.admin-nav-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (min-width: 1024px) {
+  .admin-shell { flex-direction: row; }
+  .admin-body { padding-bottom: 0; padding-left: 240px; width: 100%; }
+  .admin-nav {
+    top: 0; right: auto; bottom: 0; width: 240px;
+    display: flex; flex-direction: column; justify-content: flex-start; gap: 4px;
+    padding: 16px 8px; box-shadow: 1px 0 0 var(--line);
+  }
+  .admin-nav-item {
+    flex-direction: row; justify-content: flex-start; gap: 12px; min-height: 48px;
+    padding: 0 16px; border-top: 0; border-left: 4px solid transparent;
+    border-radius: 8px; font-size: 15px;
+  }
+  .admin-nav-item[aria-current="page"] { border-left-color: var(--green); }
+}

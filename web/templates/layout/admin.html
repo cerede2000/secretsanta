@@ -1,0 +1,31 @@
+{{/*
+  Gabarit d'administration. Données : .Lang, .TitleKey, .Nav ([]adminnav.Item
+  du registre internal/shared/adminnav ; Label est une clé de texte, Icon l'un
+  de dashboard, participants, draw, registrations, more). Les pages définissent
+  "layout/content". Barre basse sur téléphone, barre latérale dès 1024 px.
+*/}}
+{{define "layout/navicon"}}<svg class="nav-icon" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+{{- if eq . "dashboard"}}<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+{{- else if eq . "participants"}}<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M17.5 14.2a5 5 0 0 1 4 5.8"/>
+{{- else if eq . "draw"}}<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.5 2-1 3.5 2 3 5.5zM12 9c3-1 5-4 3-5.5-2-1-3.5 2-3 5.5z"/>
+{{- else if eq . "registrations"}}<path d="M10 14a4 4 0 0 0 5.5 0l3-3a4 4 0 0 0-5.6-5.6L11.5 6.8M14 10a4 4 0 0 0-5.5 0l-3 3a4 4 0 0 0 5.6 5.6l1.4-1.4"/>
+{{- else}}<circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/>
+{{- end}}</svg>{{end}}
+{{define "layout/admin"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body class="admin">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<div class="admin-shell">
+<nav class="admin-nav" aria-label="{{t "layout.nav.label"}}">
+{{range .Nav}}<a class="admin-nav-item" href="{{.Destination}}"{{if .Active}} aria-current="page"{{end}}>{{template "layout/navicon" .Icon}}<span class="admin-nav-label">{{t .Label}}</span></a>
+{{end}}</nav>
+<div class="admin-body">
+<main id="main" class="site-main">
+{{block "layout/content" .}}{{end}}
+</main>
+{{template "layout/footer" .}}
+</div>
+</div>
+</body>
+</html>{{end}}

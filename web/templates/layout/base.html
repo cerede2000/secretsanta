@@ -1,0 +1,43 @@
+{{/*
+  Gabarit de mise en page. Données attendues : .Lang (code de langue),
+  .TitleKey (clé de texte du titre, facultative). Les pages définissent le
+  bloc "layout/content". Fonctions : t (F13). CSP stricte : ni style en ligne,
+  ni script en ligne, ni ressource data:.
+*/}}
+{{define "layout/head"}}<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{if .TitleKey}}{{t .TitleKey}} · {{end}}{{t "layout.brand"}}</title>
+<link rel="stylesheet" href="/static/css/base/base.css">
+<link rel="stylesheet" href="/static/css/base/admin-nav.css">
+</head>{{end}}
+{{define "layout/footer"}}<footer class="site-footer">
+<p class="site-footer-text">{{t "layout.footer.text"}}</p>
+{{block "i18n/selector" .}}{{end}}
+</footer>{{end}}
+{{define "layout/base"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+{{block "layout/content" .}}{{end}}
+</main>
+{{template "layout/footer" .}}
+</body>
+</html>{{end}}
+{{define "layout/home"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<h1>{{t "layout.home.title"}}</h1>
+<p>{{t "layout.home.intro"}}</p>
+<a class="button" href="/">{{t "layout.home.action"}}</a>
+</main>
+{{template "layout/footer" .}}
+</body>
+</html>{{end}}
