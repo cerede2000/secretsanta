@@ -50,7 +50,7 @@ case "${1:-}" in
     # shellcheck disable=SC2086
     grep -qiE "^#+ .*($s)" README.md || ko "README.md : section « $s » absente"
     # shellcheck disable=SC2086
-    cat $all | grep -qiE "^#+ .*($s)" || ko "guide : section « $s » absente"
+    grep -qiE "^#+ .*($s)" $all || ko "guide : section « $s » absente"
   done
   ;;
 *) echo "usage : $0 [--deliverability|--i18n]" >&2; exit 2 ;;
