@@ -1,0 +1,96 @@
+{{/*
+  Page « Délivrabilité » de l'administration (F6c.3, screen-admin-delivrabilite) :
+  rapport du diagnostic, enregistrements DNS à copier, courriel de test avec
+  en-têtes bruts, ce que l'application ne peut pas vérifier et liste de
+  suppression. Rendue dans layout/admin. Donnée : maildiagpages.Page. Aucun
+  texte brut : tout passe par t ; les textes du script de copie sont des
+  attributs data-*.
+*/}}
+{{define "maildiag/chipicon"}}{{if eq . "chip-ok"}}<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M1.5 6.5l3 2.5 6-6"/></svg>{{else if eq . "chip-error"}}<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7"/></svg>{{else}}<svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 4.5a1.5 1.5 0 1 1 2 1.4c-.6.3-.8.6-.8 1.1M6 9v.1"/></svg>{{end}}{{end}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/menu/menu.css">
+<link rel="stylesheet" href="/static/css/maildiag/maildiag.css">
+<section class="admin-menu maildiag" aria-labelledby="maildiag-title">
+<header class="admin-menu-head maildiag-head">
+<a class="maildiag-back" href="{{.BackURL}}" aria-label="{{t "maildiag.back"}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a>
+<h1 id="maildiag-title" class="admin-menu-title">{{t .TitleKey}}</h1>
+</header>
+<div class="admin-menu-body">
+
+<section class="card-admin maildiag-card" aria-labelledby="maildiag-report">
+<h2 id="maildiag-report" class="maildiag-h2">{{t "maildiag.report.title"}}</h2>
+{{- if .Domain}}<p class="maildiag-hint">{{t "maildiag.report.domain" "domain" .Domain "at" .CheckedAt}}</p>
+{{- else}}<p class="maildiag-hint">{{t "maildiag.report.checked" "at" .CheckedAt}}</p>{{end}}
+<p class="maildiag-chips">
+<span class="chip chip-ok">{{template "maildiag/chipicon" "chip-ok"}}{{tn "maildiag.report.ok" .OK}}</span>
+<span class="chip chip-error">{{template "maildiag/chipicon" "chip-error"}}{{tn "maildiag.report.fix" .Fix}}</span>
+{{- if .Off}}<span class="chip maildiag-chip-off">{{template "maildiag/chipicon" "off"}}{{tn "maildiag.report.off" .Off}}</span>{{end}}
+</p>
+<form method="get" action="{{.PageURL}}"><button class="btn btn-ghost maildiag-wide" type="submit">{{t "maildiag.report.rerun"}}</button></form>
+</section>
+
+<section class="card-admin maildiag-card" aria-labelledby="maildiag-checks">
+<h2 id="maildiag-checks" class="maildiag-h2">{{t "maildiag.checks.title"}}</h2>
+{{- range .Items}}
+<div class="maildiag-check" id="{{.ID}}">
+<div class="maildiag-top"><h3 class="maildiag-h3">{{.Title}}</h3><span class="chip {{.Chip}}">{{template "maildiag/chipicon" .Chip}}{{.Label}}</span></div>
+<p class="maildiag-hint">{{.Text}}</p>
+{{- with .Record}}
+<div class="maildiag-dns" id="{{.ID}}" tabindex="0"><code>{{.Name}}
+{{.Type}} {{.Value}}</code></div>
+<button class="btn btn-ghost maildiag-copy" type="button" data-copy-target="{{.ID}}-text" data-copy-status="{{.ID}}-status" data-copied="{{t "maildiag.copy.done"}}" data-failed="{{t "maildiag.copy.failed"}}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="9" height="9" rx="2"/><path d="M12 6V4.5A1.5 1.5 0 0 0 10.5 3h-6A1.5 1.5 0 0 0 3 4.5v6A1.5 1.5 0 0 0 4.5 12H6"/></svg>{{t "maildiag.copy.button"}}</button>
+<span id="{{.ID}}-text" hidden>{{.Text}}</span>
+<p id="{{.ID}}-status" class="chip chip-ok maildiag-status" role="status" hidden></p>
+{{- end}}
+</div>
+{{- end}}
+</section>
+
+<section class="card-admin maildiag-card" aria-labelledby="maildiag-test">
+<h2 id="maildiag-test" class="maildiag-h2">{{t "maildiag.test.title"}}</h2>
+<form method="post" action="{{.TestURL}}" class="maildiag-form">
+{{csrfField}}
+<label class="field-label" for="maildiag-to">{{t "maildiag.test.label"}}</label>
+<input id="maildiag-to" class="field" type="email" name="to" value="{{.TestTo}}" autocomplete="off" required{{if .TestError}} aria-invalid="true" aria-describedby="maildiag-to-error"{{end}}>
+{{- if .TestError}}<p id="maildiag-to-error" class="field-error" role="alert">{{.TestError}}</p>{{end}}
+<button class="btn btn-green maildiag-wide" type="submit">{{t "maildiag.test.button"}}</button>
+</form>
+{{- with .Test}}
+{{- if .Failed}}<p class="field-error" role="alert">{{.Text}}</p>{{else}}<p class="chip chip-ok maildiag-status" role="status">{{.Text}}</p>{{end}}
+{{- if .Headers}}
+<details class="maildiag-headers" open>
+<summary class="maildiag-summary">{{t "maildiag.test.headers"}}</summary>
+<pre class="maildiag-dns" id="maildiag-headers" tabindex="0">{{.Headers}}</pre>
+</details>
+{{- end}}
+{{- end}}
+</section>
+
+<section class="card-admin maildiag-card maildiag-unverifiable" aria-labelledby="maildiag-unverifiable">
+<h2 id="maildiag-unverifiable" class="maildiag-h2">{{t "maildiag.unverifiable.title"}}</h2>
+<ul class="maildiag-list">
+{{- range .Unverif}}<li>{{t .}}</li>{{end}}
+</ul>
+<p class="maildiag-hint">{{t "maildiag.unverifiable.hint"}}</p>
+<p class="maildiag-hint">{{t "maildiag.unverifiable.guide" "guide" .GuideURL}}</p>
+</section>
+
+<section class="card-admin maildiag-card" id="maildiag-suppression" aria-labelledby="maildiag-suppression-title">
+<h2 id="maildiag-suppression-title" class="maildiag-h2">{{t "maildiag.suppression.title"}}</h2>
+{{- if .Removed}}<p class="chip chip-ok maildiag-status" role="status">{{t "maildiag.suppression.removed"}}</p>{{end}}
+<p class="maildiag-hint">{{t "maildiag.suppression.hint"}}</p>
+{{- if .Suppressed}}
+<ul class="maildiag-list maildiag-suppressed">
+{{- range .Suppressed}}
+<li class="maildiag-suppressed-item">
+<div class="maildiag-suppressed-text"><b>{{.Address}}</b><span class="maildiag-hint">{{t "maildiag.suppression.since" "date" .Date}}{{if .Reason}} · {{.Reason}}{{end}}</span></div>
+<form method="post" action="{{$.RemoveURL}}">{{csrfField}}<input type="hidden" name="address" value="{{.Address}}"><button class="btn btn-ghost" type="submit">{{t "maildiag.suppression.remove"}}</button></form>
+</li>
+{{- end}}
+</ul>
+{{- else}}<p class="maildiag-hint">{{t "maildiag.suppression.empty"}}</p>{{end}}
+</section>
+
+</div>
+</section>
+<script type="module" src="/static/js/groups/copy.js"></script>
+{{end}}
