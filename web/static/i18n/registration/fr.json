@@ -41,5 +41,7 @@
   "registration.error.title": "Inscription impossible",
   "registration.error.refused": "Ce lien n'est pas valide ou n'est plus valable.",
   "registration.error.limited": "Trop d'essais. Réessaie dans quelques minutes.",
-  "registration.error.internal": "Un problème est survenu. Réessaie dans un instant."
+  "registration.error.internal": "Un problème est survenu. Réessaie dans un instant.",
+  "registration.error.mail_disabled": "L'envoi de courriel n'est pas configuré sur ce service : le code de vérification ne peut pas partir. Contacte l'organisateur.",
+  "registration.admin.mail_disabled": "L'envoi de courriel n'est pas configuré (SMTP absent) : les invités ne peuvent pas recevoir leur code de vérification et ne peuvent donc pas s'inscrire par lien. Renseigne SMTP_HOST et MAIL_FROM puis redémarre."
 }

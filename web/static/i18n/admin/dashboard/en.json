@@ -97,5 +97,6 @@
   "admin.dashboard.action.personne_modifiee": "Person edited",
   "admin.dashboard.action.personne_supprimee": "Person removed",
   "admin.dashboard.action.regle_modifiee": "Rule changed",
-  "admin.dashboard.action.unknown": "Sensitive action"
+  "admin.dashboard.action.unknown": "Sensitive action",
+  "admin.dashboard.mail_disabled": "Email sending is not configured (no SMTP): sign-up codes, reminders and notices will not be sent. Set SMTP_HOST and MAIL_FROM, then restart."
 }

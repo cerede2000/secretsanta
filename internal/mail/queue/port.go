@@ -2,12 +2,18 @@ package queue
 
 import (
 	"context"
+	"errors"
 	"html"
 	"regexp"
 	"strings"
 
 	"secretsanta/internal/shared/ports"
 )
+
+// ErrMailDisabled est renvoyée quand aucun transport d'envoi n'est branché
+// (SMTP absent) : le message n'est pas mis en file (il partirait périmé, ou
+// jamais). Les pages la reconnaissent pour dire clairement la cause.
+var ErrMailDisabled = errors.New("envoi de courriel désactivé : aucun transport configuré")
 
 // Sender implémente le port de courriel de F1 au-dessus de la file. Le port ne
 // porte ni groupe, ni nom, ni version HTML : le HTML est dérivé du texte et les

@@ -287,7 +287,7 @@ func (p *revealPages) showPage(w http.ResponseWriter, r *http.Request) {
 		"TitleKey":   "reveal.core.title.page",
 		"TargetsURL": base + "/cibles",
 		"ConfirmURL": base + "/confirmation",
-		"LetterURL":  "",
+		"LetterURL":  "/" + g.Slug + "/lettre",
 	})
 }
 

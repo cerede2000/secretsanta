@@ -13,6 +13,7 @@
 </header>
 {{if .ErrorKey}}<div class="dash-alert dash-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
 {{if .NoticeKey}}<div class="dash-alert dash-alert-ok" role="status">{{t .NoticeKey}}</div>{{end}}
+{{if .MailDisabled}}<div class="dash-alert dash-alert-error" role="status" data-mail-disabled>{{t "admin.dashboard.mail_disabled"}}</div>{{end}}
 {{if .View}}
 <div class="dash-grid">
 <div class="dash-col dash-col-side">

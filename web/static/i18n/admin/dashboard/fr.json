@@ -97,5 +97,6 @@
   "admin.dashboard.action.personne_modifiee": "Personne modifiée",
   "admin.dashboard.action.personne_supprimee": "Personne supprimée",
   "admin.dashboard.action.regle_modifiee": "Règle modifiée",
-  "admin.dashboard.action.unknown": "Action sensible"
+  "admin.dashboard.action.unknown": "Action sensible",
+  "admin.dashboard.mail_disabled": "L'envoi de courriel n'est pas configuré (SMTP absent) : ni les codes d'inscription, ni les relances, ni les avis ne partiront. Renseigne SMTP_HOST et MAIL_FROM puis redémarre."
 }

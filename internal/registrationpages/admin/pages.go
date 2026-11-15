@@ -92,6 +92,9 @@ type Deps struct {
 	// QR produit le PNG d'un QR code (enrolment.QRCodePNG si nil).
 	QR          func(text string) ([]byte, error)
 	DefaultLang string
+	// MailDisabled dit si l'envoi de courriel n'est pas configuré : la page
+	// avertit alors que les invités ne recevront pas leur code. Facultatif.
+	MailDisabled func() bool
 }
 
 // Row est une inscription en attente affichée.
@@ -133,6 +136,8 @@ type Page struct {
 	AdjustPath     string
 	BackPath       string
 	NextEnabledVal string
+	// MailDisabled : l'envoi de courriel n'est pas configuré.
+	MailDisabled bool
 	// Option « Proposer aux inscrits de choisir leur rôle » (F11e).
 	RoleChoice     bool
 	RoleAction     string
@@ -283,6 +288,7 @@ func (p *Pages) build(r *http.Request, g *groups.Group) (Page, error) {
 		AdjustPath: fill(adjustPath, g.Slug), BackPath: fill("/{slug}/admin", g.Slug),
 		NextEnabledVal: "1", RoleChoice: st.RoleChoice, RoleAction: fill(PathRole, g.Slug), NextRoleChoice: "1",
 	}
+	pg.MailDisabled = p.d.MailDisabled != nil && p.d.MailDisabled()
 	if st.RoleChoice {
 		pg.NextRoleChoice = "0"
 	}

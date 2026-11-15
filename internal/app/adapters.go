@@ -23,7 +23,7 @@ import (
 
 // ErrMailDisabled est renvoyée quand aucun transport d'envoi n'est branché :
 // le message n'est pas mis en file (il partirait périmé, ou jamais).
-var ErrMailDisabled = errors.New("envoi de courriel désactivé : aucun transport configuré")
+var ErrMailDisabled = queue.ErrMailDisabled
 
 // mailOutbox est l'expéditeur donné aux fonctionnalités : la file d'envoi
 // quand elle tourne, sinon un refus net (ErrMailDisabled).
@@ -38,6 +38,10 @@ func (m mailOutbox) Send(ctx context.Context, msg ports.EmailMessage) error {
 }
 
 var _ ports.EmailSender = mailOutbox{}
+
+// mailDisabled dit si l'envoi de courriel est inactif (aucun transport) : les
+// pages d'administration en avertissent l'organisateur.
+func (a *App) mailDisabled() bool { return a.mail.q == nil }
 
 // participantDirectory adapte participants.Service au port rules.Directory
 // (lecture du rôle de tirage). Aucun lecteur dédié n'existe dans participants :

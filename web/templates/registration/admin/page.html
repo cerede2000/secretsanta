@@ -12,6 +12,7 @@
 <div class="regadm-body">
 {{if .ErrorKey}}<p class="regadm-alert" role="alert">{{t .ErrorKey}}</p>{{end}}
 {{if .NoticeKey}}<p class="regadm-notice" role="status">{{t .NoticeKey}}</p>{{end}}
+{{if .MailDisabled}}<p class="regadm-alert" role="status" data-mail-disabled>{{t "registration.admin.mail_disabled"}}</p>{{end}}
 
 {{if .Closed}}
 {{template "regadm-role" .}}

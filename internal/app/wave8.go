@@ -117,6 +117,7 @@ func registerAdminPages(a *App) error {
 	}
 	dp, err := dashboard.NewPages(dashboard.PageOptions{
 		Service: ds, Groups: a.Groups, Translator: a.Cat, NavFor: a.adminNav,
+		MailDisabled: a.mailDisabled,
 	})
 	if err != nil {
 		return fmt.Errorf("pages du tableau de bord : %w", err)

@@ -44,6 +44,9 @@ type PageOptions struct {
 	// ParticipantPath est la fiche d'une personne (F10.3) ; défaut :
 	// /<slug>/admin/participants/<id>.
 	ParticipantPath func(slug string, id int64) string
+	// MailDisabled dit si l'envoi de courriel n'est pas configuré : la page
+	// affiche alors un avertissement. Facultatif (absent : pas d'avertissement).
+	MailDisabled func() bool
 }
 
 // Pages construit les gestionnaires du tableau de bord.
@@ -152,6 +155,7 @@ type pageData struct {
 	Journal           []journalRow
 	ErrorKey          string
 	NoticeKey         string
+	MailDisabled      bool
 }
 
 func (p *Pages) render(w http.ResponseWriter, r *http.Request, status int, name, active string, d pageData) {
@@ -206,7 +210,8 @@ func (p *Pages) admin(w http.ResponseWriter, r *http.Request) (g *groups.Group, 
 }
 
 func (p *Pages) base(g *groups.Group) pageData {
-	return pageData{Slug: g.Slug, GroupName: g.Name, RegistrationsHref: p.o.RegistrationsPath(g.Slug)}
+	return pageData{Slug: g.Slug, GroupName: g.Name, RegistrationsHref: p.o.RegistrationsPath(g.Slug),
+		MailDisabled: p.o.MailDisabled != nil && p.o.MailDisabled()}
 }
 
 func (p *Pages) rows(slug string, in []Person) []personRow {

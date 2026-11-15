@@ -31,6 +31,7 @@ import (
 	"secretsanta/internal/i18n/catalog"
 	"secretsanta/internal/i18n/negotiate"
 	i18nweb "secretsanta/internal/i18n/web"
+	"secretsanta/internal/mail/queue"
 	"secretsanta/internal/participants"
 	"secretsanta/internal/registration/code"
 	"secretsanta/internal/registration/invite"
@@ -326,6 +327,9 @@ func (p *Pages) submit(w http.ResponseWriter, r *http.Request, inv *invite.Invit
 	case errors.Is(err, limiter.ErrLimited):
 		p.renderError(w, r, http.StatusTooManyRequests, "registration.error.limited")
 		return
+	case errors.Is(err, queue.ErrMailDisabled):
+		p.mailDisabled(w, r)
+		return
 	case err != nil:
 		p.o.Logger.Error("inscription", "erreur", err)
 		p.renderError(w, r, http.StatusInternalServerError, "registration.error.internal")
@@ -552,6 +556,14 @@ var closedKeys = map[string]bool{
 	"registration.closed_date": true,
 }
 
+// mailDisabled répond quand l'envoi de courriel n'est pas configuré : le code
+// de vérification ne peut pas partir. Le message dit la cause à l'invité et lui
+// indique quoi faire ; l'organisateur est averti sur ses pages d'administration.
+func (p *Pages) mailDisabled(w http.ResponseWriter, r *http.Request) {
+	p.o.Logger.Warn("inscription : envoi de courriel non configuré, le code de vérification n'est pas parti")
+	p.renderError(w, r, http.StatusConflict, "registration.error.mail_disabled")
+}
+
 // fail traduit une erreur de service en page : plafond atteint (429), refus
 // uniforme (404), fermeture (403), sinon erreur interne.
 func (p *Pages) fail(w http.ResponseWriter, r *http.Request, err error) {
@@ -560,6 +572,8 @@ func (p *Pages) fail(w http.ResponseWriter, r *http.Request, err error) {
 		p.renderError(w, r, http.StatusTooManyRequests, "registration.error.limited")
 	case code.IsRefused(err):
 		p.refused(w, r)
+	case errors.Is(err, queue.ErrMailDisabled):
+		p.mailDisabled(w, r)
 	case errs.Is(err, errs.KindForbidden):
 		key, _ := errs.CodeOf(err)
 		if !closedKeys[key] {

@@ -41,5 +41,7 @@
   "registration.error.title": "Registration not possible",
   "registration.error.refused": "This link is not valid or is no longer valid.",
   "registration.error.limited": "Too many attempts. Try again in a few minutes.",
-  "registration.error.internal": "Something went wrong. Try again in a moment."
+  "registration.error.internal": "Something went wrong. Try again in a moment.",
+  "registration.error.mail_disabled": "Email sending is not configured on this service, so the verification code cannot be sent. Contact the organiser.",
+  "registration.admin.mail_disabled": "Email sending is not configured (no SMTP): guests cannot receive their verification code and so cannot sign up through the link. Set SMTP_HOST and MAIL_FROM, then restart."
 }

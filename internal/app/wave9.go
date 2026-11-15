@@ -99,6 +99,7 @@ func registerRegistrationAdmin(a *App) error {
 		Groups: a.Groups, Invite: a.Invite, Verify: a.Verify, Counter: invite.SQLDirectory{DB: a.DB},
 		Draw: a.DrawState, Render: set.render, Nav: a.AdminNav, Clock: a.Clock, Location: a.Cfg.Location,
 		PublicURL: a.publicBase(), DefaultLang: a.Cfg.DefaultLang,
+		MailDisabled: a.mailDisabled,
 	})
 	if err != nil {
 		return fmt.Errorf("inscriptions (administration) : %w", err)

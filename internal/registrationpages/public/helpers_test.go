@@ -46,6 +46,7 @@ type fakeInvites struct {
 	closed      invite.ClosedReason
 	roleChoice  bool
 	result      *invite.Result
+	submitErr   error
 	submissions []invite.Submission
 	verifyErr   error
 }
@@ -66,6 +67,9 @@ func (f *fakeInvites) Submit(_ context.Context, slug, tok string, sub invite.Sub
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	f.submissions = append(f.submissions, sub)
+	if f.submitErr != nil {
+		return nil, f.submitErr
+	}
 	if f.result != nil {
 		return f.result, nil
 	}
