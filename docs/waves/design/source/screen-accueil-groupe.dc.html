@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Accueil du groupe</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;border:0;font:700 16px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}.b-green{background:#165b33;color:#fff}.b-gold{background:#ffd700;color:#1f2d26}
+.b-ghostw{background:transparent;color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.75)}
+@keyframes fall{from{transform:translateY(-14px)}to{transform:translateY(18px)}}
+.snow{animation:fall 6s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.snow{animation:none}}
+</style>
+</helmet>
+<div style="position:relative;overflow:hidden;width:390px;height:900px;box-sizing:border-box;background:linear-gradient(180deg,#0f1b3d 0%,#1c2f6b 62%,#2b2a63 100%);color:#fff;display:flex;flex-direction:column;align-items:center;padding:56px 24px 32px;gap:20px">
+<svg class="snow" aria-hidden="true" width="390" height="900" viewBox="0 0 390 900" style="position:absolute;inset:0;pointer-events:none" fill="#fff"><circle cx="30" cy="70" r="3" opacity=".8"/><circle cx="92" cy="140" r="2" opacity=".6"/><circle cx="170" cy="48" r="2.5" opacity=".7"/><circle cx="260" cy="110" r="3.5" opacity=".8"/><circle cx="340" cy="60" r="2" opacity=".6"/><circle cx="352" cy="190" r="3" opacity=".7"/><circle cx="48" cy="250" r="2.5" opacity=".6"/><circle cx="300" cy="300" r="2" opacity=".5"/><circle cx="120" cy="360" r="3" opacity=".7"/><circle cx="220" cy="230" r="2" opacity=".5"/><circle cx="20" cy="430" r="2.5" opacity=".6"/><circle cx="366" cy="420" r="2.5" opacity=".6"/></svg>
+<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+<div style="font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9d3f0">Secret Santa</div>
+<h1 class="h" style="margin:0;font-size:44px;line-height:1.05;color:#ffd700;text-wrap:balance">Noël en famille 2026</h1>
+</div>
+<svg aria-hidden="true" width="190" height="250" viewBox="0 0 190 250" style="position:relative;flex:none">
+<ellipse cx="95" cy="236" rx="92" ry="12" fill="#e6ecff" opacity=".95"/>
+<rect x="84" y="196" width="22" height="34" rx="4" fill="#6b3f1d"/>
+<path d="M95 22 L146 88 H118 L160 140 H124 L172 202 H18 L66 140 H30 L72 88 H44 Z" fill="#165b33"/>
+<path d="M95 22 L146 88 H44 Z" fill="#1f7a45"/>
+<path d="M30 140 Q95 160 160 140" stroke="#ffd700" stroke-width="3" fill="none" stroke-dasharray="2 7" stroke-linecap="round"/>
+<path d="M44 88 Q95 106 146 88" stroke="#ffd700" stroke-width="3" fill="none" stroke-dasharray="2 7" stroke-linecap="round"/>
+<circle cx="70" cy="120" r="6" fill="#c41e3a"/><circle cx="118" cy="104" r="6" fill="#c41e3a"/><circle cx="104" cy="168" r="7" fill="#c41e3a"/><circle cx="58" cy="180" r="6" fill="#ffd700"/><circle cx="136" cy="182" r="6" fill="#ffd700"/>
+<path d="M95 0l6 13 14 2-10.5 9.500 3 14-12.500-7.500-12.500 7.500 3-14L75 15l14-2z" fill="#ffd700"/>
+<rect x="30" y="204" width="34" height="26" rx="3" fill="#c41e3a"/><rect x="43" y="204" width="8" height="26" fill="#ffd700"/>
+<rect x="128" y="208" width="30" height="22" rx="3" fill="#ffd700"/><rect x="139" y="208" width="8" height="22" fill="#c41e3a"/>
+</svg>
+<div style="position:relative;width:100%;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;border-radius:20px;padding:20px;box-shadow:0 6px 20px rgba(8,14,40,.3);display:flex;flex-direction:column;gap:10px">
+<h2 class="h" style="margin:0;font-size:28px;color:#165b33">Bienvenue chez le Père Noël</h2>
+<p style="margin:0;font-size:16px;line-height:1.5;color:#4a5a50">Le tirage au sort de la famille se passe ici. Entre avec ton lien personnel ou ton code, découvre à qui tu offres un cadeau et écris ta lettre.</p>
+<div style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:#165b33"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="12" height="8" rx="2"/><path d="M6 8V6a3 3 0 016 0v2"/></svg>Budget conseillé : 25 €</div>
+</div>
+<div style="position:relative;width:100%;display:flex;flex-direction:column;gap:12px;margin-top:4px">
+<a class="btn b-red" href="screen-connexion.dc.html" style="width:100%;min-height:56px;font-size:18px">Entrer</a>
+<a class="btn b-ghostw" href="screen-connexion.dc.html" style="width:100%">J'ai un code d'invitation</a>
+</div>
+<p style="position:relative;margin:auto 0 0;text-align:center;font-size:13px;line-height:1.45;color:#c9d3f0;max-width:300px">Cette page ne montre personne. Seul ton lien personnel ouvre ton tirage.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

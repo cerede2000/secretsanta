@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Boîte aux lettres</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.entry{display:flex;gap:14px;align-items:center;min-height:88px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;border-radius:20px;padding:14px 16px;text-decoration:none;box-shadow:0 6px 18px rgba(8,14,40,.3)}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 12px;border-radius:999px;font:700 13px 'Nunito',sans-serif}
+@keyframes bob{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+.flag{transform-origin:20px 60px;animation:bob 2.400s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.flag{animation:none}}
+</style>
+</helmet>
+<div style="position:relative;overflow:hidden;width:390px;height:1120px;box-sizing:border-box;background:linear-gradient(180deg,#0f1b3d 0%,#1c2f6b 60%,#2b2a63 100%);color:#fff;display:flex;flex-direction:column;align-items:center;padding:28px 20px 32px;gap:18px">
+<div style="width:100%;display:flex;align-items:center;gap:8px;min-height:44px"><a href="screen-ma-cible.dc.html" aria-label="Retour" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#c9d3f0" stroke-width="2.200" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><div style="font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9d3f0">Noël en famille 2026</div></div>
+<h1 class="h" style="margin:0;font-size:40px;line-height:1.05;color:#ffd700;text-align:center">Ta boîte aux lettres</h1>
+<svg aria-hidden="true" width="230" height="230" viewBox="0 0 230 230" style="flex:none">
+<ellipse cx="115" cy="216" rx="104" ry="11" fill="#e6ecff" opacity=".95"/>
+<rect x="105" y="120" width="20" height="94" rx="4" fill="#6b3f1d"/>
+<rect x="40" y="52" width="150" height="82" rx="38" fill="#165b33"/>
+<path d="M40 90a38 42 0 0 1 38-38h74a38 42 0 0 1 38 38z" fill="#1f7a45"/>
+<rect x="70" y="88" width="90" height="12" rx="6" fill="#0f3d22"/>
+<rect x="54" y="104" width="122" height="8" rx="4" fill="#ffd700" opacity=".9"/>
+<g class="flag"><rect x="187" y="40" width="7" height="58" rx="3" fill="#ffd700"/><path d="M194 40h24v18h-24z" fill="#c41e3a"/></g>
+<rect x="84" y="20" width="62" height="44" rx="4" fill="#eaf4ee" transform="rotate(-7 115 42)"/><path d="M92 34h44M92 43h36M92 52h42" stroke="#7d9686" stroke-width="3" stroke-linecap="round" transform="rotate(-7 115 42)"/><circle cx="130" cy="26" r="7" fill="#c41e3a" transform="rotate(-7 115 42)"/>
+<circle cx="30" cy="40" r="3" fill="#fff"/><circle cx="206" cy="150" r="3" fill="#fff"/><circle cx="22" cy="130" r="2.500" fill="#fff"/>
+</svg>
+<div style="width:100%;display:flex;flex-direction:column;gap:12px">
+<a class="entry" href="screen-lettre.dc.html">
+<svg aria-hidden="true" width="44" height="44" viewBox="0 0 44 44" style="flex:none"><rect x="5" y="9" width="34" height="26" rx="4" fill="#fff" stroke="#165b33" stroke-width="2.200"/><path d="M6 12l16 12 16-12" fill="none" stroke="#165b33" stroke-width="2.200" stroke-linejoin="round"/></svg>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><div class="h" style="font-size:24px;line-height:1.05;color:#165b33">Ma lettre au Père Noël</div>
+<span class="chip" style="background:#dff3e4;color:#0f4a2a;align-self:flex-start"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg>Lue par le Père Noël</span></div>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l6 6-6 6"/></svg>
+</a>
+<a class="entry" href="screen-lettre-recue.dc.html">
+<svg aria-hidden="true" width="44" height="44" viewBox="0 0 44 44" style="flex:none"><rect x="5" y="9" width="34" height="26" rx="4" fill="#fff" stroke="#c41e3a" stroke-width="2.200"/><path d="M6 12l16 12 16-12" fill="none" stroke="#c41e3a" stroke-width="2.200" stroke-linejoin="round"/><circle cx="36" cy="10" r="6" fill="#ffd700" stroke="#eaf4ee" stroke-width="2"/></svg>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><div class="h" style="font-size:24px;line-height:1.05;color:#c41e3a">Lettre reçue · cadeau 1 sur 2</div>
+<span class="chip" style="background:#fff1c2;color:#6b4b00;align-self:flex-start"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#6b4b00" stroke-width="2.200" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>Nouvelle idée</span></div>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l6 6-6 6"/></svg>
+</a>
+<a class="entry" href="screen-lettre-recue.dc.html">
+<svg aria-hidden="true" width="44" height="44" viewBox="0 0 44 44" style="flex:none"><rect x="5" y="9" width="34" height="26" rx="4" fill="#fff" stroke="#c41e3a" stroke-width="2.200"/><path d="M6 12l16 12 16-12" fill="none" stroke="#c41e3a" stroke-width="2.200" stroke-linejoin="round"/></svg>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px"><div class="h" style="font-size:24px;line-height:1.05;color:#c41e3a">Lettre reçue · cadeau 2 sur 2</div>
+<span class="chip" style="background:#dff3e4;color:#0f4a2a;align-self:flex-start"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg>Rien de nouveau</span></div>
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l6 6-6 6"/></svg>
+</a>
+<div style="font-size:13px;line-height:1.45;color:#c9d3f0;text-align:center">La deuxième lettre n'apparaît que si tu offres 2 cadeaux. Avec un seul cadeau à offrir, il n'y a qu'une lettre reçue. Sans cadeau à offrir (réception seule), seule « Ma lettre au Père Noël » apparaît ici. Aucune lettre ne révèle qui s'occupe de la tienne.</div>
+</div>
+<div style="width:100%;background:rgba(255,250,240,.1);border-radius:16px;padding:14px 16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);font-size:14px;line-height:1.5;color:#e6ebfb;display:flex;flex-direction:column;gap:8px">
+<div><b>Le Père Noël lit tout et ne répond pas.</b> Tu ne sauras jamais qui s'occupe de ta lettre, et il ne saura jamais que c'est toi qui l'as écrite à moins que tu le dises.</div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#c9d3f0;font-size:13px">Autre état du cachet : <span class="chip" style="background:#fff1c2;color:#6b4b00"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#6b4b00" stroke-width="2.200" stroke-linecap="round"><circle cx="7" cy="7" r="5.200"/><path d="M7 4v3.400l2 1.300"/></svg>Pas encore lue</span></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1120}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

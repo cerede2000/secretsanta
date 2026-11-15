@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Menu Plus de l'organisateur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.grp{background:#fff;border-radius:16px;box-shadow:inset 0 0 0 1px #c5ddd0;overflow:hidden}
+.it{display:flex;align-items:center;gap:14px;min-height:60px;padding:8px 16px;text-decoration:none;color:#1f2d26;font:700 16px 'Nunito',sans-serif;border-top:1px solid #dcebe2}
+.it:first-child{border-top:0}
+.ic{flex:none;width:36px;height:36px;border-radius:10px;background:#dcebe2;display:flex;align-items:center;justify-content:center}
+.sub{font:600 13px/1.35 'Nunito',sans-serif;color:#4a5a50}
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;box-shadow:0 -1px 0 #c5ddd0;padding:0 4px;flex:none}.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;box-sizing:border-box;text-decoration:none;color:#4a5a50;font:600 12px/1.1 'Nunito',sans-serif;border-top:4px solid transparent}.nv[aria-current="page"]{color:#165b33;font-weight:800;border-top-color:#165b33;background:#f1f8f3}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column">
+<div style="background:#165b33;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:8px"><div><div style="font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#c8e6d3">Espace organisateur</div><div class="h" style="font-size:24px;line-height:1.1">Plus</div></div></div>
+<div style="flex:1;min-height:0;padding:16px 14px 20px;display:flex;flex-direction:column;gap:18px">
+<div class="grp">
+<a class="it" href="screen-admin-reglages.dc.html"><span class="ic"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="2.800"/><path d="M10 2.500v2.200M10 15.300v2.200M2.500 10h2.200M15.300 10h2.200M4.700 4.700l1.600 1.600M13.700 13.700l1.600 1.600M15.300 4.700l-1.600 1.600M6.300 13.700l-1.600 1.600"/></svg></span><span style="flex:1">Réglages<div class="sub">Groupe, courrier, relances, données</div></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l5 5-5 5"/></svg></a>
+<a class="it" href="screen-admin-tirage.dc.html"><span class="ic"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><path d="M5 3h10v14H5zM8 7h4M8 10h4M8 13h2"/></svg></span><span style="flex:1">Journal du groupe<div class="sub">Ajustements, consultations, validations</div></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l5 5-5 5"/></svg></a>
+<a class="it" href="screen-admin-reglages.dc.html"><span class="ic"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M6 9l4 4 4-4M3.500 16.500h13"/></svg></span><span style="flex:1">Exporter les participants<div class="sub">Fichier JSON, sans les paires</div></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l5 5-5 5"/></svg></a>
+<a class="it" href="#"><span class="ic"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="7.500"/><path d="M8 8a2 2 0 1 1 3 1.700c-.7.4-1 .9-1 1.600M10 14.500v.1"/></svg></span><span style="flex:1">Aide<div class="sub">Comment ça marche, en quelques lignes</div></span><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#4a5a50" stroke-width="2.200" stroke-linecap="round"><path d="M7 4l5 5-5 5"/></svg></a>
+</div>
+<div class="grp" style="box-shadow:inset 0 0 0 2px #8f1329">
+<a class="it" href="screen-admin-connexion.dc.html" style="color:#8f1329"><span class="ic" style="background:#fde0e4"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#8f1329" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.500H5a1.500 1.500 0 0 0-1.500 1.500v10A1.500 1.500 0 0 0 5 16.500h3M12 6.500l3.500 3.500L12 13.500M15.500 10H8"/></svg></span><span style="flex:1">Se déconnecter<div class="sub" style="color:#8f1329">Ton jeton ou mot de passe reste valable</div></span></a>
+</div>
+<div style="margin-top:auto;display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.45;color:#4a5a50;box-shadow:inset 0 0 0 1px #c5ddd0"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="3" y="8" width="12" height="8" rx="2"/><path d="M6 8V6a3 3 0 016 0v2"/></svg><span>Rien de ce menu ne montre qui offre à qui.</span></div>
+</div>
+<nav class="nav" aria-label="Navigation organisateur"><a class="nv" href="screen-admin-tableau.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg>Tableau</a><a class="nv" href="screen-admin-participants.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17" cy="9" r="2.500"/><path d="M17.500 14.200a5 5 0 0 1 4 5.800"/></svg>Participants</a><a class="nv" href="screen-admin-tirage.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.500 2-1 3.500 2 3 5.500zM12 9c3-1 5-4 3-5.500-2-1-3.500 2-3 5.500z"/></svg>Tirage</a><a class="nv" href="screen-admin-inscriptions.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.500 0l3-3a4 4 0 0 0-5.600-5.600L11.500 6.800M14 10a4 4 0 0 0-5.500 0l-3 3a4 4 0 0 0 5.600 5.600l1.400-1.400"/></svg>Inscriptions</a><a class="nv" href="screen-admin-menu.dc.html" aria-current="page"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.800" fill="currentColor"/><circle cx="12" cy="12" r="1.800" fill="currentColor"/><circle cx="19" cy="12" r="1.800" fill="currentColor"/></svg>Plus</a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

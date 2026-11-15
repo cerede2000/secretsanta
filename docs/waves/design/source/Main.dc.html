@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche des tokens</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;border:0;font:700 16px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none}
+.b-red{background:#c41e3a;color:#fff}.b-green{background:#165b33;color:#fff}
+.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}
+.b-danger{background:#8f1329;color:#fff}
+.b-off{background:#c5ddd0;color:#4a5a50;cursor:not-allowed}
+.b-focus{outline:3px solid #ffd700;outline-offset:3px;box-shadow:0 0 0 6px #0f1b3d}
+.inp{box-sizing:border-box;height:48px;width:100%;padding:0 14px;border-radius:12px;border:2px solid #7d9686;background:#fff;font:600 16px 'Nunito',sans-serif;color:#1f2d26}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 12px;border-radius:999px;font:700 13px 'Nunito',sans-serif}
+.sw{border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.18);background:#fff}
+.lab{font:700 12px/1 'Nunito',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#4a5a50}
+</style>
+</helmet>
+<div style="width:1100px;height:1500px;box-sizing:border-box;padding:48px;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column;gap:36px">
+
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<div class="lab">Secret Santa famille · fiche des tokens</div>
+<h1 class="h" style="margin:0;font-size:56px;line-height:1.05;color:#c41e3a">Couleurs, texte, formes</h1>
+<p style="margin:0;font-size:16px;line-height:1.5;color:#4a5a50;max-width:620px">Tout est pensé pour un téléphone à partir de 360 px. Les polices Mountains of Christmas et Nunito seront embarquées dans l'image Docker, jamais chargées depuis Internet. Les animations sont coupées par « réduire les animations ».</p>
+</div>
+<svg aria-hidden="true" width="92" height="92" viewBox="0 0 92 92" fill="none" stroke="#d9a800" stroke-width="4" stroke-linecap="round"><path d="M46 8v76M13 27l66 38M13 65l66-38"/><path d="M38 14l8 8 8-8M38 78l8-8 8 8M12 40l11 3-3 11M80 40l-11 3 3 11M12 52l11-3-3-11M80 52l-11-3 3-11" stroke-width="3"/></svg>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="lab">Couleurs</div>
+<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px">
+<div class="sw"><div style="height:68px;background:#c41e3a"></div><div style="padding:10px 12px;font-size:13px;line-height:1.35"><b>Rouge Noël</b><br>#c41e3a<br>Action principale</div></div>
+<div class="sw"><div style="height:68px;background:#165b33"></div><div style="padding:10px 12px;font-size:13px;line-height:1.35"><b>Vert sapin</b><br>#165b33<br>Admin, secondaire</div></div>
+<div class="sw"><div style="height:68px;background:#ffd700"></div><div style="padding:10px 12px;font-size:13px;line-height:1.35"><b>Or</b><br>#ffd700<br>Lueur, bouton sur nuit</div></div>
+<div class="sw"><div style="height:68px;background:linear-gradient(180deg,#0f1b3d,#1c2f6b)"></div><div style="padding:10px 12px;font-size:13px;line-height:1.35"><b>Bleu nuit</b><br>#0f1b3d → #1c2f6b<br>Fond festif</div></div>
+<div class="sw"><div style="height:68px;background:#eaf4ee;box-shadow:inset 0 0 0 1px #c5ddd0"></div><div style="padding:10px 12px;font-size:13px;line-height:1.35"><b>Givre menthe</b><br>#eaf4ee<br>Fond clair, admin, cartes</div></div>
+<div class="sw"><div style="height:68px;background:#1f2d26"></div><div style="padding:10px 12px;font-size:13px;line-height:1.35"><b>Encre</b><br>#1f2d26<br>Texte courant</div></div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="lab">Paires texte et fond, rapports de contraste</div>
+<div style="display:flex;flex-direction:column;gap:6px;font-size:14px">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#eaf4ee;color:#1f2d26;font-weight:700;box-shadow:inset 0 0 0 1px #c5ddd0">Encre</span><span>sur givre menthe : 12,8:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#eaf4ee;color:#4a5a50;font-weight:700;box-shadow:inset 0 0 0 1px #c5ddd0">#4a5a50</span><span>texte secondaire sur givre menthe : 6,5:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#c41e3a;color:#fff;font-weight:700">Blanc</span><span>sur rouge : 5,8:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#165b33;color:#fff;font-weight:700">Blanc</span><span>sur vert sapin : 8,1:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#0f1b3d;color:#ffd700;font-weight:700">Or</span><span>sur bleu nuit : 12,0:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#0f1b3d;color:#c9d3f0;font-weight:700">#c9d3f0</span><span>texte atténué sur nuit : 11,3:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#ffd700;color:#1f2d26;font-weight:700">Encre</span><span>sur bouton or : 10,2:1</span></div>
+<div style="display:flex;align-items:center;gap:10px"><span style="width:104px;padding:6px 8px;border-radius:8px;background:#eaf4ee;color:#c41e3a;font-weight:700;box-shadow:inset 0 0 0 1px #c5ddd0">Rouge</span><span>lien sur givre menthe : 5,2:1</span></div>
+</div>
+<p style="margin:4px 0 0;font-size:13px;line-height:1.45;color:#4a5a50">Règle : l'or n'est jamais une couleur de texte sur fond clair. Il sert aux lueurs, aux bordures et au texte sur bleu nuit.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="lab">Échelles</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<div class="h" style="font-size:44px;line-height:1.05;color:#165b33">Affichage 44</div>
+<div class="h" style="font-size:32px;line-height:1.1;color:#165b33">Titre 32 / 24</div>
+<div style="font-size:20px;font-weight:800">Intertitre 20 · Nunito 800</div>
+<div style="font-size:16px;line-height:1.5">Texte courant 16, interligne 1,5. Jamais en dessous de 14 pour lire.</div>
+<div style="font-size:13px;color:#4a5a50;font-weight:600">Légende 13 · étiquette en capitales 12 avec espacement</div>
+</div>
+<div style="display:flex;gap:10px;align-items:flex-end;margin-top:4px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:4px;height:4px;background:#165b33"></div>4</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:8px;height:8px;background:#165b33"></div>8</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:12px;height:12px;background:#165b33"></div>12</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:16px;height:16px;background:#165b33"></div>16</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:24px;height:24px;background:#165b33"></div>24</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:32px;height:32px;background:#165b33"></div>32</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px"><div style="width:48px;height:48px;background:#165b33"></div>48</div>
+<div style="margin-left:14px;display:flex;gap:10px;align-items:flex-end;font-size:12px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:48px;height:48px;background:#fff;border-radius:8px;box-shadow:0 0 0 2px #165b33 inset"></div>8</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:48px;height:48px;background:#fff;border-radius:14px;box-shadow:0 0 0 2px #165b33 inset"></div>14</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:48px;height:48px;background:#fff;border-radius:20px;box-shadow:0 0 0 2px #165b33 inset"></div>20</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:4px"><div style="width:48px;height:48px;background:#fff;border-radius:999px;box-shadow:0 0 0 2px #165b33 inset"></div>pilule</div>
+</div>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="lab">Boutons (hauteur 48, cible tactile 44 minimum)</div>
+<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:20px;border-radius:20px;background:#0f1b3d">
+<button class="btn b-red" type="button">Entrer</button>
+<button class="btn b-green" type="button">Secondaire</button>
+<button class="btn" type="button" style="background:#ffd700;color:#1f2d26">Or sur nuit</button>
+<button class="btn" type="button" style="background:transparent;color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)">Fantôme clair</button>
+<button class="btn b-red b-focus" type="button">Focus visible</button>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:20px;border-radius:20px;background:#ffffff;box-shadow:inset 0 0 0 1px #c5ddd0">
+<button class="btn b-red" type="button">Lancer le tirage</button>
+<button class="btn b-green" type="button">Renvoyer le lien</button>
+<button class="btn b-ghost" type="button">Fantôme</button>
+<button class="btn b-danger" type="button">Supprimer</button>
+<button class="btn b-off" type="button" disabled>Désactivé</button>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="lab">Champs</div>
+<label for="t1" style="font-size:14px;font-weight:700">Prénom</label>
+<input id="t1" class="inp" type="text" value="Camille">
+<label for="t2" style="font-size:14px;font-weight:700">Adresse mail (facultative)</label>
+<input id="t2" class="inp" type="email" value="camille@exemple.fr" style="border-color:#c41e3a;box-shadow:0 0 0 3px #fde0e4">
+<div style="font-size:13px;color:#8f1329;font-weight:700">Cette adresse est déjà utilisée dans le groupe.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="lab">Puces de statut</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<span class="chip" style="background:#dff3e4;color:#0f4a2a"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.4" stroke-linecap="round"><path d="M2 7.5l3.2 3L12 3.5"/></svg>Lien ouvert</span>
+<span class="chip" style="background:#fff1c2;color:#6b4b00"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#6b4b00" stroke-width="2.2" stroke-linecap="round"><circle cx="7" cy="7" r="5.2"/><path d="M7 4v3.4l2 1.3"/></svg>En attente</span>
+<span class="chip" style="background:#fde0e4;color:#8f1329"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8f1329" stroke-width="2.4" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg>Échec d'envoi</span>
+</div>
+<div style="font-size:13px;line-height:1.45;color:#4a5a50">Un statut n'est jamais porté par la couleur seule : toujours une icône et un mot.</div>
+<div class="lab" style="margin-top:6px">Flocon</div>
+<div style="display:flex;gap:12px;align-items:center"><svg aria-hidden="true" width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#d9a800" stroke-width="3" stroke-linecap="round"><path d="M28 6v44M9 17l38 22M9 39l38-22"/><path d="M22 10l6 6 6-6M22 46l6-6 6 6" stroke-width="2.4"/></svg><div style="width:56px;height:56px;border-radius:14px;background:#0f1b3d;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="40" height="40" viewBox="0 0 56 56" fill="none" stroke="#e6ecff" stroke-width="3" stroke-linecap="round"><path d="M28 6v44M9 17l38 22M9 39l38-22"/><path d="M22 10l6 6 6-6M22 46l6-6 6 6" stroke-width="2.4"/></svg></div></div>
+<div style="font-size:13px;line-height:1.45;color:#4a5a50">Or foncé sur fond clair (décor seulement, jamais en texte), blanc glacé sur la nuit. Plus aucun flocon vert.</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="lab">Cartes et ombres</div>
+<div style="background:#eaf4ee;border-radius:20px;padding:16px;box-shadow:0 6px 20px rgba(8,14,40,.22),inset 0 0 0 1px #c5ddd0;font-size:14px;line-height:1.45"><b>Carte festive</b><br>Givre menthe, rayon 20, ombre bleutée. Posée sur le fond nuit.</div>
+<div style="background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px #c5ddd0;font-size:14px;line-height:1.45"><b>Carte admin</b><br>Blanche, rayon 14, simple contour. Pas d'ombre, plus dense.</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1100,"height":1500}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

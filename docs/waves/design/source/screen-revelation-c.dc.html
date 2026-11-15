@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Révélation, carte à gratter</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;border:0;font:700 16px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}
+.pane{position:relative;overflow:hidden;width:390px;height:844px;box-sizing:border-box;background:linear-gradient(180deg,#0f1b3d 0%,#1c2f6b 62%,#2b2a63 100%);color:#fff;display:flex;flex-direction:column;align-items:center;padding:40px 24px 32px;gap:18px;flex:none}
+.cap{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#c9d3f0}
+.pill{position:relative;display:inline-flex;align-items:center;min-height:28px;padding:0 12px;border-radius:999px;background:rgba(255,215,0,.18);color:#ffd700;font:800 13px 'Nunito',sans-serif;box-shadow:inset 0 0 0 1px rgba(255,215,0,.5)}
+.card{position:relative;width:100%;box-sizing:border-box;height:250px;border-radius:22px;background:#eaf4ee;box-shadow:0 10px 26px rgba(8,14,40,.4);overflow:hidden}
+@keyframes glow{from{opacity:.55}to{opacity:1}}
+.glow{animation:glow 1.800s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.glow{animation:none}}
+</style>
+</helmet>
+<div style="display:flex;width:1230px;height:844px">
+
+<div class="pane">
+<svg aria-hidden="true" width="390" height="844" viewBox="0 0 390 844" style="position:absolute;inset:0;pointer-events:none" fill="#fff"><circle cx="36" cy="80" r="3" opacity=".8"/><circle cx="120" cy="150" r="2" opacity=".6"/><circle cx="260" cy="60" r="2.500" opacity=".7"/><circle cx="346" cy="130" r="3" opacity=".8"/><circle cx="60" cy="300" r="2" opacity=".6"/></svg>
+<div class="cap" style="position:relative">1 sur 3 · à toucher</div>
+<div class="pill">Cadeau 1 sur 2</div>
+<h1 class="h" style="position:relative;margin:0;font-size:40px;line-height:1.08;color:#ffd700;text-align:center;text-wrap:balance">Gratte et découvre</h1>
+<p style="position:relative;margin:0;text-align:center;font-size:17px;line-height:1.45;color:#e6ebfb;max-width:300px">Passe le doigt sur la case argentée pour savoir à qui tu offres un cadeau.</p>
+<div class="card" style="margin-top:10px">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,#c41e3a 0 22px,#d93a55 22px 44px);height:56px"></div>
+<div class="h" style="position:absolute;top:10px;left:0;right:0;text-align:center;font-size:30px;color:#fff">Carte du Père Noël</div>
+<sc-if value="{{closed}}" hint-placeholder-val="{{true}}"><button type="button" onClick="{{toggle}}" aria-label="Gratter la case argentée" style="border:0;cursor:pointer;position:absolute;left:20px;right:20px;top:78px;bottom:22px;border-radius:14px;background:linear-gradient(135deg,#d9dde6 0%,#f4f6fa 40%,#bcc2d0 70%,#e6e9f0 100%);box-shadow:inset 0 0 0 3px #aeb5c4;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+<svg aria-hidden="true" width="46" height="46" viewBox="0 0 46 46" fill="none" stroke="#4a5166" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M30 8l8 8-18 18-12 4 4-12z"/><path d="M26 12l8 8"/></svg>
+<div style="font:800 20px 'Nunito',sans-serif;color:#2d3447">Gratte ici</div>
+</button></sc-if><sc-if value="{{opened}}" hint-placeholder-val="{{false}}"><button type="button" onClick="{{toggle}}" aria-label="Recouvrir la case" style="border:0;cursor:pointer;position:absolute;left:20px;right:20px;top:78px;bottom:22px;border-radius:14px;background:#f4faf6;box-shadow:inset 0 0 0 3px #ffd700;display:flex;align-items:center;justify-content:center"><span class="h" style="font-size:76px;color:#c41e3a;line-height:1;text-shadow:0 0 18px rgba(255,215,0,.8)">Léa</span></button></sc-if>
+</div>
+<div style="position:relative;font-size:14px;font-weight:700;color:#c9d3f0;text-align:center;line-height:1.45;max-width:300px">Un bouton « Tout révéler » reste disponible pour ceux qui ne veulent pas gratter.</div>
+<div style="position:relative;margin-top:auto;font-size:13px;color:#c9d3f0;text-align:center;max-width:300px;line-height:1.45">Variante C : la plus ludique. Le grattage suit le doigt et la case se révèle à 60 %.</div>
+</div>
+
+<div class="pane" style="box-shadow:inset 1px 0 0 rgba(255,255,255,.18)">
+<svg aria-hidden="true" width="390" height="844" viewBox="0 0 390 844" style="position:absolute;inset:0;pointer-events:none"><g fill="#fff"><circle cx="36" cy="80" r="3" opacity=".8"/><circle cx="346" cy="130" r="3" opacity=".8"/></g><g><rect x="50" y="170" width="10" height="16" rx="2" fill="#c41e3a" transform="rotate(25 55 178)"/><rect x="320" y="200" width="10" height="16" rx="2" fill="#ffd700" transform="rotate(-30 325 208)"/><rect x="120" y="120" width="9" height="14" rx="2" fill="#7fc79c" transform="rotate(50 124 127)"/></g></svg>
+<div class="cap" style="position:relative">2 sur 3 · en cours</div>
+<h1 class="h" style="position:relative;margin:0;font-size:40px;line-height:1.08;color:#ffd700;text-align:center">Ça se dévoile…</h1>
+<p style="position:relative;margin:0;text-align:center;font-size:17px;line-height:1.45;color:#e6ebfb;max-width:300px">Continue de gratter.</p>
+<div class="card" style="margin-top:10px">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,#c41e3a 0 22px,#d93a55 22px 44px);height:56px"></div>
+<div class="h" style="position:absolute;top:10px;left:0;right:0;text-align:center;font-size:30px;color:#fff">Carte du Père Noël</div>
+<div style="position:absolute;left:20px;right:20px;top:78px;bottom:22px;border-radius:14px;background:#f4faf6;box-shadow:inset 0 0 0 3px #ffd700;overflow:hidden;display:flex;align-items:center;justify-content:center">
+<div class="h" style="font-size:76px;color:#c41e3a;line-height:1;text-shadow:0 0 18px rgba(255,215,0,.8)">Léa</div>
+<svg aria-hidden="true" width="350" height="150" viewBox="0 0 350 150" style="position:absolute;inset:0"><path d="M-10 -10H360V60C300 40 250 90 190 62C130 36 90 96 40 70C20 60 0 62 -10 70Z" fill="#c9cfdc"/><path d="M-10 150V96C40 120 100 84 160 112C220 140 280 100 360 120V150Z" fill="#c9cfdc"/></svg>
+</div>
+</div>
+<div style="position:relative;margin-top:auto;font-size:13px;color:#c9d3f0;text-align:center;max-width:300px;line-height:1.45">Les copeaux d'argent retombent comme de la neige.</div>
+</div>
+
+<div class="pane" style="box-shadow:inset 1px 0 0 rgba(255,255,255,.18)">
+<svg aria-hidden="true" width="390" height="844" viewBox="0 0 390 844" style="position:absolute;inset:0;pointer-events:none"><g><rect x="40" y="110" width="10" height="16" rx="2" fill="#c41e3a" transform="rotate(25 45 118)"/><rect x="330" y="150" width="10" height="16" rx="2" fill="#ffd700" transform="rotate(-30 335 158)"/><rect x="150" y="80" width="9" height="14" rx="2" fill="#7fc79c" transform="rotate(50 154 87)"/><rect x="24" y="250" width="9" height="14" rx="2" fill="#ffd700" transform="rotate(35 28 257)"/><rect x="352" y="290" width="9" height="14" rx="2" fill="#fff" transform="rotate(60 356 297)"/></g></svg>
+<div class="cap" style="position:relative">3 sur 3 · révélé</div>
+<div class="pill">Cadeau 1 sur 2</div>
+<div style="position:relative;font-size:18px;font-weight:700;color:#e6ebfb;margin-top:6px">Tu offres un cadeau à…</div>
+<div class="card" style="height:180px">
+<div style="position:absolute;inset:0;background:#f4faf6;box-shadow:inset 0 0 0 4px #ffd700;border-radius:22px;display:flex;align-items:center;justify-content:center"><div class="glow" style="position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(255,215,0,.5),rgba(255,215,0,0) 70%)"></div><div class="h" style="position:relative;font-size:92px;color:#c41e3a;line-height:1;text-shadow:0 0 22px rgba(255,215,0,.8)">Léa</div></div>
+</div>
+<div style="position:relative;width:100%;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;border-radius:20px;padding:16px 18px;box-shadow:0 6px 20px rgba(8,14,40,.3);display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.45">
+<div><b>Indice</b><br>Elle collectionne les mugs de Noël et ne sort jamais sans une polaire.</div>
+<div style="display:flex;justify-content:space-between;gap:12px;border-top:2px dashed #c5ddd0;padding-top:10px"><span><b>Budget</b> 25 €</span><span><b>Remise</b> 24 décembre</span></div>
+</div>
+<div style="position:relative;width:100%;margin-top:auto;display:flex;flex-direction:column;gap:12px">
+<button class="btn" type="button" style="width:100%;min-height:52px;background:#ffd700;color:#1f2d26">Découvrir le cadeau 2</button>
+<a class="btn b-red" href="screen-lettre-recue.dc.html" style="width:100%;min-height:52px">Voir sa lettre</a>
+<div style="text-align:center;font-size:13px;color:#c9d3f0;line-height:1.45">Garde le secret : ta cible reste ensuite sur ta carte. Avec 2 cadeaux, la découverte se fait l'un après l'autre, un style tiré au hasard pour chacun, jamais le même d'affilée.</div>
+</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1230,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const o = !!(this.state && this.state.opened);
+return { opened: o, closed: !o, toggle: () => this.setState({ opened: !o }) };
+}
+}
+</script>
+</body>
+</html>

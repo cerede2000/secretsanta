@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Délivrabilité du courrier</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:14px;border:0;font:700 15px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-green{background:#165b33;color:#fff}.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px #c5ddd0;display:flex;flex-direction:column;gap:10px}
+.inp{box-sizing:border-box;height:48px;width:100%;padding:0 14px;border-radius:12px;border:2px solid #7d9686;background:#fff;font:600 16px 'Nunito',sans-serif;color:#1f2d26}
+.lbl{font-size:14px;font-weight:800}
+.hint{font-size:13px;line-height:1.45;color:#4a5a50}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:0 10px;border-radius:999px;font:700 12px 'Nunito',sans-serif;white-space:nowrap}
+.ok{background:#dff3e4;color:#0f4a2a}.wait{background:#fff1c2;color:#6b4b00}.ko{background:#fde0e4;color:#8f1329}.unk{background:#e4ebff;color:#1c2f6b}
+.chk{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid #dcebe2}
+.chk:first-of-type{border-top:0;padding-top:4px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.dns{background:#1f2d26;color:#eaf4ee;border-radius:10px;padding:10px 12px;font:600 12px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;box-shadow:0 -1px 0 #c5ddd0;padding:0 4px;flex:none}.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;box-sizing:border-box;text-decoration:none;color:#4a5a50;font:600 12px/1.1 'Nunito',sans-serif;border-top:4px solid transparent}.nv[aria-current="page"]{color:#165b33;font-weight:800;border-top-color:#165b33;background:#f1f8f3}
+</style>
+</helmet>
+<div style="width:390px;height:1560px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column">
+<div style="background:#165b33;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:8px"><a href="screen-admin-reglages.dc.html" aria-label="Retour aux réglages" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2.200" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><div class="h" style="font-size:24px">Délivrabilité</div></div>
+<div style="flex:1;min-height:0;padding:14px 14px 22px;display:flex;flex-direction:column;gap:12px">
+
+<div class="card">
+<div class="top"><div style="font-size:16px;font-weight:800">Diagnostic de ton courrier</div></div>
+<div class="hint">Domaine expéditeur : <b>exemple.fr</b> · dernier contrôle aujourd'hui à 14 h 05</div>
+<div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip ok"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M1.500 6.500l3 2.500 6-6"/></svg>4 conformes</span><span class="chip ko"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#8f1329" stroke-width="2.400" stroke-linecap="round"><path d="M2.500 2.500l7 7M9.500 2.500l-7 7"/></svg>2 à corriger</span><span class="chip unk"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1c2f6b" stroke-width="2.200" stroke-linecap="round"><path d="M4.500 4.500a1.500 1.500 0 1 1 2 1.400c-.6.3-.8.600-.8 1.100M6 9v.1"/></svg>1 inconnu</span></div>
+<button class="btn b-ghost" type="button" style="width:100%">Relancer le diagnostic</button>
+</div>
+
+<div class="card" style="gap:0">
+<div style="font-size:16px;font-weight:800;margin-bottom:8px">Contrôles</div>
+<div class="chk"><div class="top"><b>SPF</b><span class="chip ok"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M1.500 6.500l3 2.500 6-6"/></svg>Conforme</span></div><div class="hint">L'enregistrement SPF de exemple.fr autorise ton serveur d'envoi.</div></div>
+<div class="chk"><div class="top"><b>DKIM</b><span class="chip ko"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#8f1329" stroke-width="2.400" stroke-linecap="round"><path d="M2.500 2.500l7 7M9.500 2.500l-7 7"/></svg>À corriger</span></div><div class="hint">Aucune clé publique publiée pour le sélecteur « santa2026 ».</div>
+<div class="dns">santa2026._domainkey.exemple.fr<br>TXT  "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A…"</div>
+<button class="btn b-ghost" type="button" style="min-height:44px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="9" height="9" rx="2"/><path d="M12 6V4.500A1.500 1.500 0 0 0 10.500 3h-6A1.500 1.500 0 0 0 3 4.500v6A1.500 1.500 0 0 0 4.500 12H6"/></svg>Copier l'enregistrement DNS</button></div>
+<div class="chk"><div class="top"><b>DMARC</b><span class="chip ko"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#8f1329" stroke-width="2.400" stroke-linecap="round"><path d="M2.500 2.500l7 7M9.500 2.500l-7 7"/></svg>À corriger</span></div><div class="hint">Aucune politique DMARC publiée pour exemple.fr.</div>
+<div class="dns">_dmarc.exemple.fr<br>TXT  "v=DMARC1; p=none; rua=mailto:dmarc@exemple.fr"</div>
+<button class="btn b-ghost" type="button" style="min-height:44px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="9" height="9" rx="2"/><path d="M12 6V4.500A1.500 1.500 0 0 0 10.500 3h-6A1.500 1.500 0 0 0 3 4.500v6A1.500 1.500 0 0 0 4.500 12H6"/></svg>Copier l'enregistrement DNS</button></div>
+<div class="chk"><div class="top"><b>MX</b><span class="chip ok"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M1.500 6.500l3 2.500 6-6"/></svg>Conforme</span></div><div class="hint">Le domaine exemple.fr reçoit bien le courrier (mx.exemple.fr).</div></div>
+<div class="chk"><div class="top"><b>Adresse d'expédition alignée</b><span class="chip ok"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M1.500 6.500l3 2.500 6-6"/></svg>Conforme</span></div><div class="hint">santa@exemple.fr correspond au domaine d'envoi exemple.fr.</div></div>
+<div class="chk"><div class="top"><b>Connexion TLS au serveur SMTP</b><span class="chip ok"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M1.500 6.500l3 2.500 6-6"/></svg>Conforme</span></div><div class="hint">STARTTLS actif, TLS 1.3, certificat valide.</div></div>
+<div class="chk"><div class="top"><b>HTTPS de l'adresse publique</b><span class="chip unk"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#1c2f6b" stroke-width="2.200" stroke-linecap="round"><path d="M4.500 4.500a1.500 1.500 0 1 1 2 1.400c-.6.3-.8.600-.8 1.100M6 9v.1"/></svg>Inconnu</span></div><div class="hint">https://secretsanta.exemple.fr n'est pas joignable depuis le serveur : à vérifier de l'extérieur.</div><button class="btn b-ghost" type="button" style="min-height:44px">Revérifier</button></div>
+</div>
+
+<div class="card">
+<div style="font-size:16px;font-weight:800">Envoyer un mail de test</div>
+<label for="d1" class="lbl">Adresse du destinataire</label>
+<input id="d1" class="inp" type="email" value="camille@exemple.fr">
+<button class="btn b-green" type="button" style="width:100%">Envoyer le mail de test</button>
+<div role="status" style="display:flex;gap:8px;align-items:center;background:#dff3e4;color:#0f4a2a;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;line-height:1.4"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round" style="flex:none"><path d="M2 8.500l4 3.500 8-8"/></svg><span>Envoyé à 14 h 05, réponse du serveur : 250 OK</span></div>
+<a href="#" style="display:inline-flex;align-items:center;min-height:44px;color:#c41e3a;font-weight:800;font-size:15px">Voir les en-têtes du mail</a>
+<div class="dns">Authentication-Results: spf=pass; dkim=none; dmarc=none<br>Received: from santa.exemple.fr</div>
+<div role="alert" style="display:flex;gap:8px;align-items:flex-start;background:#fde0e4;color:#8f1329;border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700;line-height:1.4"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8f1329" stroke-width="2.200" stroke-linecap="round" style="flex:none;margin-top:1px"><circle cx="8" cy="8" r="6"/><path d="M8 5v3.500M8 11v.1"/></svg><span>Autre état, en cas d'échec : le serveur a refusé le mail (550 relais non autorisé). Vérifie l'adresse d'expédition.</span></div>
+</div>
+
+<div class="card" style="box-shadow:inset 0 0 0 2px #7d9686">
+<div style="display:flex;align-items:center;gap:8px"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round"><circle cx="10" cy="10" r="7.500"/><path d="M10 9v4.500M10 6.500v.1"/></svg><div style="font-size:16px;font-weight:800">Ce que l'appli ne peut pas vérifier</div></div>
+<div style="font-size:14px;line-height:1.5">L'appli ne voit pas : la <b>réputation de l'adresse IP</b>, les <b>listes noires</b>, le <b>DNS inverse</b> du serveur ni les filtres propres à chaque boîte mail.</div>
+<div class="hint">Si tes mails arrivent en spam malgré un diagnostic conforme, la cause est le plus souvent l'adresse IP : vérifie-la auprès de ton hébergeur ou de ton fournisseur de courrier.</div>
+</div>
+
+</div>
+<nav class="nav" aria-label="Navigation organisateur"><a class="nv" href="screen-admin-tableau.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg>Tableau</a><a class="nv" href="screen-admin-participants.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17" cy="9" r="2.500"/><path d="M17.500 14.200a5 5 0 0 1 4 5.800"/></svg>Participants</a><a class="nv" href="screen-admin-tirage.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.500 2-1 3.500 2 3 5.500zM12 9c3-1 5-4 3-5.500-2-1-3.500 2-3 5.500z"/></svg>Tirage</a><a class="nv" href="screen-admin-inscriptions.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.500 0l3-3a4 4 0 0 0-5.600-5.600L11.500 6.800M14 10a4 4 0 0 0-5.500 0l-3 3a4 4 0 0 0 5.600 5.600l1.400-1.400"/></svg>Inscriptions</a><a class="nv" href="screen-admin-menu.dc.html" aria-current="page"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.800" fill="currentColor"/><circle cx="12" cy="12" r="1.800" fill="currentColor"/><circle cx="19" cy="12" r="1.800" fill="currentColor"/></svg>Plus</a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1560}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

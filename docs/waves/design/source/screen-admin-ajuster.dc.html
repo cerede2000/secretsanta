@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Ajuster le tirage</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:14px;border:0;font:700 15px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}.b-green{background:#165b33;color:#fff}.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px #c5ddd0;display:flex;flex-direction:column;gap:10px}
+.inp{box-sizing:border-box;height:48px;width:100%;padding:0 14px;border-radius:12px;border:2px solid #7d9686;background:#fff;font:600 16px 'Nunito',sans-serif;color:#1f2d26}
+.lbl{font-size:14px;font-weight:800}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:0 10px;border-radius:999px;font:700 12px 'Nunito',sans-serif;white-space:nowrap}
+.ok{background:#dff3e4;color:#0f4a2a}.wait{background:#fff1c2;color:#6b4b00}
+.tab{flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:0;font:800 15px 'Nunito',sans-serif;cursor:pointer}
+.big{display:flex;gap:12px;align-items:center;border-radius:12px;padding:12px}
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;box-shadow:0 -1px 0 #c5ddd0;padding:0 4px;flex:none}.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;box-sizing:border-box;text-decoration:none;color:#4a5a50;font:600 12px/1.1 'Nunito',sans-serif;border-top:4px solid transparent}.nv[aria-current="page"]{color:#165b33;font-weight:800;border-top-color:#165b33;background:#f1f8f3}
+</style>
+</helmet>
+<div style="width:390px;height:2200px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column">
+<div style="background:#165b33;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:8px"><a href="screen-admin-participants.dc.html" aria-label="Retour aux participants" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2.200" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><div class="h" style="font-size:24px">Ajuster le tirage</div></div>
+<div style="flex:1;padding:14px 14px 22px;display:flex;flex-direction:column;gap:12px">
+<div style="font-size:14px;line-height:1.5;color:#4a5a50">Le tirage existe déjà. Cet outil répare seulement l'endroit touché : les autres paires ne bougent pas.</div>
+<div class="card">
+<div style="display:flex;gap:6px;background:#dcebe2;border-radius:12px;padding:4px" role="tablist"><button class="tab" type="button" role="tab" aria-selected="true" style="background:#165b33;color:#fff;font-size:13px;padding:0 4px">Retirer</button><button class="tab" type="button" role="tab" aria-selected="false" style="background:transparent;color:#165b33;font-size:13px;padding:0 4px">Ajouter</button><button class="tab" type="button" role="tab" aria-selected="false" style="background:transparent;color:#165b33;font-size:13px;padding:0 4px">Règle modifiée</button></div>
+<label for="s1" class="lbl">Personne à retirer</label>
+<select id="s1" class="inp"><option>Thomas Bernard</option></select>
+</div>
+<div class="card" style="box-shadow:inset 0 0 0 2px #165b33">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:16px;font-weight:800">Aperçu, sans aucun nom</div><span class="chip ok">Réparation trouvée</span></div>
+<div class="big" style="background:#eaf4ee;color:#6b4b00"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6b4b00" stroke-width="2.200" stroke-linecap="round"><circle cx="14" cy="9" r="4"/><path d="M5 24a9 9 0 0 1 18 0"/></svg><div style="font-size:15px;line-height:1.4"><b>1 personne verra sa cible changer.</b><br>Elle l'avait déjà découverte.</div></div>
+<div class="big" style="background:#dff3e4;color:#0f4a2a"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0f4a2a" stroke-width="2.200" stroke-linecap="round"><path d="M5 14.500l6 6L23 8"/></svg><div style="font-size:15px;line-height:1.4"><b>6 autres personnes ne voient aucun changement.</b></div></div>
+<div style="font-size:13px;line-height:1.45;color:#4a5a50">Le moins de paires possible est modifié. Les règles de foyers et d'exclusions restent respectées.</div>
+<div style="font-size:13px;line-height:1.45;color:#4a5a50">Si cette personne offrait 2 cadeaux, seules les personnes qui acceptent d'offrir plus d'un cadeau en reprennent un de plus.</div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Ce qui part ensuite</div>
+<div style="display:flex;gap:10px;font-size:14px;line-height:1.45"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><rect x="2.500" y="4.500" width="15" height="11" rx="2"/><path d="M3 6.500l7 5 7-5"/></svg><span><b>1 mail automatique</b> à la personne concernée : « Ton tirage a été ajusté, voici ta nouvelle cible. »</span></div>
+<div style="display:flex;gap:10px;font-size:14px;line-height:1.45"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><rect x="3" y="3" width="14" height="4" rx="1.500"/><path d="M4.500 7v8.500a1.500 1.500 0 0 0 1.500 1.500h8a1.500 1.500 0 0 0 1.500-1.500V7M8 11h4"/></svg><span>La lettre et les échanges de l'ancienne cible sont archivés. Le nouveau Père Noël reçoit la lettre existante.</span></div>
+<div style="display:flex;gap:10px;font-size:14px;line-height:1.45"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:1px"><path d="M5 3h10v14H5zM8 7h4M8 10h4M8 13h2"/></svg><span>Une ligne est ajoutée au journal du groupe, sans nom : « Ton tirage a été ajusté. »</span></div>
+<div style="display:flex;gap:8px;margin-top:4px"><a class="btn b-ghost" href="screen-admin-participants.dc.html" style="flex:1">Annuler</a><button class="btn b-red" type="button" style="flex:1.4">Valider l'ajustement</button></div>
+</div>
+<div class="card" style="gap:12px;background:#f4faf6">
+<div style="font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a5a50">Autre état : aucune réparation possible</div>
+<div style="background:#fde0e4;color:#8f1329;border-radius:12px;padding:12px;display:flex;gap:10px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#8f1329" stroke-width="2.200" stroke-linecap="round" style="flex:none;margin-top:1px"><circle cx="11" cy="11" r="8.500"/><path d="M11 6.500v5.500M11 15.500v.1"/></svg><div style="font-size:14px;line-height:1.5"><b>Impossible de retirer cette personne sans casser une règle.</b><br>Les foyers et exclusions laissent une personne sans aucun cadeau possible. Rien n'a été modifié.</div></div>
+<div style="font-size:14px;line-height:1.5;color:#4a5a50">Tu peux refaire un tirage complet : toutes les paires seraient remplacées, et chacun reverrait sa cible.</div>
+<div style="display:flex;gap:8px"><button class="btn b-ghost" type="button" style="flex:1">Garder le tirage</button><a class="btn b-green" href="screen-admin-tirage.dc.html" style="flex:1.4">Voir le tirage complet</a></div>
+</div>
+<div class="card" style="gap:8px">
+<div style="font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a5a50">Variante : ajouter quelqu'un</div>
+<div style="font-size:14px;line-height:1.5">« Noé Lambert » entre dans une paire existante. <b>0 personne</b> ne voit de changement : le Père Noël choisi n'avait pas encore découvert sa cible.</div>
+<span class="chip ok" style="align-self:flex-start">Aucun mail à envoyer</span>
+</div>
+<div class="card" style="gap:10px;box-shadow:inset 0 0 0 2px #165b33"><div style="font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a5a50">Cas : une règle a changé</div><div style="font-size:14px;line-height:1.5">Tu as ajouté une exclusion (ou un foyer) après le tirage. L'appli compare la règle aux paires existantes, sans les afficher.</div><div class="big" style="background:#eaf4ee;color:#6b4b00"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6b4b00" stroke-width="2.200" stroke-linecap="round"><path d="M14 3l11 19H3zM14 11v5M14 19.500v.1"/></svg><div style="font-size:15px;line-height:1.4"><b>1 paire contredit la nouvelle règle.</b><br>Réparation minimale : 1 personne verra sa cible changer. Elle l'avait déjà découverte.</div></div><div style="display:flex;gap:8px"><button class="btn b-ghost" type="button" style="flex:1">Garder la règle pour plus tard</button><button class="btn b-red" type="button" style="flex:1.2">Valider l'ajustement</button></div><div style="border-top:1px solid #dcebe2;padding-top:10px;display:flex;flex-direction:column;gap:8px"><div style="font-size:14px;font-weight:800">Autre état : aucune paire touchée</div><div class="big" style="background:#dff3e4;color:#0f4a2a"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0f4a2a" stroke-width="2.200" stroke-linecap="round"><path d="M5 14.500l6 6L23 8"/></svg><div style="font-size:15px;line-height:1.4"><b>Aucune cible ne change.</b><br>La règle vaut pour les prochains ajustements.</div></div></div></div>
+<div class="card" style="gap:10px">
+<div style="font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a5a50">Cas : un tireur à 2 cadeaux est retiré</div>
+<div class="big" style="background:#eaf4ee;color:#6b4b00"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#6b4b00" stroke-width="2.200" stroke-linecap="round"><circle cx="14" cy="9" r="4"/><path d="M5 24a9 9 0 0 1 18 0"/></svg><div style="font-size:15px;line-height:1.4"><b>2 personnes verront leur cible changer.</b><br>Seules les personnes qui acceptent d'offrir plus d'un cadeau en reprennent un de plus.</div></div>
+<div class="big" style="background:#dff3e4;color:#0f4a2a"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0f4a2a" stroke-width="2.200" stroke-linecap="round"><path d="M5 14.500l6 6L23 8"/></svg><div style="font-size:15px;line-height:1.4"><b>5 personnes acceptent</b> : suffisant pour reprendre 1 cadeau de plus.</div></div>
+<div style="font-size:13px;line-height:1.45;color:#4a5a50">Aucun nom n'est affiché. Les personnes concernées reçoivent leur mail d'ajustement.</div>
+</div>
+<div class="card" style="gap:10px">
+<div style="font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4a5a50">Cas : une personne en réception seule arrive</div>
+<div class="big" style="background:#dff3e4;color:#0f4a2a"><svg aria-hidden="true" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0f4a2a" stroke-width="2.200" stroke-linecap="round"><path d="M5 14.500l6 6L23 8"/></svg><div style="font-size:15px;line-height:1.4"><b>1 personne offrira 1 cadeau de plus.</b><br>Elle l'accepte et n'avait pas encore découvert sa cible : aucun mail à envoyer.</div></div>
+<div role="alert" style="background:#fde0e4;color:#8f1329;border-radius:12px;padding:12px;font-size:14px;line-height:1.5"><b>Autre état : personne ne l'accepte.</b> Tous les tireurs ont choisi « Un seul cadeau ». L'ajustement est refusé avec explication : demande à quelqu'un d'accepter, ou refais un tirage complet.</div>
+</div>
+</div>
+<nav class="nav" aria-label="Navigation organisateur"><a class="nv" href="screen-admin-tableau.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg>Tableau</a><a class="nv" href="screen-admin-participants.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17" cy="9" r="2.500"/><path d="M17.500 14.200a5 5 0 0 1 4 5.800"/></svg>Participants</a><a class="nv" href="screen-admin-tirage.dc.html" aria-current="page"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.500 2-1 3.500 2 3 5.500zM12 9c3-1 5-4 3-5.500-2-1-3.500 2-3 5.500z"/></svg>Tirage</a><a class="nv" href="screen-admin-inscriptions.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.500 0l3-3a4 4 0 0 0-5.600-5.600L11.500 6.800M14 10a4 4 0 0 0-5.500 0l-3 3a4 4 0 0 0 5.600 5.600l1.400-1.400"/></svg>Inscriptions</a><a class="nv" href="screen-admin-menu.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.800" fill="currentColor"/><circle cx="12" cy="12" r="1.800" fill="currentColor"/><circle cx="19" cy="12" r="1.800" fill="currentColor"/></svg>Plus</a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2200}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

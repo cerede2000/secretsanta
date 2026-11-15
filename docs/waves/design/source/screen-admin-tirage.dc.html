@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tirage au sort</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:14px;border:0;font:700 15px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}.b-green{background:#165b33;color:#fff}.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}.b-danger{background:#8f1329;color:#fff}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px #c5ddd0;display:flex;flex-direction:column;gap:10px}
+.inp{box-sizing:border-box;height:48px;width:100%;padding:0 14px;border-radius:12px;border:2px solid #7d9686;background:#fff;font:600 16px 'Nunito',sans-serif;color:#1f2d26}
+.lbl{font-size:14px;font-weight:800}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:0 10px;border-radius:999px;font:700 12px 'Nunito',sans-serif;white-space:nowrap}
+.ok{background:#dff3e4;color:#0f4a2a}.wait{background:#fff1c2;color:#6b4b00}.ko{background:#fde0e4;color:#8f1329}
+.c{display:flex;gap:10px;align-items:flex-start;min-height:44px;padding:6px 0;border-top:1px solid #dcebe2;font-size:14px;line-height:1.4}
+.c:first-of-type{border-top:0}
+.sq{flex:none;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center}
+.tab{flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;border:0;font:800 15px 'Nunito',sans-serif;cursor:pointer}
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;box-shadow:0 -1px 0 #c5ddd0;padding:0 4px;flex:none}.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;box-sizing:border-box;text-decoration:none;color:#4a5a50;font:600 12px/1.1 'Nunito',sans-serif;border-top:4px solid transparent}.nv[aria-current="page"]{color:#165b33;font-weight:800;border-top-color:#165b33;background:#f1f8f3}
+</style>
+</helmet>
+<div style="width:390px;height:2760px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column">
+<div style="background:#165b33;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:8px"><a href="screen-admin-tableau.dc.html" aria-label="Retour au tableau de bord" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2.200" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><div class="h" style="font-size:24px">Tirage au sort</div></div>
+<div style="flex:1;padding:14px 14px 22px;display:flex;flex-direction:column;gap:12px">
+<div role="tablist" aria-label="Sections du tirage" style="display:flex;gap:6px;background:#dcebe2;border-radius:12px;padding:4px"><button class="tab" type="button" role="tab" aria-selected="{{t1}}" onClick="{{go1}}" style="{{st1}}">Tirage</button><button class="tab" type="button" role="tab" aria-selected="{{t2}}" onClick="{{go2}}" style="{{st2}}">Ajuster</button><button class="tab" type="button" role="tab" aria-selected="{{t3}}" onClick="{{go3}}" style="{{st3}}">Historique</button></div>
+<sc-if value="{{t1}}" hint-placeholder-val="{{true}}">
+<div class="card">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:16px;font-weight:800">État</div><span class="chip ok"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M1.500 6.500l3 2.500 6-6"/></svg>Tirage fait</span></div>
+<div style="font-size:14px;line-height:1.5;color:#4a5a50">Enregistré le 28 novembre à 20 h 12. Les paires restent secrètes : personne ne les voit, pas même toi.</div>
+<label for="r1" class="lbl">Date de révélation</label>
+<input id="r1" class="inp" type="text" value="1er décembre 2026, 18 h">
+<div style="font-size:13px;line-height:1.4;color:#4a5a50">Avant cette date, chacun voit un compte à rebours. À l'heure dite, le mail « ton tirage est prêt » part tout seul.</div>
+</div>
+<div class="card" style="gap:4px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px"><div style="font-size:16px;font-weight:800">Rapport de contrôle</div><span class="chip ko">1 point à corriger</span></div>
+<div class="c"><span class="sq" style="background:#dff3e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg></span><span>Chaque tireur offre au moins un cadeau, jamais plus que le plafond</span></div>
+<div class="c"><span class="sq" style="background:#dff3e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg></span><span>Chaque personne reçoit exactement un cadeau</span></div>
+<div class="c"><span class="sq" style="background:#dff3e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg></span><span>Personne ne s'offre un cadeau à soi-même</span></div>
+<div class="c"><span class="sq" style="background:#dff3e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg></span><span>Foyers et exclusions respectés</span></div>
+<div class="c"><span class="sq" style="background:#dff3e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg></span><span><b>Répartition des cadeaux</b> : 6 offrent, 8 reçoivent, 2 personnes offrent 2 cadeaux.</span></div>
+<div class="c"><span class="sq" style="background:#dff3e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0f4a2a" stroke-width="2.400" stroke-linecap="round"><path d="M2 7.500l3.200 3L12 3.500"/></svg></span><span><b>Personnes prêtes à offrir plus d'un cadeau</b> : suffisant, 5 l'acceptent pour 2 cadeaux de plus.</span></div>
+<div class="c"><span class="sq" style="background:#fde0e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8f1329" stroke-width="2.400" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg></span><span><b>1 adresse mail refusée</b> : un lien n'est pas arrivé. <a href="screen-admin-fiche.dc.html" style="color:#c41e3a;font-weight:800">Corriger</a></span></div>
+<div class="c"><span class="sq" style="background:#eaf4ee"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#6b4b00" stroke-width="2.400" stroke-linecap="round"><path d="M7 3v4.500l2.500 1.500"/></svg></span><span><b>2 liens pas encore ouverts</b> : un rappel est possible.</span></div>
+<div style="font-size:12px;line-height:1.4;color:#4a5a50;margin-top:4px">Le rapport ne nomme jamais de paire.</div>
+</div>
+<div class="card" style="box-shadow:inset 0 0 0 2px #8f1329">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:16px;font-weight:800">Autre état : trop de refus</div><span class="chip ko">Insuffisant</span></div>
+<div class="c" style="border-top:0"><span class="sq" style="background:#fde0e4"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#8f1329" stroke-width="2.400" stroke-linecap="round"><path d="M3 3l8 8M11 3l-8 8"/></svg></span><span><b>Personnes prêtes à offrir plus d'un cadeau</b> : insuffisant. Il manque 1 personne pour répartir 2 cadeaux de plus.</span></div>
+<div style="display:flex;flex-direction:column;gap:8px"><button class="btn b-ghost" type="button" style="width:100%">Demander à quelqu'un d'accepter</button><button class="btn b-ghost" type="button" style="width:100%">Relever le plafond de cadeaux</button></div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Plafond de cadeaux par personne</div>
+<div style="font-size:13px;line-height:1.4;color:#4a5a50">Par défaut la répartition est équitable : personne n'offre plus de 2 cadeaux. Rien de tout cela ne révèle qui offre à qui.</div>
+<div role="radiogroup" aria-label="Plafond de cadeaux par personne" style="display:flex;gap:6px;background:#dcebe2;border-radius:12px;padding:4px"><button class="tab" type="button" role="radio" aria-checked="true" style="background:#165b33;color:#fff;font-size:13px;padding:0 4px">Équitable (2)</button><button class="tab" type="button" role="radio" aria-checked="false" style="background:transparent;color:#165b33;font-size:13px;padding:0 4px">3</button><button class="tab" type="button" role="radio" aria-checked="false" style="background:transparent;color:#165b33;font-size:13px;padding:0 4px">4</button></div>
+<div role="alert" style="background:#fde0e4;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="font-size:14px;font-weight:800;color:#8f1329">Plafond à 3 : confirmation</div><div style="font-size:13px;line-height:1.45;color:#8f1329;font-weight:600">Au-delà de 2 cadeaux, une personne pourrait en offrir 3. Seules les personnes qui acceptent d'en offrir plus sont concernées.</div><div style="display:flex;gap:8px"><button class="btn b-ghost" type="button" style="flex:1;min-height:44px">Annuler</button><button class="btn b-danger" type="button" style="flex:1;min-height:44px">Confirmer 3</button></div></div>
+</div>
+<div class="card">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div style="font-size:16px;font-weight:800">Rôles dans le tirage</div><span class="chip ok">Suffisant</span></div>
+<div style="font-size:14px;line-height:1.5"><b>6 offrent, 8 reçoivent, 2 cadeaux de plus nécessaires.</b> 5 personnes sont prêtes à en offrir plus : suffisant.</div>
+<div style="font-size:13px;line-height:1.4;color:#4a5a50">Utilisable même si les inscrits ne choisissent pas leur rôle eux-mêmes. Un seul rôle par personne ; ce récapitulatif ne dit jamais qui offre à qui.</div>
+<div style="display:flex;flex-direction:column;gap:0">
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Camille Martin</span><select class="inp" aria-label="Rôle de Camille" style="height:44px;width:176px;font-size:14px"><option>Offre des cadeaux en plus</option></select></div>
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Hugo Martin</span><select class="inp" aria-label="Rôle de Hugo" style="height:44px;width:176px;font-size:14px"><option>Un seul cadeau</option></select></div>
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Léa Bernard</span><select class="inp" aria-label="Rôle de Léa" style="height:44px;width:176px;font-size:14px"><option>Offre des cadeaux en plus</option></select></div>
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Thomas Bernard</span><select class="inp" aria-label="Rôle de Thomas" style="height:44px;width:176px;font-size:14px"><option>Normal</option></select></div>
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Mamie Jeanne</span><select class="inp" aria-label="Rôle de Mamie Jeanne" style="height:44px;width:176px;font-size:14px"><option>Réception seule</option></select></div>
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Papi Michel</span><select class="inp" aria-label="Rôle de Papi Michel" style="height:44px;width:176px;font-size:14px"><option>Réception seule</option></select></div>
+<div class="c" style="align-items:center"><span style="flex:1;font-weight:800">Sophie Lambert</span><select class="inp" aria-label="Rôle de Sophie" style="height:44px;width:176px;font-size:14px"><option>Normal</option></select></div>
+</div>
+<div style="background:#eaf4ee;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px"><div style="font-size:14px;font-weight:800">Modifier en lot</div><div style="font-size:13px;line-height:1.4;color:#4a5a50">Coche des personnes, puis choisis un rôle à leur appliquer d'un coup.</div><div style="display:flex;gap:8px"><select class="inp" aria-label="Rôle à appliquer à la sélection" style="height:44px;flex:1;font-size:14px"><option>Offre des cadeaux en plus</option></select><button class="btn b-green" type="button" style="min-height:44px;padding:0 12px">Appliquer</button></div></div>
+<div role="alert" style="background:#fde0e4;color:#8f1329;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px"><span class="chip ko" style="align-self:flex-start">Autre état : insuffisant</span><div style="font-size:14px;line-height:1.45;font-weight:700">Trop de « Un seul cadeau » : il manque 1 personne prête à en offrir plus.</div><div style="font-size:13px;line-height:1.4;font-weight:600">Propositions : demander à quelqu'un de passer en « Offre des cadeaux en plus », ou relever le plafond (confirmation au-delà de 2).</div></div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Actions</div>
+<div style="background:#eaf4ee;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:14px;font-weight:800;color:#6b4b00">Ouvrir le tirage maintenant ?</div>
+<div style="font-size:13px;line-height:1.45;color:#6b4b00;font-weight:600">Les 8 participants recevront tout de suite le mail « ton tirage est prêt ». La date prévue sera annulée. Tu ne verras toujours aucune paire.</div>
+<div style="display:flex;gap:8px"><button class="btn b-ghost" type="button" style="flex:1;min-height:44px">Annuler</button><button class="btn b-green" type="button" style="flex:1;min-height:44px">Ouvrir maintenant</button></div>
+</div>
+<div style="background:#fde0e4;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:14px;font-weight:800;color:#8f1329">Refaire un tirage complet ?</div>
+<div style="font-size:13px;line-height:1.45;color:#8f1329;font-weight:600">Toutes les paires seront remplacées. Ceux qui ont déjà découvert leur cible la verront changer. Pour ajouter ou retirer une personne, utilise plutôt « Ajuster le tirage ».</div>
+<div style="display:flex;gap:8px"><button class="btn b-ghost" type="button" style="flex:1;min-height:44px">Annuler</button><button class="btn b-danger" type="button" style="flex:1;min-height:44px">Lancer le tirage</button></div>
+</div>
+<a class="btn b-green" href="screen-admin-ajuster.dc.html" style="width:100%">Ajuster le tirage</a>
+</div>
+</sc-if>
+<sc-if value="{{t2}}" hint-placeholder-val="{{false}}">
+<div class="card"><div style="font-size:16px;font-weight:800">Ajuster le tirage</div><div style="font-size:14px;line-height:1.5;color:#4a5a50">Le tirage existe déjà. Un ajustement répare seulement l'endroit touché : les autres paires ne bougent pas. Aucune paire n'est jamais affichée.</div><a class="btn b-green" href="screen-admin-ajuster.dc.html" style="width:100%">Retirer quelqu'un</a><a class="btn b-green" href="screen-admin-ajuster.dc.html" style="width:100%">Ajouter quelqu'un</a><a class="btn b-ghost" href="screen-admin-ajuster.dc.html" style="width:100%">Une règle a changé</a></div>
+</sc-if>
+<sc-if value="{{t3}}" hint-placeholder-val="{{false}}">
+<div class="card" style="gap:4px">
+<div style="display:flex;align-items:center;justify-content:space-between;min-height:44px"><div style="font-size:16px;font-weight:800">Historique par année</div><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#4a5a50" stroke-width="2.400" stroke-linecap="round"><path d="M5 8l5 5 5-5"/></svg></div>
+<div class="c"><b style="flex:1">2026</b><span class="chip ok">En cours</span></div>
+<div class="c"><b style="flex:1">2025</b><span style="color:#4a5a50">7 participants · exclu du tirage 2026</span></div>
+<div class="c"><b style="flex:1">2024</b><span style="color:#4a5a50">6 participants</span></div>
+<div style="font-size:12px;line-height:1.4;color:#4a5a50;margin-top:4px">L'historique garde le nombre et la date, jamais les paires visibles.</div>
+</div>
+</sc-if>
+</div>
+<nav class="nav" aria-label="Navigation organisateur"><a class="nv" href="screen-admin-tableau.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg>Tableau</a><a class="nv" href="screen-admin-participants.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17" cy="9" r="2.500"/><path d="M17.500 14.200a5 5 0 0 1 4 5.800"/></svg>Participants</a><a class="nv" href="screen-admin-tirage.dc.html" aria-current="page"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.500 2-1 3.500 2 3 5.500zM12 9c3-1 5-4 3-5.500-2-1-3.500 2-3 5.500z"/></svg>Tirage</a><a class="nv" href="screen-admin-inscriptions.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.500 0l3-3a4 4 0 0 0-5.600-5.600L11.500 6.800M14 10a4 4 0 0 0-5.500 0l-3 3a4 4 0 0 0 5.600 5.600l1.400-1.400"/></svg>Inscriptions</a><a class="nv" href="screen-admin-menu.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.800" fill="currentColor"/><circle cx="12" cy="12" r="1.800" fill="currentColor"/><circle cx="19" cy="12" r="1.800" fill="currentColor"/></svg>Plus</a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2760}}'>
+class Component extends DCLogic {
+renderVals() {
+const t = (this.state && this.state.tab) || 1;
+const on = 'background:#165b33;color:#fff';
+const off = 'background:transparent;color:#165b33';
+return {
+t1: t === 1, t2: t === 2, t3: t === 3,
+st1: t === 1 ? on : off, st2: t === 2 ? on : off, st3: t === 3 ? on : off,
+go1: () => this.setState({ tab: 1 }), go2: () => this.setState({ tab: 2 }), go3: () => this.setState({ tab: 3 })
+};
+}
+}
+</script>
+</body>
+</html>

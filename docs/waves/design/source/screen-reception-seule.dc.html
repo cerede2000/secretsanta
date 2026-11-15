@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Réception seule</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;border:0;font:700 16px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-gold{background:#ffd700;color:#1f2d26}
+.b-ghostw{background:transparent;color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.75)}
+.info{flex:1;min-width:0;background:#eaf4ee;color:#1f2d26;border-radius:16px;padding:12px 10px;text-align:center;box-shadow:0 6px 16px rgba(8,14,40,.3);font-size:14px;line-height:1.35;font-weight:700}
+.info b{display:block;font:800 24px/1.1 'Nunito',sans-serif;color:#c41e3a}
+@keyframes fall{from{transform:translateY(-14px)}to{transform:translateY(18px)}}
+.snow{animation:fall 6s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.snow{animation:none}}
+</style>
+</helmet>
+<div style="position:relative;overflow:hidden;width:390px;height:900px;box-sizing:border-box;background:linear-gradient(180deg,#0f1b3d 0%,#1c2f6b 62%,#2b2a63 100%);color:#fff;display:flex;flex-direction:column;align-items:center;padding:36px 20px 32px;gap:18px">
+<svg class="snow" aria-hidden="true" width="390" height="900" viewBox="0 0 390 900" style="position:absolute;inset:0;pointer-events:none" fill="#fff"><circle cx="40" cy="60" r="3" opacity=".8"/><circle cx="110" cy="120" r="2" opacity=".6"/><circle cx="250" cy="50" r="2.500" opacity=".7"/><circle cx="340" cy="140" r="3" opacity=".8"/><circle cx="60" cy="300" r="2" opacity=".6"/><circle cx="350" cy="330" r="2.500" opacity=".6"/><circle cx="300" cy="230" r="2" opacity=".5"/></svg>
+<div style="position:relative;text-align:center;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9d3f0">Noël en famille 2026</div>
+<h1 class="h" style="margin:0;font-size:36px;line-height:1.08;color:#ffd700;text-wrap:balance">Cette année, tu reçois un cadeau et tu n'en offres pas</h1>
+</div>
+<svg aria-hidden="true" width="220" height="214" viewBox="0 0 220 214" style="position:relative;flex:none">
+<ellipse cx="110" cy="202" rx="100" ry="10" fill="#e6ecff" opacity=".95"/>
+<rect x="100" y="140" width="20" height="40" rx="3" fill="#6b3f1d"/>
+<path d="M110 20L56 84h28L40 128h40L26 164h168l-54-36h40l-44-44h28z" fill="#165b33"/>
+<path d="M110 20L72 66l22 8-34 36 30 6-28 30" fill="none" stroke="#1f7a45" stroke-width="5" stroke-linecap="round"/>
+<path d="M110 6l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="#ffd700"/>
+<circle cx="90" cy="96" r="5" fill="#c41e3a"/><circle cx="134" cy="118" r="5" fill="#ffd700"/><circle cx="82" cy="142" r="5" fill="#ffd700"/><circle cx="142" cy="150" r="5" fill="#c41e3a"/>
+<rect x="24" y="170" width="38" height="32" rx="4" fill="#c41e3a"/><rect x="38" y="170" width="10" height="32" fill="#ffd700"/><rect x="24" y="182" width="38" height="8" fill="#ffd700"/>
+<rect x="150" y="164" width="44" height="38" rx="4" fill="#eaf4ee"/><rect x="167" y="164" width="10" height="38" fill="#c41e3a"/><rect x="150" y="178" width="44" height="8" fill="#c41e3a"/>
+<rect x="68" y="182" width="32" height="20" rx="3" fill="#ffd700"/><rect x="80" y="182" width="8" height="20" fill="#c41e3a"/>
+</svg>
+<p style="position:relative;margin:0;text-align:center;font-size:17px;line-height:1.5;color:#e6ebfb;max-width:320px">Pas de tirage à découvrir pour toi, et personne à qui offrir. Il te reste une seule chose à faire : dire au Père Noël ce qui te ferait plaisir.</p>
+<div style="position:relative;width:100%;display:flex;gap:10px"><div class="info"><b>25 €</b>budget par cadeau</div><div class="info"><b>24 déc.</b>remise des cadeaux</div></div>
+<div style="position:relative;font-size:12px;line-height:1.4;color:#c9d3f0;text-align:center;max-width:320px">Ces deux lignes n'apparaissent que si l'organisateur a défini un budget et une date.</div>
+<div style="position:relative;width:100%;display:flex;flex-direction:column;gap:12px;margin-top:auto">
+<a class="btn b-gold" href="screen-lettre.dc.html" style="width:100%;min-height:54px;font-size:18px">Écrire ma lettre au Père Noël</a>
+<a class="btn b-ghostw" href="screen-boite-lettres.dc.html" style="width:100%">Ma boîte aux lettres</a>
+<div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;line-height:1.45;color:#c9d3f0;text-align:center"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#c9d3f0" stroke-width="2" stroke-linecap="round" style="flex:none"><circle cx="8" cy="8" r="6"/><path d="M8 7.500v3.500M8 5v.1"/></svg><span>Aucune pression : écris quand tu veux, et change ta lettre à tout moment.</span></div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

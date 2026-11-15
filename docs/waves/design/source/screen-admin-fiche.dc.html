@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Fiche d'une personne</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:14px;border:0;font:700 15px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}.b-green{background:#165b33;color:#fff}.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}.b-danger{background:#8f1329;color:#fff}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px #c5ddd0;display:flex;flex-direction:column;gap:10px}
+.inp{box-sizing:border-box;height:48px;width:100%;padding:0 14px;border-radius:12px;border:2px solid #7d9686;background:#fff;font:600 16px 'Nunito',sans-serif;color:#1f2d26}
+.lbl{font-size:14px;font-weight:800}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:0 10px;border-radius:999px;font:700 12px 'Nunito',sans-serif;white-space:nowrap}
+.ok{background:#dff3e4;color:#0f4a2a}.wait{background:#fff1c2;color:#6b4b00}.ko{background:#fde0e4;color:#8f1329}.mute{background:#dcebe2;color:#3a4a40}
+.r{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px;border-top:1px solid #dcebe2;font-size:14px}
+.r:first-of-type{border-top:0}
+.mn{background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(8,14,40,.22),inset 0 0 0 1px #c5ddd0;padding:4px;display:flex;flex-direction:column}.mn a{display:flex;align-items:center;min-height:44px;padding:0 12px;border-radius:8px;text-decoration:none;color:#1f2d26;font:700 14px 'Nunito',sans-serif}
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;box-shadow:0 -1px 0 #c5ddd0;padding:0 4px;flex:none}.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;box-sizing:border-box;text-decoration:none;color:#4a5a50;font:600 12px/1.1 'Nunito',sans-serif;border-top:4px solid transparent}.nv[aria-current="page"]{color:#165b33;font-weight:800;border-top-color:#165b33;background:#f1f8f3}
+</style>
+</helmet>
+<div style="width:390px;height:1900px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column">
+<div style="background:#165b33;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:8px"><a href="screen-admin-tableau.dc.html" aria-label="Retour au tableau de bord" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:-10px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2.200" stroke-linecap="round"><path d="M13 4l-7 7 7 7"/></svg></a><div style="display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;border-radius:999px;background:#c41e3a;display:flex;align-items:center;justify-content:center;font:800 16px 'Nunito'">T</div><div><div class="h" style="font-size:22px;line-height:1.1">Thomas Bernard</div><div style="font-size:13px;color:#c8e6d3">Foyer Bernard</div></div></div></div>
+<div style="flex:1;padding:14px 14px 22px;display:flex;flex-direction:column;gap:12px">
+<div class="card" style="gap:0">
+<div style="font-size:16px;font-weight:800;margin-bottom:6px">Statut d'accès</div>
+<div class="r"><span>Dernier mail</span><span class="chip ko"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#8f1329" stroke-width="2.200" stroke-linecap="round"><path d="M2.500 2.500l7 7M9.500 2.500l-7 7"/></svg>Échec d'envoi</span></div>
+<div style="font-size:13px;line-height:1.4;color:#8f1329;font-weight:700;background:#fde0e4;border-radius:10px;padding:8px 10px;margin:4px 0 6px">Le serveur a refusé l'adresse : boîte inexistante. Corrige l'adresse puis renvoie.</div>
+<div class="r"><span>Envoyé le</span><b>3 décembre, 9 h 14</b></div>
+<div class="r"><span>Lien ouvert</span><span class="chip wait">Jamais</span></div>
+<div class="r"><span>Dernière connexion</span><span class="chip mute">Aucune</span></div>
+<div class="r"><span>Révélation faite</span><span class="chip wait">Pas encore</span></div>
+<div class="r"><span>Rappels</span><span class="chip ok">Actifs · 1 envoyé sur 3</span></div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Rôle dans le tirage</div>
+<div role="radiogroup" aria-label="Rôle dans le tirage" style="display:flex;flex-direction:column;gap:8px">
+<button type="button" role="radio" aria-checked="true" style="display:flex;align-items:flex-start;gap:12px;min-height:52px;padding:10px 12px;border:0;border-radius:12px;background:#dff3e4;box-shadow:inset 0 0 0 2px #165b33;text-align:left;cursor:pointer;font:inherit;color:#1f2d26"><span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:999px;border:2px solid #165b33;display:flex;align-items:center;justify-content:center;margin-top:2px"><span style="width:10px;height:10px;border-radius:999px;background:#165b33"></span></span><span><b style="font-size:15px">Normal</b><br><span style="font-size:13px;line-height:1.4;color:#4a5a50">Offre un cadeau, et un de plus en dernier recours.</span></span></button>
+<button type="button" role="radio" aria-checked="false" style="display:flex;align-items:flex-start;gap:12px;min-height:52px;padding:10px 12px;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px #c5ddd0;text-align:left;cursor:pointer;font:inherit;color:#1f2d26"><span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:999px;border:2px solid #7d9686;margin-top:2px"></span><span><b style="font-size:15px">Réception seule</b><br><span style="font-size:13px;line-height:1.4;color:#4a5a50">Reçoit un cadeau mais n'en offre pas. Un ou plusieurs participants offriront alors un cadeau de plus.</span></span></button>
+<button type="button" role="radio" aria-checked="false" style="display:flex;align-items:flex-start;gap:12px;min-height:52px;padding:10px 12px;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px #c5ddd0;text-align:left;cursor:pointer;font:inherit;color:#1f2d26"><span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:999px;border:2px solid #7d9686;margin-top:2px"></span><span><b style="font-size:15px">Offre des cadeaux en plus</b><br><span style="font-size:13px;line-height:1.4;color:#4a5a50">Accepte d'en offrir plus pour ceux qui ne peuvent pas en acheter. Choisi en priorité.</span></span></button>
+<button type="button" role="radio" aria-checked="false" style="display:flex;align-items:flex-start;gap:12px;min-height:52px;padding:10px 12px;border:0;border-radius:12px;background:#fff;box-shadow:inset 0 0 0 1px #c5ddd0;text-align:left;cursor:pointer;font:inherit;color:#1f2d26"><span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:999px;border:2px solid #7d9686;margin-top:2px"></span><span><b style="font-size:15px">Un seul cadeau</b><br><span style="font-size:13px;line-height:1.4;color:#4a5a50">Refuse d'en offrir plus d'un.</span></span></button>
+</div>
+<div style="font-size:13px;line-height:1.4;color:#4a5a50">Un seul rôle par personne. Le rôle Normal est le choix par défaut. Rien ici ne dit à qui Thomas offre. Sur la ligne de la liste, seule une pastille de rôle apparaît, jamais pour « Normal ».</div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Corriger l'adresse mail</div>
+<label for="e1" class="lbl">Adresse actuelle</label>
+<input id="e1" class="inp" type="email" value="thomas.bernard@exempel.fr" style="border-color:#c41e3a;box-shadow:0 0 0 3px #fde0e4">
+<label for="e2" class="lbl">Nouvelle adresse</label>
+<input id="e2" class="inp" type="email" value="thomas.bernard@exemple.fr">
+<button class="btn b-green" type="button" style="width:100%">Enregistrer et renvoyer le lien</button>
+<div style="font-size:13px;line-height:1.4;color:#4a5a50">Le changement est noté dans ton journal d'organisateur.</div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Actions</div>
+<div style="display:flex;gap:8px"><button class="btn b-green" type="button" style="flex:1">Renvoyer le lien</button><button class="btn b-ghost" type="button" aria-haspopup="menu" aria-expanded="true" aria-label="Plus d'actions" style="width:48px;padding:0"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><circle cx="4" cy="9" r="1.700" fill="#165b33"/><circle cx="9" cy="9" r="1.700" fill="#165b33"/><circle cx="14" cy="9" r="1.700" fill="#165b33"/></svg></button></div><div role="menu" aria-label="Plus d'actions" class="mn"><a role="menuitem" href="#">Corriger l'adresse mail</a><a role="menuitem" href="#">Régénérer le lien</a><a role="menuitem" href="#">Afficher le lien et le QR code</a><a role="menuitem" href="#">Couper les rappels pour cette personne</a></div>
+<div style="background:#eaf4ee;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px">
+<div style="font-size:14px;font-weight:800;color:#6b4b00">Régénérer le lien ?</div>
+<div style="font-size:13px;line-height:1.45;color:#6b4b00;font-weight:600">L'ancien lien cessera de fonctionner tout de suite. Utile si le mail est parti à la mauvaise adresse.</div>
+<div style="display:flex;gap:8px"><button class="btn b-ghost" type="button" style="flex:1;min-height:44px">Annuler</button><button class="btn b-danger" type="button" style="flex:1;min-height:44px">Régénérer</button></div>
+</div>
+</div>
+<div class="card">
+<div style="font-size:16px;font-weight:800">Lien et QR code</div>
+<div style="font-size:13px;line-height:1.4;color:#4a5a50">À remettre en main propre ou à envoyer par un autre canal.</div>
+<div style="display:flex;gap:14px;align-items:center">
+<svg role="img" aria-label="QR code du lien personnel de Thomas" width="112" height="112" viewBox="0 0 21 21" style="flex:none;background:#fff;box-shadow:inset 0 0 0 1px #c5ddd0;border-radius:8px;padding:6px;box-sizing:content-box" shape-rendering="crispEdges"><path fill="#1f2d26" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0zM1 1v5h5V1zM15 1v5h5V1zM1 15v5h5v-5zM2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2zM8 0h1v2H8zM10 1h2v1h-2zM9 3h1v2H9zM11 4h2v1h-2zM8 6h2v1H8zM0 8h2v1H0zM3 8h1v2H3zM6 8h2v1H6zM9 8h3v1H9zM13 8h2v2h-2zM16 8h1v1h-1zM19 8h2v1h-2zM1 10h2v1H1zM5 10h1v2H5zM8 10h2v2H8zM12 10h1v1h-1zM15 10h3v1h-3zM19 10h1v2h-1zM0 12h1v1H0zM3 12h1v1H3zM10 12h2v1h-2zM14 12h2v2h-2zM17 12h2v1h-2zM8 14h1v2H8zM10 14h2v1h-2zM17 14h1v2h-1zM20 14h1v1h-1zM9 16h3v1H9zM13 16h1v2h-1zM15 16h2v1h-2zM19 16h2v1h-2zM8 18h2v1H8zM11 18h1v3h-1zM14 19h3v1h-3zM18 18h1v2h-1zM20 19h1v2h-1z"/></svg>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px"><div style="font-size:12px;line-height:1.4;font-weight:700;overflow-wrap:anywhere;background:#dcebe2;border-radius:8px;padding:8px">https://ton-serveur/famille-2026/k/9f3a…c7d1</div><button class="btn b-ghost" type="button" style="min-height:44px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="9" height="9" rx="2"/><path d="M12 6V4.500A1.500 1.500 0 0 0 10.500 3h-6A1.500 1.500 0 0 0 3 4.500v6A1.500 1.500 0 0 0 4.500 12H6"/></svg>Copier</button></div>
+</div>
+</div>
+<div style="display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.45;color:#4a5a50;box-shadow:inset 0 0 0 1px #c5ddd0"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="3" y="8" width="12" height="8" rx="2"/><path d="M6 8V6a3 3 0 016 0v2"/></svg><span>Cette fiche ne montre jamais la cible de Thomas. Après un renvoi, il se connecte et la découvre lui-même.</span></div>
+</div>
+<nav class="nav" aria-label="Navigation organisateur"><a class="nv" href="screen-admin-tableau.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg>Tableau</a><a class="nv" href="screen-admin-participants.dc.html" aria-current="page"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17" cy="9" r="2.500"/><path d="M17.500 14.200a5 5 0 0 1 4 5.800"/></svg>Participants</a><a class="nv" href="screen-admin-tirage.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.500 2-1 3.500 2 3 5.500zM12 9c3-1 5-4 3-5.500-2-1-3.500 2-3 5.500z"/></svg>Tirage</a><a class="nv" href="screen-admin-inscriptions.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.500 0l3-3a4 4 0 0 0-5.600-5.600L11.500 6.800M14 10a4 4 0 0 0-5.500 0l-3 3a4 4 0 0 0 5.600 5.600l1.400-1.400"/></svg>Inscriptions</a><a class="nv" href="screen-admin-menu.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.800" fill="currentColor"/><circle cx="12" cy="12" r="1.800" fill="currentColor"/><circle cx="19" cy="12" r="1.800" fill="currentColor"/></svg>Plus</a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1900}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

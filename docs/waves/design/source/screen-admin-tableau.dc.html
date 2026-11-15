@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Tableau de bord admin</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border-radius:14px;border:0;font:700 15px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}.b-green{background:#165b33;color:#fff}.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:inset 0 0 0 1px #c5ddd0}
+.chip{display:inline-flex;align-items:center;gap:5px;min-height:26px;padding:0 10px;border-radius:999px;font:700 12px 'Nunito',sans-serif;white-space:nowrap}
+.ok{background:#dff3e4;color:#0f4a2a}.wait{background:#fff1c2;color:#6b4b00}.ko{background:#fde0e4;color:#8f1329}.mute{background:#dcebe2;color:#3a4a40}
+.st{box-sizing:border-box;min-height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font:700 13px/1.15 'Nunito',sans-serif;padding:4px}
+.pr{display:flex;gap:12px;padding:12px 0;border-top:1px solid #dcebe2;align-items:flex-start}
+.av{flex:none;width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center;font:800 16px 'Nunito';color:#fff}
+.nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;box-shadow:0 -1px 0 #c5ddd0;padding:0 4px;flex:none}.nv{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;box-sizing:border-box;text-decoration:none;color:#4a5a50;font:600 12px/1.1 'Nunito',sans-serif;border-top:4px solid transparent}.nv[aria-current="page"]{color:#165b33;font-weight:800;border-top-color:#165b33;background:#f1f8f3}
+</style>
+</helmet>
+<div style="width:390px;height:1440px;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;display:flex;flex-direction:column">
+<div style="background:#165b33;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px"><div><div style="font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#c8e6d3">Espace organisateur</div><div class="h" style="font-size:24px;line-height:1.1">Noël en famille 2026</div></div><a href="screen-admin-reglages.dc.html" aria-label="Réglages" style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.14)"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="3"/><path d="M11 2.500v2.500M11 17v2.500M2.500 11H5M17 11h2.500M5 5l1.800 1.800M15.200 15.200L17 17M17 5l-1.800 1.800M6.800 15.200L5 17"/></svg></a></div>
+<div style="flex:1;padding:14px 14px 22px;display:flex;flex-direction:column;gap:12px">
+<div class="card" style="display:flex;flex-direction:column;gap:10px">
+<div style="font-size:15px;font-weight:800">Déroulé</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<div class="st" style="background:#165b33;color:#fff">Inscription ✓</div>
+<div class="st" style="background:#165b33;color:#fff">Lettres ✓</div>
+<div class="st" style="background:#165b33;color:#fff">Tirage ✓</div>
+<div class="st" style="background:#c41e3a;color:#fff;box-shadow:0 0 0 3px #fde0e4">Révélation, en cours</div>
+<div class="st" style="background:#dcebe2;color:#3a4a40">Échanges</div>
+<div class="st" style="background:#dcebe2;color:#3a4a40">Jour J, 24 décembre</div>
+</div>
+<div style="font-size:13px;color:#4a5a50;line-height:1.4">Ouverture prévue le 1er décembre à 18 h. <a href="screen-admin-tirage.dc.html" style="color:#c41e3a;font-weight:800">Modifier</a></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+<div class="card" style="padding:10px 6px;text-align:center"><div style="font:800 26px/1 'Nunito'">8</div><div style="font-size:12px;color:#4a5a50;font-weight:700;margin-top:4px">inscrits</div></div>
+<div class="card" style="padding:10px 6px;text-align:center"><div style="font:800 26px/1 'Nunito'">6</div><div style="font-size:12px;color:#4a5a50;font-weight:700;margin-top:4px">liens ouverts</div></div>
+<div class="card" style="padding:10px 6px;text-align:center"><div style="font:800 26px/1 'Nunito'">5</div><div style="font-size:12px;color:#4a5a50;font-weight:700;margin-top:4px">cibles vues</div></div>
+<div class="card" style="padding:10px 6px;text-align:center"><div style="font:800 26px/1 'Nunito'">4</div><div style="font-size:12px;color:#4a5a50;font-weight:700;margin-top:4px">lettres</div></div>
+</div>
+<div style="display:flex;gap:8px"><a class="btn b-green" href="screen-admin-tirage.dc.html" style="flex:1">Contrôler le tirage</a><button class="btn b-red" type="button" style="flex:1">Relancer (3)</button></div>
+<a class="card" href="screen-admin-tirage.dc.html" style="display:flex;align-items:center;gap:10px;min-height:44px;text-decoration:none;color:inherit"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M8.500 11.500a3.500 3.500 0 0 0 5 0l2.500-2.500a3.500 3.500 0 0 0-5-5L9.800 5.200M11.500 8.500a3.500 3.500 0 0 0-5 0L4 11a3.500 3.500 0 0 0 5 5l1.200-1.200"/></svg><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800">Inscriptions par lien</div><div style="font-size:13px;color:#4a5a50;line-height:1.35">Fermées au tirage du 28 novembre. Voir l'historique.</div></div><span class="chip mute">Fermées</span></a>
+<div style="display:flex;gap:8px;align-items:flex-start;background:#fff;border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.45;color:#4a5a50;box-shadow:inset 0 0 0 1px #c5ddd0"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="3" y="8" width="12" height="8" rx="2"/><path d="M6 8V6a3 3 0 016 0v2"/></svg><span>Le tirage est enregistré et reste secret : tu vois qui a ouvert son lien, jamais qui offre à qui.</span></div>
+<div class="card" style="padding:4px 14px 6px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px"><div style="font-size:15px;font-weight:800">Participants</div><a href="screen-admin-participants.dc.html" style="color:#c41e3a;font-weight:800;font-size:14px;min-height:44px;display:inline-flex;align-items:center">Gérer</a></div>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit;border-top:0"><div class="av" style="background:#c41e3a">C</div><div style="flex:1;min-width:0"><b style="font-size:16px">Camille Martin</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip ok">Cible découverte</span><span class="chip ok">Lettre écrite</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#165b33">H</div><div style="flex:1;min-width:0"><b style="font-size:16px">Hugo Martin</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip ok">Cible découverte</span><span class="chip wait">Lettre en attente</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#1c2f6b">L</div><div style="flex:1;min-width:0"><b style="font-size:16px">Léa Bernard</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip ok">Cible découverte</span><span class="chip ok">Lettre écrite</span><span class="chip mute">Désinscrit des rappels</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#c41e3a">T</div><div style="flex:1;min-width:0"><b style="font-size:16px">Thomas Bernard</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip ko">Échec d'envoi</span><span class="chip wait">Lien pas ouvert</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#165b33">M</div><div style="flex:1;min-width:0"><b style="font-size:16px">Mamie Jeanne</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip mute">Sans mail, lien remis</span><span class="chip ok">Lien ouvert</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#1c2f6b">P</div><div style="flex:1;min-width:0"><b style="font-size:16px">Papi Michel</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip wait">Lien envoyé</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#c41e3a">S</div><div style="flex:1;min-width:0"><b style="font-size:16px">Sophie Lambert</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip ok">Cible découverte</span><span class="chip ok">Lettre écrite</span></div></div></a>
+<a class="pr" href="screen-admin-fiche.dc.html" style="text-decoration:none;color:inherit"><div class="av" style="background:#165b33">N</div><div style="flex:1;min-width:0"><b style="font-size:16px">Noé Lambert</b><div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><span class="chip ok">Lien ouvert</span><span class="chip wait">Cible pas encore vue</span></div></div></a>
+</div>
+</div>
+<nav class="nav" aria-label="Navigation organisateur"><a class="nv" href="screen-admin-tableau.dc.html" aria-current="page"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.500"/><rect x="14" y="3" width="7" height="7" rx="1.500"/><rect x="3" y="14" width="7" height="7" rx="1.500"/><rect x="14" y="14" width="7" height="7" rx="1.500"/></svg>Tableau</a><a class="nv" href="screen-admin-participants.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.500"/><path d="M2.500 20a6.500 6.500 0 0 1 13 0"/><circle cx="17" cy="9" r="2.500"/><path d="M17.500 14.200a5 5 0 0 1 4 5.800"/></svg>Participants</a><a class="nv" href="screen-admin-tirage.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M12 9v12M3 13h18M12 9c-3-1-5-4-3-5.500 2-1 3.500 2 3 5.500zM12 9c3-1 5-4 3-5.500-2-1-3.500 2-3 5.500z"/></svg>Tirage</a><a class="nv" href="screen-admin-inscriptions.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.500 0l3-3a4 4 0 0 0-5.600-5.600L11.500 6.800M14 10a4 4 0 0 0-5.500 0l-3 3a4 4 0 0 0 5.600 5.600l1.400-1.400"/></svg>Inscriptions</a><a class="nv" href="screen-admin-menu.dc.html"><svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.800" fill="currentColor"/><circle cx="12" cy="12" r="1.800" fill="currentColor"/><circle cx="19" cy="12" r="1.800" fill="currentColor"/></svg>Plus</a></nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1440}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

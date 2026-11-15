@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Inscription réussie</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+body{margin:0;font-family:'Nunito',system-ui,sans-serif}
+.h{font-family:'Mountains of Christmas','Nunito',cursive;font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:14px;border:0;font:700 16px/1 'Nunito',sans-serif;cursor:pointer;text-decoration:none;box-sizing:border-box}
+.b-red{background:#c41e3a;color:#fff}
+.b-ghost{background:transparent;color:#165b33;box-shadow:inset 0 0 0 2px #165b33}
+.row{display:flex;gap:10px;align-items:flex-start;font-size:15px;line-height:1.45;color:#1f2d26}
+.pill{display:inline-flex;align-items:center;min-height:32px;padding:0 12px;border-radius:999px;background:#dcebe2;color:#1f2d26;font:700 13px 'Nunito',sans-serif}
+@keyframes fall{from{transform:translateY(-14px)}to{transform:translateY(18px)}}
+.snow{animation:fall 6s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.snow{animation:none}}
+</style>
+</helmet>
+<div style="position:relative;overflow:hidden;width:390px;height:1040px;box-sizing:border-box;background:linear-gradient(180deg,#0f1b3d 0%,#1c2f6b 62%,#2b2a63 100%);color:#fff;display:flex;flex-direction:column;align-items:center;padding:40px 20px 32px;gap:18px">
+<svg class="snow" aria-hidden="true" width="390" height="1040" viewBox="0 0 390 1040" style="position:absolute;inset:0;pointer-events:none"><g fill="#fff"><circle cx="30" cy="60" r="3" opacity=".8"/><circle cx="350" cy="130" r="2.500" opacity=".7"/><circle cx="20" cy="330" r="2" opacity=".6"/><circle cx="372" cy="520" r="2.500" opacity=".5"/></g><rect x="60" y="34" width="8" height="14" rx="2" fill="#ffd700" transform="rotate(25 64 41)"/><rect x="300" y="54" width="8" height="14" rx="2" fill="#c41e3a" transform="rotate(-30 304 61)"/><rect x="130" y="90" width="7" height="12" rx="2" fill="#e6ecff" transform="rotate(50 133 96)"/><rect x="250" y="30" width="7" height="12" rx="2" fill="#ffd700" transform="rotate(-15 253 36)"/><rect x="334" y="170" width="8" height="14" rx="2" fill="#ffd700" transform="rotate(40 338 177)"/><rect x="40" y="190" width="8" height="14" rx="2" fill="#c41e3a" transform="rotate(-45 44 197)"/></svg>
+<svg aria-hidden="true" width="210" height="130" viewBox="0 0 210 130" style="position:relative;flex:none">
+<ellipse cx="105" cy="120" rx="96" ry="9" fill="#e6ecff" opacity=".95"/>
+<rect x="22" y="70" width="58" height="48" rx="4" fill="#c41e3a"/><rect x="45" y="70" width="12" height="48" fill="#ffd700"/><path d="M51 70c-12-18-24-8-16 0zM51 70c12-18 24-8 16 0z" fill="#ffd700"/>
+<rect x="86" y="50" width="62" height="68" rx="4" fill="#165b33"/><rect x="110" y="50" width="12" height="68" fill="#ffd700"/><path d="M116 50c-12-20-26-8-17 0zM116 50c12-20 26-8 17 0z" fill="#ffd700"/>
+<rect x="152" y="82" width="42" height="36" rx="4" fill="#ffd700"/><rect x="167" y="82" width="12" height="36" fill="#c41e3a"/>
+<path d="M105 4l5 11 12 1.500-9 8 2.500 12-10.500-6-10.500 6 2.500-12-9-8 12-1.500z" fill="#ffd700"/>
+</svg>
+<div style="position:relative;text-align:center;display:flex;flex-direction:column;gap:6px">
+<div style="font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9d3f0">Noël en famille 2026</div>
+<h1 class="h" style="margin:0;font-size:44px;line-height:1.05;color:#ffd700">Tu es inscrit·e !</h1>
+</div>
+<div style="position:relative;width:100%;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;border-radius:20px;padding:18px 20px;box-shadow:0 6px 20px rgba(8,14,40,.3);display:flex;flex-direction:column;gap:12px">
+<div class="row"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><circle cx="10" cy="10" r="7.500"/><path d="M12.500 7.500C12 6.500 11 6 10 6c-1.500 0-2.500.800-2.500 2s1 1.800 2.500 2 2.500.800 2.500 2-1 2-2.500 2c-1 0-2-.500-2.500-1.500"/></svg><div><b>Budget : 25 €</b><br>Environ, tout compris.</div></div>
+<div class="row"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="3" y="4.500" width="14" height="12.500" rx="2"/><path d="M3 8.500h14M7 2.500v3M13 2.500v3"/></svg><div><b>Découverte du tirage</b><br>1er décembre à 18 h.</div></div>
+<div class="row"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#165b33" stroke-width="2" stroke-linecap="round" style="flex:none;margin-top:1px"><rect x="2.500" y="4.500" width="15" height="11" rx="2.500"/><path d="M3 6.500l7 5.500 7-5.500"/></svg><div><b>Ton lien personnel t'a été envoyé par mail.</b><br>Garde-le : c'est ta clé pour revenir.</div></div>
+</div>
+<div style="position:relative;width:100%;box-sizing:border-box;background:#eaf4ee;color:#1f2d26;border-radius:22px;padding:22px 20px 20px;box-shadow:0 0 0 4px #ffd700,0 10px 28px rgba(8,14,40,.4);display:flex;flex-direction:column;gap:12px">
+<div class="h" style="font-size:32px;line-height:1.05;color:#c41e3a">Écris ta lettre au Père Noël</div>
+<p style="margin:0;font-size:16px;line-height:1.5">Ton tireur lira tes idées en secret. Plus elles sont précises, plus ton cadeau te ressemblera.</p>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><span class="pill">Une envie</span><span class="pill">Ta taille ou ta couleur</span><span class="pill">Un cadeau à éviter</span></div>
+<a class="btn b-red" href="screen-lettre.dc.html" style="width:100%;min-height:56px;font-size:18px">Écrire ma lettre</a>
+<a class="btn b-ghost" href="screen-attente-revelation.dc.html" style="width:100%">Plus tard</a>
+<div style="font-size:13px;line-height:1.45;color:#4a5a50;text-align:center">Deux minutes suffisent. Tu peux la modifier jusqu'au jour J.</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1040}}'>
+class Component extends DCLogic {
+renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
