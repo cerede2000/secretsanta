@@ -7,6 +7,8 @@ import (
 	"secretsanta/internal/access/magic"
 	accessmig "secretsanta/internal/access/migrations"
 	"secretsanta/internal/admin/audit"
+	"secretsanta/internal/adminconsult"
+	"secretsanta/internal/adminops"
 	"secretsanta/internal/db"
 	"secretsanta/internal/draw"
 	"secretsanta/internal/groups"
@@ -19,9 +21,11 @@ import (
 	"secretsanta/internal/participants"
 	regmig "secretsanta/internal/registration/migrations"
 	"secretsanta/internal/reminderrules"
+	"secretsanta/internal/reminders"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
+	"secretsanta/internal/suggestions"
 	"secretsanta/internal/targetpage"
 	"secretsanta/internal/websec"
 )
@@ -74,6 +78,15 @@ var migrationSources = []struct {
 	{letterread.Module, letterread.Migrations},
 	{audit.Module, audit.Migrations},
 	{AppModule, AppMigrations},
+	// Vague 10. reminders (journal des relances, lien ouvert) n'a aucune clé
+	// étrangère mais lit letters et draws : après groups, letter et draw ;
+	// suggestions référence groups et participants (cache, quotas) ;
+	// adminconsult (journal des consultations) référence groups et lit les
+	// tables du tirage ; adminops ne référence que groups.
+	{reminders.Module, reminders.Migrations},
+	{suggestions.Module, suggestions.Migrations},
+	{adminconsult.Module, adminconsult.Migrations},
+	{adminops.Module, adminops.Migrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.

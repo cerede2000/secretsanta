@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"net/http"
 	"net/url"
@@ -21,37 +20,6 @@ import (
 	"secretsanta/internal/shared/ports"
 	"secretsanta/internal/websec"
 )
-
-// previewOnlyRepair est un adaptateur TEMPORAIRE du port
-// ports.RuleChangeRepair : l'aperçu est « sans effet » (aucune personne
-// touchée), si bien que rulechange enregistre directement la règle ou le rôle
-// sans réparer le tirage actuel. La réparation réelle (moins de changements
-// possible, personnes prévenues) le remplace ; Apply écrit la règle dans une
-// transaction, sans réparation.
-type previewOnlyRepair struct{ db *sql.DB }
-
-// Preview renvoie un aperçu vide : aucune personne touchée.
-func (previewOnlyRepair) Preview(context.Context, int64, ports.ProposedRule) (ports.RepairPreview, error) {
-	return ports.RepairPreview{}, nil
-}
-
-// Apply écrit la règle dans une transaction, sans toucher au tirage.
-func (r previewOnlyRepair) Apply(ctx context.Context, _ int64, _ ports.ProposedRule, write ports.RuleWriter) error {
-	if write == nil {
-		return errors.New("écriture de règle absente")
-	}
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-	defer func() { _ = tx.Rollback() }()
-	if err := write(ctx, tx); err != nil {
-		return err
-	}
-	return tx.Commit()
-}
-
-var _ ports.RuleChangeRepair = previewOnlyRepair{}
 
 // ErrMailDisabled est renvoyée quand aucun transport d'envoi n'est branché :
 // le message n'est pas mis en file (il partirait périmé, ou jamais).

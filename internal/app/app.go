@@ -47,6 +47,8 @@ import (
 	"secretsanta/internal/registration/sqlstore"
 	"secretsanta/internal/registration/verify"
 	"secretsanta/internal/reminderrules"
+	"secretsanta/internal/reminders"
+	"secretsanta/internal/repair"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
@@ -56,6 +58,7 @@ import (
 	"secretsanta/internal/shared/scheduler"
 	"secretsanta/internal/sources"
 	"secretsanta/internal/ssrf"
+	"secretsanta/internal/suggestions"
 	"secretsanta/internal/targetpage"
 	"secretsanta/internal/websec"
 	"secretsanta/web"
@@ -119,6 +122,16 @@ type App struct {
 	Suppress      *mailsuppress.Store
 	MailDiag      *maildiag.Diagnostic
 	ReminderRules *reminderrules.Service
+	// Reminders est le moteur de relances (planificateur chaque minute) ; nil
+	// sans file d'envoi (aucun transport). ReminderFacts enregistre l'ouverture
+	// du lien personnel, même sans moteur.
+	Reminders     *reminders.Engine
+	ReminderFacts reminders.SQLFacts
+	// Suggestions est le service des suggestions de cadeaux (aucune route
+	// encore) ; Repair la réparation du tirage après un changement de règle ou
+	// de rôle (injectée dans RuleChange).
+	Suggestions *suggestions.Service
+	Repair      *repair.Service
 	// GroupPages et AccessPages portent les pages publiques des groupes et de
 	// connexion.
 	GroupPages  *grouppages.Pages

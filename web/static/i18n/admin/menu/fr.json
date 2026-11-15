@@ -7,6 +7,8 @@
   "admin.menu.journal.hint": "Ajustements, consultations, validations",
   "admin.menu.export": "Exporter les participants",
   "admin.menu.export.hint": "Fichier JSON, sans les paires",
+  "admin.menu.consult": "Consulter une paire",
+  "admin.menu.consult.hint": "Une personne à la fois, notée dans le journal",
   "admin.menu.help": "Aide",
   "admin.menu.help.hint": "Comment ça marche, en quelques lignes",
   "admin.menu.logout": "Se déconnecter",

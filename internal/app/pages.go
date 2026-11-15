@@ -86,10 +86,13 @@ func registerGroupPages(a *App) error {
 }
 
 // registerAccessPages branche les pages de connexion (participant et
-// administrateur) sur Slugs ; le paquet analyse lui-même ses gabarits.
+// administrateur) sur Slugs ; le paquet analyse lui-même ses gabarits. La
+// première connexion par lien personnel est notée pour les relances
+// (linkOpenedCredentials) ; elle suit registerReminders.
 func registerAccessPages(a *App) error {
 	p, err := accesspages.New(accesspages.Options{
-		Groups: a.Groups, Credentials: a.Tokens, Magic: a.Magic, Sessions: a.Sessions,
+		Groups: a.Groups, Credentials: linkOpenedCredentials{accessCredentials: a.Tokens, facts: a.ReminderFacts},
+		Magic: a.Magic, Sessions: a.Sessions,
 		Translator: a.Cat, Clock: a.Clock, ClientIP: a.clientIP,
 	})
 	if err != nil {

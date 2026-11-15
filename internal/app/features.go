@@ -26,7 +26,6 @@ import (
 	"secretsanta/internal/participants"
 	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
-	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
 	"secretsanta/internal/shared/ports"
 	"secretsanta/internal/sources"
@@ -36,7 +35,6 @@ import (
 // features liste les fonctionnalités branchées : UNE ligne par module, dans
 // l'ordre des dépendances (le port DrawState avant participants, le bus avant
 // groupsettings, le service de jetons avant l'inscription et les pages).
-// Adaptateur encore temporaire : voir adapters.go (réparation du tirage).
 var features = []func(*App) error{
 	registerBus,
 	registerGroups,
@@ -54,16 +52,23 @@ var features = []func(*App) error{
 	registerMailQueue,
 	registerRegistration,
 	registerDraw,
-	registerRuleChange,
 	registerMailDiag,
 	registerReminderRules,
 	registerMailUnsub,
 	registerReveal,
+	// Les relances suivent la désinscription, la suppression et la file ; le
+	// moteur n'est pas bâti sans file d'envoi.
+	registerReminders,
+	registerBudgetNotice,
 	registerMagic,
 	registerImages,
 	registerSuggestions,
 	registerLetter,
 	registerLetterRead,
+	registerSuggestionService,
+	// La réparation du tirage archive les lettres (letterread) et prévient la
+	// révélation : elle suit registerLetterRead et registerReveal.
+	registerRuleChange,
 	registerAdjust,
 	registerWeb,
 	registerGroupPages,
@@ -79,6 +84,10 @@ var features = []func(*App) error{
 	registerRegistrationAdmin,
 	registerDrawPages,
 	registerPeoplePages,
+	// Les pages de la vague 10 suivent registerAdminPages (registre de
+	// navigation, journal).
+	registerAdminConsult,
+	registerAdminOps,
 }
 
 // publicBase renvoie PUBLIC_URL sans barre finale.
@@ -138,13 +147,6 @@ func registerRules(a *App) error {
 func registerDraw(a *App) error {
 	a.Draw = draw.NewService(a.DB, a.Clock, a.Groups, a.Participants, a.Rules,
 		a.Verify, draw.Options{Location: a.Cfg.Location, Gate: reveal.NewGate(a.DB, a.Clock)})
-	return nil
-}
-
-// registerRuleChange construit le service des modifications de règles, avec
-// l'adaptateur temporaire previewOnlyRepair.
-func registerRuleChange(a *App) error {
-	a.RuleChange = rulechange.NewService(a.DB, a.Clock, a.DrawState, previewOnlyRepair{db: a.DB})
 	return nil
 }
 
