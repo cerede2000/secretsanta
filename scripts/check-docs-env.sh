@@ -14,7 +14,7 @@ for v in $doc_vars; do
   echo "$env_vars" | grep -qx "$v" || ko "$v : dans le guide, absent de .env.example"
 done
 
-ex=docs/guide/docker-compose.example.yml
+ex=docker-compose.example.yml
 [ -f "$ex" ] || ko "$ex absent"
 if [ -f "$ex" ]; then
   # Aucun secret renseigné : toute valeur d'une variable secrète est une référence ${...}.

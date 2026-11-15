@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # F12a.AC2 : les valeurs de secrets de test n'existent que dans
-# docker-compose.test.yml ; docker-compose.yml, .env.example et le Dockerfile
+# docker-compose.test.yml ; docker-compose.example.yml, .env.example et le Dockerfile
 # n'en contiennent aucune.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 test_file=docker-compose.test.yml
-others=(docker-compose.yml .env.example Dockerfile)
+others=(docker-compose.example.yml .env.example Dockerfile)
 
 [ -f "$test_file" ] || { echo "$test_file absent" >&2; exit 1; }
 

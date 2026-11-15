@@ -5,7 +5,7 @@ Ce guide explique comment installer, exploiter et mettre à jour secretsanta. Le
 ## Installation avec Docker
 
 1. Copiez `.env.example` en `.env` et renseignez `INSTANCE_PASSWORD` (mot de passe demandé pour créer un groupe) et `SIGNING_SECRET` (longue valeur aléatoire, par exemple `openssl rand -hex 32`). L'application refuse de démarrer sans ces deux secrets.
-2. Reprenez l'exemple [docker-compose.example.yml](docker-compose.example.yml) dans un dossier de votre choix, à côté du fichier `.env`.
+2. Copiez l'exemple [docker-compose.example.yml](../../docker-compose.example.yml) en `docker-compose.yml`, à côté du fichier `.env`, dans un dossier de votre choix. Il est entièrement commenté (SMTP, mandataire inverse, DKIM, volumes).
 3. Définissez `PUBLIC_URL` (l'adresse publique, utilisée dans les liens des courriels).
 4. Lancez `docker compose up -d`, puis ouvrez l'adresse : la page d'accueil permet de créer un groupe.
 
@@ -42,6 +42,7 @@ Faites toujours une sauvegarde avant de mettre à jour.
 ## Dépannage
 
 - Le conteneur s'arrête au démarrage : lisez `docker compose logs secretsanta`. Une variable manquante ou invalide est nommée (par exemple `INSTANCE_PASSWORD`).
+- Les invités lisent « l'envoi de courriel n'est pas configuré » et un avertissement s'affiche chez l'organisateur : `SMTP_HOST` est absent ; renseignez-le avec `MAIL_FROM`, puis redémarrez.
 - Les courriels ne partent pas : vérifiez `SMTP_HOST`, `MAIL_FROM` et le mode `MAIL_TLS_MODE`, puis envoyez un message de test depuis l'administration. Voir [délivrabilité](deliverability.md) si les messages arrivent en indésirables.
 - Les liens des courriels pointent vers la mauvaise adresse : corrigez `PUBLIC_URL`.
 - Trop de demandes (429) pour tous les utilisateurs : le mandataire n'est pas reconnu, réglez `TRUSTED_PROXIES`.

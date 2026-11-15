@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # F1c.AC1 : aucun secret renseigné par défaut dans .env.example,
-# docker-compose.yml et Dockerfile.
+# docker-compose.example.yml et Dockerfile.
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 
@@ -16,17 +16,17 @@ while IFS= read -r line; do
   fi
 done < .env.example
 
-# docker-compose.yml : pas de valeur par défaut (${VAR:-x} / ${VAR-x}) ni de
+# docker-compose.example.yml : pas de valeur par défaut (${VAR:-x} / ${VAR-x}) ni de
 # valeur littérale pour un secret.
 while IFS= read -r line; do
   case "$line" in *'#'*) [[ "$line" =~ ^[[:space:]]*# ]] && continue ;; esac
   if [[ "$line" =~ ^[[:space:]]*([A-Z_]*${secret_re}[A-Z_]*):[[:space:]]*(.*)$ ]]; then
     name="${BASH_REMATCH[1]}"; value="${BASH_REMATCH[3]}"
     if [[ -n "$value" && ! "$value" =~ ^\$\{[A-Z_]+(:\?[^}]*|\?[^}]*)?\}$ ]]; then
-      echo "secret avec valeur par défaut dans docker-compose.yml : $name" >&2; fail=1
+      echo "secret avec valeur par défaut dans docker-compose.example.yml : $name" >&2; fail=1
     fi
   fi
-done < docker-compose.yml
+done < docker-compose.example.yml
 
 # Dockerfile : aucun ENV/ARG de secret avec une valeur.
 if grep -E '^[[:space:]]*(ENV|ARG)[[:space:]]+[A-Z_]*(PASSWORD|SECRET|API_KEY|TOKEN)[A-Z_]*[= ][^[:space:]\\]' Dockerfile >&2; then
