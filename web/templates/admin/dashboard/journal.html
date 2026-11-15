@@ -1,0 +1,16 @@
+{{/*
+  Journal des actions sensibles du groupe. Données : .Slug, .Journal,
+  .ErrorKey. Ni paire ni jeton : une action, une personne, un instant.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/dashboard/dashboard.css">
+<div class="dash dash-narrow">
+<a class="dash-back" href="/{{.Slug}}/admin">{{t "admin.dashboard.check.back"}}</a>
+<h1 class="dash-title">{{t "admin.dashboard.journal.title"}}</h1>
+<p class="dash-hint">{{t "admin.dashboard.journal.intro"}}</p>
+{{if .ErrorKey}}<div class="dash-alert dash-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+<section class="card-admin dash-card">
+{{if .Journal}}<ul class="dash-list">
+{{range .Journal}}<li class="dash-journal-row"><span class="dash-journal-action">{{t .ActionKey}}</span>{{if .Person}} <b>{{.Person}}</b>{{end}} <time class="dash-hint">{{.At}}</time></li>
+{{end}}</ul>{{else}}<p class="dash-hint">{{t "admin.dashboard.journal.empty"}}</p>{{end}}
+</section>
+</div>{{end}}

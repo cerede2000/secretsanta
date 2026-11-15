@@ -1,0 +1,79 @@
+{{/*
+  screen-admin-tableau et screen-admin-tableau-bureau : le tableau de bord de
+  l'administrateur, sans aucune paire. Données : .Slug, .GroupName, .View,
+  .People, .NoEmail, .RegistrationsHref, .ErrorKey, .NoticeKey. La version
+  large (1024 px) est la même page, disposée en deux colonnes par la feuille
+  de style.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/admin/dashboard/dashboard.css">
+<div class="dash">
+<header class="dash-head">
+<p class="dash-eyebrow">{{t "admin.dashboard.eyebrow"}}</p>
+<h1 class="dash-title">{{.GroupName}}</h1>
+</header>
+{{if .ErrorKey}}<div class="dash-alert dash-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+{{if .NoticeKey}}<div class="dash-alert dash-alert-ok" role="status">{{t .NoticeKey}}</div>{{end}}
+{{if .View}}
+<div class="dash-grid">
+<div class="dash-col dash-col-side">
+<section class="card-admin dash-card" aria-labelledby="dash-steps">
+<h2 id="dash-steps" class="dash-h2">{{t "admin.dashboard.steps.title"}}</h2>
+<ol class="dash-steps">
+<li class="dash-step dash-step-done">{{t "admin.dashboard.steps.signup"}}</li>
+<li class="dash-step {{if .View.DrawDone}}dash-step-done{{else}}dash-step-todo{{end}}">{{t "admin.dashboard.steps.draw"}} <span class="dash-step-state">{{if .View.DrawDone}}{{t "admin.dashboard.steps.done"}}{{else}}{{t "admin.dashboard.steps.todo"}}{{end}}</span></li>
+<li class="dash-step {{if .View.RevealDone}}dash-step-done{{else if .View.DrawDone}}dash-step-now{{else}}dash-step-todo{{end}}">{{t "admin.dashboard.steps.reveal"}} <span class="dash-step-state">{{if .View.RevealDone}}{{t "admin.dashboard.steps.open"}}{{else}}{{t "admin.dashboard.steps.todo"}}{{end}}</span></li>
+</ol>
+{{if and .View.RevealAt (not .View.RevealDone)}}<p class="dash-hint">{{t "admin.dashboard.steps.reveal_at" "date" (.View.RevealAt.Format "2006-01-02 15:04")}}</p>{{end}}
+</section>
+<ul class="dash-stats" aria-label="{{t "admin.dashboard.stats.label"}}">
+<li class="card-admin dash-stat"><span class="dash-stat-n">{{.View.Registered}}</span><span class="dash-stat-l">{{t "admin.dashboard.stat.registered"}}</span></li>
+<li class="card-admin dash-stat"><span class="dash-stat-n">{{.View.LinksOpened}}</span><span class="dash-stat-l">{{t "admin.dashboard.stat.links"}}</span></li>
+<li class="card-admin dash-stat"><span class="dash-stat-n">{{.View.TargetsSeen}}</span><span class="dash-stat-l">{{t "admin.dashboard.stat.targets"}}</span></li>
+<li class="card-admin dash-stat"><span class="dash-stat-n">{{.View.LettersWritten}}</span><span class="dash-stat-l">{{t "admin.dashboard.stat.letters"}}</span></li>
+<li class="card-admin dash-stat"><span class="dash-stat-n">{{.View.LettersRead}}</span><span class="dash-stat-l">{{t "admin.dashboard.stat.letters_read"}}</span></li>
+<li class="card-admin dash-stat"><span class="dash-stat-n">{{if .View.RevealDone}}{{t "admin.dashboard.stat.yes"}}{{else}}{{t "admin.dashboard.stat.no"}}{{end}}</span><span class="dash-stat-l">{{t "admin.dashboard.stat.reveal"}}</span></li>
+</ul>
+<p class="dash-hint dash-mails">{{t "admin.dashboard.mails.summary" "sent" .View.MailsSent "failed" .View.MailsFailed "pending" .View.MailsPending}}</p>
+{{if .View.DrawDone}}<a class="btn btn-green dash-check" href="/{{.Slug}}/admin/controle">{{t "admin.dashboard.check.button"}}</a>{{end}}
+<a class="card-admin dash-pending" href="{{.RegistrationsHref}}">
+<span class="dash-pending-body"><span class="dash-h3">{{t "admin.dashboard.pending.title"}}</span>
+<span class="dash-pending-count">{{if .View.PendingRegistrations}}{{tn "admin.dashboard.pending.count" .View.PendingRegistrations}}{{else}}{{t "admin.dashboard.pending.none"}}{{end}}</span></span>
+<span class="dash-link">{{t "admin.dashboard.pending.open"}}</span>
+</a>
+<p class="dash-note">{{t "admin.dashboard.privacy"}}</p>
+</div>
+<div class="dash-col dash-col-main">
+{{if .NoEmail}}
+<section class="card-admin dash-card" aria-labelledby="dash-nomail">
+<h2 id="dash-nomail" class="dash-h2">{{t "admin.dashboard.nomail.title"}}</h2>
+<p class="dash-hint">{{t "admin.dashboard.nomail.intro"}}</p>
+<ul class="dash-list">
+{{range .NoEmail}}<li class="dash-nomail-row">
+<a class="dash-nomail-name" href="{{.Href}}">{{.FirstName}} {{.Name}}</a>
+{{if .HandedOver}}<span class="chip chip-ok">{{t "admin.dashboard.nomail.handed"}}</span>{{else}}
+<form method="post" action="/{{$.Slug}}/admin/personnes/{{.ID}}/lien-remis">{{csrfField}}
+<button class="btn btn-ghost dash-handover" type="submit" aria-label="{{t "admin.dashboard.nomail.mark_aria" "name" .FirstName}}">{{t "admin.dashboard.nomail.mark"}}</button></form>{{end}}
+</li>
+{{end}}</ul>
+</section>
+{{end}}
+<section class="card-admin dash-card" aria-labelledby="dash-people">
+<div class="dash-card-head"><h2 id="dash-people" class="dash-h2">{{t "admin.dashboard.people.title"}}</h2><a class="dash-link" href="/{{.Slug}}/admin/participants">{{t "admin.dashboard.people.manage"}}</a></div>
+{{if .People}}<ul class="dash-list">
+{{range .People}}<li class="dash-person" id="personne-{{.ID}}">
+<a class="dash-person-link" href="{{.Href}}"><span class="dash-av">{{initial .FirstName}}</span>
+<span class="dash-person-body"><b class="dash-person-name">{{.FirstName}} {{.Name}}</b>
+<span class="dash-chips">
+{{if .HasEmail}}{{if eq .Mail "sent"}}<span class="chip chip-ok">{{t "admin.dashboard.chip.mail_sent"}}</span>{{else if eq .Mail "failed"}}<span class="chip chip-error">{{t "admin.dashboard.chip.mail_failed"}}</span>{{else if eq .Mail "pending"}}<span class="chip chip-warn">{{t "admin.dashboard.chip.mail_pending"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.dashboard.chip.mail_none"}}</span>{{end}}{{else if .HandedOver}}<span class="chip dash-chip-mute">{{t "admin.dashboard.chip.nomail_done"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.dashboard.chip.nomail_todo"}}</span>{{end}}
+{{if .LinkOpened}}<span class="chip chip-ok">{{t "admin.dashboard.chip.link_opened"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.dashboard.chip.link_closed"}}</span>{{end}}
+{{if $.View.DrawDone}}{{if .TargetsSeen}}<span class="chip chip-ok">{{t "admin.dashboard.chip.target_seen"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.dashboard.chip.target_unseen"}}</span>{{end}}{{end}}
+{{if .LetterWritten}}<span class="chip chip-ok">{{t "admin.dashboard.chip.letter_written"}}</span>{{else}}<span class="chip chip-warn">{{t "admin.dashboard.chip.letter_pending"}}</span>{{end}}
+{{if .LetterRead}}<span class="chip chip-ok">{{t "admin.dashboard.chip.letter_read"}}</span>{{end}}
+</span></span></a>
+</li>
+{{end}}</ul>{{else}}<p class="dash-hint">{{t "admin.dashboard.people.empty"}}</p>{{end}}
+</section>
+</div>
+</div>
+{{end}}
+</div>{{end}}
