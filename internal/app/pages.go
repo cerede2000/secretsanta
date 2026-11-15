@@ -75,7 +75,7 @@ func registerGroupPages(a *App) error {
 		Groups: a.Groups, Render: set.render, DefaultLang: a.Cfg.DefaultLang,
 		PublicURL: a.publicBase(), Location: a.Cfg.Location,
 		AdminPath: func(slug string) string { return "/" + slug + "/admin/connexion" },
-		ClientKey: clientIP,
+		ClientKey: a.clientIP,
 	})
 	if err != nil {
 		return fmt.Errorf("pages des groupes : %w", err)
@@ -90,7 +90,7 @@ func registerGroupPages(a *App) error {
 func registerAccessPages(a *App) error {
 	p, err := accesspages.New(accesspages.Options{
 		Groups: a.Groups, Credentials: a.Tokens, Magic: a.Magic, Sessions: a.Sessions,
-		Translator: a.Cat, Clock: a.Clock, ClientIP: clientIP,
+		Translator: a.Cat, Clock: a.Clock, ClientIP: a.clientIP,
 	})
 	if err != nil {
 		return fmt.Errorf("pages de connexion : %w", err)

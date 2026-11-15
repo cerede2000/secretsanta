@@ -34,6 +34,9 @@ const (
 
 	VarRemindersEnabled = "REMINDERS_ENABLED"
 
+	VarTrustedProxies = "TRUSTED_PROXIES"
+	VarClientIPHeader = "CLIENT_IP_HEADER"
+
 	VarSearxngURL   = "SEARXNG_URL"
 	VarBraveAPIKey  = "BRAVE_API_KEY"
 	VarSerperAPIKey = "SERPER_API_KEY"
@@ -47,6 +50,7 @@ var Variables = []string{
 	VarMailEHLOHostname, VarMailEnvelopeFrom, VarMailReplyTo, VarMailTLSMode, VarMailAllowInsecure, VarMailMaxPerMinute,
 	VarMailDKIMDomain, VarMailDKIMSelector, VarMailDKIMKeyFile, VarMailDKIMAlgorithm, VarMailDKIMHeaders,
 	VarRemindersEnabled,
+	VarTrustedProxies, VarClientIPHeader,
 	VarSearxngURL, VarBraveAPIKey, VarSerperAPIKey,
 }
 

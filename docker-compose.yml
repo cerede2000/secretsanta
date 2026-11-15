@@ -17,6 +17,20 @@ services:
       # SMTP_USER: ${SMTP_USER}
       # SMTP_PASSWORD: ${SMTP_PASSWORD}
       # MAIL_FROM: ${MAIL_FROM}
+      # Adresse réelle du client derrière un mandataire inverse (facultatif).
+      # TRUSTED_PROXIES : adresses/CIDR dont l'en-tête est cru, ou none.
+      # Défaut : bouclage et réseaux privés (Traefik, Nginx, Caddy sur l'hôte
+      # ou le réseau de conteneurs : rien à régler, ils envoient X-Forwarded-For).
+      # TRUSTED_PROXIES: 172.18.0.0/16
+      # CLIENT_IP_HEADER : X-Forwarded-For (défaut), X-Real-IP ou CF-Connecting-IP.
+      #   Nginx avec « proxy_set_header X-Real-IP $remote_addr; » :
+      # CLIENT_IP_HEADER: X-Real-IP
+      #   Derrière Cloudflare puis un mandataire local : faire confiance aux
+      #   plages Cloudflare (https://www.cloudflare.com/ips/) si l'application
+      #   les reçoit directement, et lire :
+      # CLIENT_IP_HEADER: CF-Connecting-IP
+      # Application exposée directement, sans mandataire :
+      # TRUSTED_PROXIES: none
       # Dossier de langues supplémentaires (facultatif, voir volume ci-dessous) :
       # I18N_DIR: /i18n
     volumes:

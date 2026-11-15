@@ -678,8 +678,17 @@ func TestClientIP(t *testing.T) {
 		if c.xff != "" {
 			r.Header.Set("X-Forwarded-For", c.xff)
 		}
-		if got := clientIP(r); got != c.want {
+		if got := defaultClientIP(t)(r); got != c.want {
 			t.Errorf("%s : %q, attendu %q", c.name, got, c.want)
 		}
 	}
+}
+
+func defaultClientIP(t *testing.T) func(*http.Request) string {
+	t.Helper()
+	f, err := newClientIP(config.ClientIP{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return f
 }

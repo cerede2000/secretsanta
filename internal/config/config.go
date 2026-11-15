@@ -41,6 +41,10 @@ type Config struct {
 
 	RemindersEnabled bool
 
+	// ClientIP règle la lecture de l'adresse réelle du client (TRUSTED_PROXIES,
+	// CLIENT_IP_HEADER).
+	ClientIP ClientIP
+
 	Sources Sources
 }
 
@@ -178,6 +182,7 @@ func Load(getenv func(string) string) (*Config, error) {
 	l.loadSMTP(c)
 	l.loadMail(c)
 	l.loadDKIM(c)
+	l.loadClientIP(c)
 
 	c.RemindersEnabled = true
 	if v := l.get(VarRemindersEnabled); v != "" {

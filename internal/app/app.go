@@ -57,9 +57,12 @@ const mailTickEvery = 5 * time.Second
 
 // App est le serveur assemblé.
 type App struct {
-	Cfg   config.Config
-	DB    *sql.DB
-	Clock clock.Clock
+	// clientIP retrouve l'adresse réelle du client (TRUSTED_PROXIES,
+	// CLIENT_IP_HEADER).
+	clientIP func(*http.Request) string
+	Cfg      config.Config
+	DB       *sql.DB
+	Clock    clock.Clock
 	// Cat est le catalogue de textes (embarqué + dossier externe).
 	Cat      *catalog.Catalog
 	Version  string
@@ -155,8 +158,13 @@ func New(cfg config.Config, database *sql.DB, clk clock.Clock, version string) (
 	if err != nil {
 		return nil, err
 	}
+	ipOf, err := newClientIP(cfg.ClientIP)
+	if err != nil {
+		return nil, fmt.Errorf("adresse du client : %w", err)
+	}
 	a := &App{
-		Cfg: cfg, DB: database, Clock: clk, Cat: cat, Version: version,
+		clientIP: ipOf,
+		Cfg:      cfg, DB: database, Clock: clk, Cat: cat, Version: version,
 		Policy: policy, Mux: http.NewServeMux(), Slugs: http.NewServeMux(), sched: scheduler.New(clk),
 	}
 	a.Sessions = websec.NewSessions(database, clk, policy, websec.SessionOptions{})
