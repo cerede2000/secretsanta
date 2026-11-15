@@ -15,6 +15,7 @@ const HTML = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <body class="theme-page">
 <h1 class="theme-title" id="title">Couleurs, texte, formes</h1>
 <div class="card" id="card"><p id="body">Texte courant</p><p class="text-secondary" id="secondary">Texte secondaire</p><a class="theme-link" id="link" href="#">Lien</a></div>
+<div class="card-admin" id="card-admin"><p id="admin-body">Texte admin</p></div>
 <div class="theme-night" id="night"><p id="night-text">Texte attenue</p><h2 class="theme-title" id="night-title">Or</h2></div>
 <button class="btn btn-red" id="b-red" type="button">Entrer</button>
 <button class="btn btn-green" id="b-green" type="button">Secondaire</button>
@@ -23,7 +24,7 @@ const HTML = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <button class="btn btn-gold" id="b-gold" type="button">Or sur nuit</button>
 <button class="btn btn-ghost-light" id="b-ghost-light" type="button">Fantome clair</button>
 <button class="btn" id="b-off" type="button" disabled>Desactive</button>
-<label class="field-label" for="f">Prenom</label><input class="field" id="f" type="text">
+<label class="field-label" id="label" for="f">Prenom</label><input class="field" id="f" type="text" value="Camille">
 <div class="field-error" id="err">Erreur</div>
 <span class="chip chip-ok" id="c-ok">Lien ouvert</span><span class="chip chip-warn" id="c-warn">En attente</span><span class="chip chip-error" id="c-error">Echec</span>
 </body></html>`;
