@@ -19,7 +19,7 @@
 .maildiag-dns code { font: inherit; }
 .maildiag-dns:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
 .maildiag-wide { width: 100%; box-sizing: border-box; }
-.maildiag-copy { min-height: 44px; align-self: flex-start; }
+.maildiag-copy { min-height: 44px; align-self: stretch; }
 .maildiag-status { align-self: flex-start; height: auto; min-height: 28px; padding: 4px 12px; white-space: normal; }
 .maildiag-status[hidden] { display: none; }
 .maildiag-list { padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.5; }

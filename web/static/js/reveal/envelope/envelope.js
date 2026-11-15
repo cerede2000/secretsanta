@@ -33,15 +33,20 @@ function buildEnvelope() {
   const letter = svg('g', { class: 'envelope-letter' }, root);
   svg('rect', { x: '44', y: '70', width: '202', height: '150', rx: '6', fill: '#fff', stroke: '#c5ddd0', 'stroke-width': '2' }, letter);
   svg('path', { d: 'M62 102h110M62 122h140M62 142h96', stroke: '#c5ddd0', 'stroke-width': '5', 'stroke-linecap': 'round' }, letter);
-  const pocket = svg('g', {}, root);
-  svg('path', { d: 'M20 278l100-80M270 278L170 198', stroke: '#c5ddd0', 'stroke-width': '2' }, pocket);
-  svg('path', { d: 'M20 150l125 86 125-86V278H20z', fill: '#eaf4ee', stroke: '#c5ddd0', 'stroke-width': '2', 'stroke-linejoin': 'round' }, pocket);
+  // Maquette : plis du fond (pas de poche devant la lettre), rabat, sceau.
   const flap = svg('g', { class: 'envelope-flap' }, root);
   svg('path', { d: 'M20 120l125 86 125-86', fill: '#dcebe2', stroke: '#c5ddd0', 'stroke-width': '2', 'stroke-linejoin': 'round' }, flap);
+  svg('path', { d: 'M20 278l100-80M270 278L170 198', stroke: '#c5ddd0', 'stroke-width': '2' }, root);
+  // Éclats du sceau brisé (visibles une fois le sceau ouvert).
+  const shardL = svg('g', { transform: 'translate(-30 20) rotate(-18 120 190)' }, root);
+  svg('path', { class: 'envelope-shard', d: 'M120 176l-8 14 10 6-4 12 14-12-6-6 8-10z', fill: '#c41e3a', stroke: '#8f1329', 'stroke-width': '2.500', 'stroke-linejoin': 'round' }, shardL);
+  const shardR = svg('g', { transform: 'translate(46 30) rotate(20 180 190)' }, root);
+  svg('path', { class: 'envelope-shard', d: 'M180 176l8 14-10 6 4 12-14-12 6-6-8-10z', fill: '#c41e3a', stroke: '#8f1329', 'stroke-width': '2.500', 'stroke-linejoin': 'round' }, shardR);
   const seal = svg('g', { class: 'envelope-seal' }, root);
   const half = { fill: '#c41e3a', stroke: '#8f1329', 'stroke-width': '3' };
   svg('path', { class: 'envelope-seal-l', d: 'M145 178c-18 0-30 12-30 28s12 28 30 28z', ...half }, seal);
   svg('path', { class: 'envelope-seal-r', d: 'M145 178c18 0 30 12 30 28s-12 28-30 28z', ...half }, seal);
+  svg('circle', { class: 'envelope-star', cx: '145', cy: '206', r: '17', fill: 'none', stroke: '#8f1329', 'stroke-width': '2.500' }, seal);
   svg('path', { class: 'envelope-star', d: 'M145 194l4 8 9 1-6.500 6 1.500 9-8-4.500-8 4.500 1.500-9-6.500-6 9-1z', fill: '#ffd700' }, seal);
   return root;
 }
@@ -62,7 +67,10 @@ registerStyle('envelope', {
 
     const hint = document.createElement('div');
     hint.className = 'envelope-hint';
-    hint.textContent = labels.envelopeHint || '';
+    const icon = svg('svg', { 'aria-hidden': 'true', focusable: 'false', width: '22', height: '22', viewBox: '0 0 22 22', fill: 'none', stroke: '#ffd700', 'stroke-width': '2.200', 'stroke-linecap': 'round' }, hint);
+    svg('circle', { cx: '11', cy: '11', r: '8' }, icon);
+    svg('circle', { cx: '11', cy: '11', r: '2.500' }, icon);
+    hint.appendChild(document.createTextNode(labels.envelopeHint || ''));
 
     // Bouton équivalent : même geste, clavier et toucher simple.
     const equivalent = document.createElement('button');

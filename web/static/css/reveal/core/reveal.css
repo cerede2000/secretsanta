@@ -1,11 +1,11 @@
 /* Coque commune de la révélation (screen-revelation). Mobile d'abord.
    Animations : transform et opacité seulement. Aucune ressource data:. */
-.reveal { position: relative; overflow: hidden; margin: -20px -16px; padding: 28px 20px 32px; min-height: 100vh; box-sizing: border-box; color: #fff; }
+.reveal { position: relative; overflow: hidden; margin: -20px -16px; padding: 40px 24px 32px; min-height: 100vh; box-sizing: border-box; color: #fff; }
 .reveal [hidden] { display: none !important; }
-.reveal-body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; max-width: 100%; }
+.reveal-body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; max-width: 100%; }
 .reveal-cap { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--night-muted); }
 .reveal-pill { display: inline-flex; align-items: center; min-height: 28px; padding: 0 12px; border-radius: var(--radius-pill); background: rgba(255, 215, 0, .18); color: var(--gold); font: 800 13px var(--font-body); box-shadow: inset 0 0 0 1px rgba(255, 215, 0, .5); }
-.reveal-title { margin: 0; font-family: var(--font-display); font-size: 38px; line-height: 1.08; text-wrap: balance; overflow-wrap: anywhere; }
+.reveal-title { margin: 0; font-family: var(--font-display); font-size: 40px; line-height: 1.08; text-wrap: balance; overflow-wrap: anywhere; }
 .reveal-lead { margin: 0; max-width: 300px; font-size: 17px; line-height: 1.45; color: #e6ebfb; }
 .reveal-stage { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 8px; max-width: 100%; }
 .reveal-open { min-height: 52px; min-width: 220px; font-size: 17px; }
@@ -14,7 +14,7 @@
 .reveal-result.is-visible { opacity: 1; transform: none; transition: opacity .6s ease, transform .6s ease; }
 .reveal-name-wrap { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 300px; min-height: 120px; }
 .reveal-name-wrap::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius-pill); background: radial-gradient(ellipse at center, rgba(255, 215, 0, .5), rgba(255, 215, 0, 0) 70%); }
-.reveal-name { position: relative; max-width: 100%; font-family: var(--font-display); font-weight: 700; font-size: clamp(44px, 20vw, 80px); line-height: 1; color: var(--gold); text-shadow: 0 0 24px rgba(255, 215, 0, .8); overflow-wrap: anywhere; }
+.reveal-name { position: relative; max-width: 100%; font-family: var(--font-display); font-weight: 700; font-size: clamp(48px, 22.5vw, 88px); line-height: 1; color: var(--gold); text-shadow: 0 0 24px rgba(255, 215, 0, .8); overflow-wrap: anywhere; }
 .reveal-card { width: 100%; box-sizing: border-box; background: var(--frost); color: var(--ink); border-radius: var(--radius-l); padding: 16px 18px; box-shadow: 0 6px 20px rgba(8, 14, 40, .3); display: flex; flex-direction: column; gap: 10px; font-size: 15px; line-height: 1.45; text-align: left; overflow-wrap: anywhere; }
 .reveal-facts { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 2px dashed var(--line); padding-top: 10px; }
 .reveal-actions, .reveal-error { width: 100%; display: flex; flex-direction: column; gap: 12px; }

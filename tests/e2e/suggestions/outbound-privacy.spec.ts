@@ -76,7 +76,10 @@ async function pairsOf(g: Group, p: Person): Promise<{ c: Client; pair: string }
 
 test('aucune requête sortante ne contient courriel, nom ni prénom', async ({}, testInfo) => {
   const g = lane(testInfo).revealed;
-  const giver = g.people[0];
+  // Pas people[0] : sa cible reçoit déjà des idées de letter/mobile.spec.ts (une lettre
+  // en contient 5 au plus ; au-delà, l'ajout répond 422). Seuls people[0] et people[1]
+  // ont découvert leur cible à l'amorçage.
+  const giver = g.people[1];
 
   // Le tireur lit la lettre de sa cible : la cible y écrit, dans ses idées, des noms,
   // prénoms et courriels de participants (qui ne doivent jamais sortir).

@@ -4,19 +4,21 @@
 .envelope-seal-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 .envelope-svg { display: block; max-width: 100%; height: auto; }
 .envelope-svg * { transform-box: fill-box; transform-origin: center; }
-.envelope-letter, .envelope-flap, .envelope-seal-l, .envelope-seal-r, .envelope-star { will-change: transform, opacity; }
-.envelope-letter { transition: transform .8s cubic-bezier(.2, .8, .2, 1) .35s; }
-.envelope-flap { transition: transform .5s ease .15s; }
+.envelope-letter, .envelope-flap, .envelope-seal-l, .envelope-seal-r, .envelope-star, .envelope-shard { will-change: transform, opacity; }
+.envelope-letter { opacity: 0; transition: transform .8s cubic-bezier(.2, .8, .2, 1) .35s, opacity .3s ease .35s; }
+.envelope-shard { opacity: 0; transition: opacity .3s ease .3s; }
+.envelope-flap { transform-origin: 50% 0; transition: transform .5s ease .15s; }
 .envelope-seal-l, .envelope-seal-r { transition: transform .45s ease-in, opacity .45s ease-in; }
 .envelope-star { transition: opacity .2s ease; }
 .envelope.is-breaking .envelope-seal-l { transform: translate(-26px, 18px) rotate(-24deg); opacity: 0; }
 .envelope.is-breaking .envelope-seal-r { transform: translate(26px, 18px) rotate(24deg); opacity: 0; }
 .envelope.is-breaking .envelope-star { opacity: 0; }
-.envelope.is-breaking .envelope-flap { transform: translateY(-16px); }
-.envelope.is-breaking .envelope-letter { transform: translateY(-64px); }
+.envelope.is-breaking .envelope-flap { transform: translateY(-16px) scaleY(-1.07); }
+.envelope.is-breaking .envelope-letter { opacity: 1; transform: translateY(-40px); }
+.envelope.is-breaking .envelope-shard { opacity: 1; }
 .envelope-hint { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 700; color: var(--night-muted); }
 .envelope-hint svg { flex: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .envelope-letter, .envelope-flap, .envelope-seal-l, .envelope-seal-r, .envelope-star { transition: none; }
+  .envelope-letter, .envelope-flap, .envelope-seal-l, .envelope-seal-r, .envelope-star, .envelope-shard { transition: none; }
 }
