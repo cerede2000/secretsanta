@@ -1617,7 +1617,7 @@ Executed by `/wave-planning:wave-execute`. See that skill for the worktree, disp
 ```yaml status
 base_branch: main
 integration_branch: wave/integration
-integration_head: 890316d
+integration_head: e17bc49
 W1: done
 W2: done
 W3: done
@@ -1630,7 +1630,7 @@ W9: done
 W10: done
 W11: done
 W12: done
-W13: running
+W13: done
 W14: pending
 P1a: done
 P1b-db: done
