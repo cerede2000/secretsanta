@@ -1,0 +1,54 @@
+{{/*
+  Création d'un groupe (screen-creation-groupe). Données : .Lang, .TitleKey,
+  .ErrorKey (facultatif), .Form (Name, Slug, Budget, RevealAt, EventDate,
+  AdminView). Fonctions : t, csrfField. Formulaire sans validation du
+  navigateur : les erreurs s'affichent dans la page.
+*/}}
+{{define "groups/create"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/groups/groups.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<div class="groups-create-head"><h1>{{t "groups.create.title"}}</h1></div>
+<form class="groups-form" method="post" action="/creer" novalidate>
+{{csrfField}}
+{{if .ErrorKey}}<div id="create-error" class="groups-alert" role="alert">{{t .ErrorKey}}</div>{{end}}
+<div class="groups-card">
+<h2>{{t "groups.create.access"}}</h2>
+<label class="field-label" for="g-password">{{t "groups.create.password"}}</label>
+<input class="field" id="g-password" name="password" type="password" autocomplete="off" required{{if .ErrorKey}} aria-describedby="create-error"{{end}}>
+<p class="groups-hint">{{t "groups.create.password_hint"}}</p>
+</div>
+<div class="groups-card">
+<h2>{{t "groups.create.group"}}</h2>
+<label class="field-label" for="g-name">{{t "groups.create.name"}}</label>
+<input class="field" id="g-name" name="name" type="text" maxlength="80" value="{{.Form.Name}}" required>
+<label class="field-label" for="g-slug">{{t "groups.create.slug"}}</label>
+<input class="field" id="g-slug" name="slug" type="text" maxlength="40" value="{{.Form.Slug}}" autocapitalize="none" autocomplete="off" spellcheck="false" required>
+<p class="groups-hint">{{t "groups.create.slug_hint"}}</p>
+</div>
+<div class="groups-card">
+<h2>{{t "groups.create.budget_section"}}</h2>
+<label class="field-label" for="g-budget">{{t "groups.create.budget"}} <span class="groups-optional">{{t "groups.create.optional"}}</span></label>
+<div class="groups-money"><input class="field" id="g-budget" name="budget" type="text" inputmode="decimal" autocomplete="off" placeholder="{{t "groups.create.budget_placeholder"}}" value="{{.Form.Budget}}"><span class="groups-money-unit" aria-hidden="true">€</span></div>
+<p class="groups-hint">{{t "groups.create.budget_hint"}}</p>
+<label class="field-label" for="g-reveal">{{t "groups.create.reveal"}} <span class="groups-optional">{{t "groups.create.optional"}}</span></label>
+<input class="field" id="g-reveal" name="reveal_at" type="datetime-local" value="{{.Form.RevealAt}}">
+<p class="groups-hint">{{t "groups.create.reveal_hint"}}</p>
+<label class="field-label" for="g-event">{{t "groups.create.event"}} <span class="groups-optional">{{t "groups.create.optional"}}</span></label>
+<input class="field" id="g-event" name="event_date" type="date" value="{{.Form.EventDate}}">
+</div>
+<div class="groups-card">
+<h2>{{t "groups.create.options"}}</h2>
+<div class="groups-check"><input id="g-adminview" name="admin_can_view_pair" type="checkbox" value="1"{{if .Form.AdminView}} checked{{end}}><label for="g-adminview">{{t "groups.create.admin_view"}}</label></div>
+<p class="groups-note">{{t "groups.create.admin_view_hint"}}</p>
+</div>
+<button class="btn btn-red groups-submit" type="submit">{{t "groups.create.submit"}}</button>
+</form>
+</main>
+{{template "layout/footer" .}}
+</body>
+</html>{{end}}

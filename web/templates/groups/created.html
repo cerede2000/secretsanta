@@ -1,0 +1,32 @@
+{{/*
+  Affichage unique du secret d'organisateur après la création. Données :
+  .Lang, .TitleKey, .Name, .GroupURL, .AdminPath, .Secret. Les textes du
+  script de copie viennent des attributs data-*.
+*/}}
+{{define "groups/created"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/groups/groups.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<section class="groups-created">
+<h1>{{t "groups.created.heading"}}</h1>
+<p>{{t "groups.created.intro" "name" .Name}}</p>
+<div class="field-label">{{t "groups.created.secret_label"}}</div>
+<div class="groups-secret-row">
+<code class="groups-secret" id="admin-secret">{{.Secret}}</code>
+<button class="btn btn-green groups-copy" type="button" data-copy-target="admin-secret" data-copy-status="copy-status" data-copied="{{t "groups.created.copied"}}" data-failed="{{t "groups.created.copy_failed"}}">{{t "groups.created.copy"}}</button>
+</div>
+<div id="copy-status" class="groups-status" role="status" hidden></div>
+<p>{{t "groups.created.lost"}}</p>
+<div class="field-label">{{t "groups.created.link_label"}}</div>
+<p class="groups-link">{{.GroupURL}}</p>
+<a class="btn btn-ghost" href="{{.AdminPath}}">{{t "groups.created.admin"}}</a>
+</section>
+</main>
+{{template "layout/footer" .}}
+<script type="module" src="/static/js/groups/copy.js"></script>
+</body>
+</html>{{end}}

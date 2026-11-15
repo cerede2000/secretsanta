@@ -1,0 +1,41 @@
+{{/*
+  Accueil public d'un groupe (screen-accueil-groupe). Données : .Lang,
+  .TitleKey, .Name, .Slug. Ne montre jamais de participant. CSP stricte :
+  classes et fichiers CSS seulement.
+*/}}
+{{define "groups/home"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/groups/groups.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<section class="groups-home theme-night">
+<div class="groups-kicker">{{t "groups.home.kicker"}}</div>
+<h1 class="groups-home-name">{{.Name}}</h1>
+<svg class="groups-tree" aria-hidden="true" viewBox="0 0 190 250" focusable="false">
+<ellipse cx="95" cy="236" rx="92" ry="12" fill="#e6ecff" opacity=".95"/>
+<rect x="84" y="196" width="22" height="34" rx="4" fill="#6b3f1d"/>
+<path d="M95 22 L146 88 H118 L160 140 H124 L172 202 H18 L66 140 H30 L72 88 H44 Z" fill="#165b33"/>
+<path d="M95 22 L146 88 H44 Z" fill="#1f7a45"/>
+<circle cx="70" cy="120" r="6" fill="#c41e3a"/><circle cx="118" cy="104" r="6" fill="#c41e3a"/><circle cx="104" cy="168" r="7" fill="#c41e3a"/><circle cx="58" cy="180" r="6" fill="#ffd700"/><circle cx="136" cy="182" r="6" fill="#ffd700"/>
+<path d="M95 0l6 13 14 2-10.5 9.5 3 14-12.5-7.5-12.5 7.5 3-14L75 15l14-2z" fill="#ffd700"/>
+<rect x="30" y="204" width="34" height="26" rx="3" fill="#c41e3a"/><rect x="43" y="204" width="8" height="26" fill="#ffd700"/>
+<rect x="128" y="208" width="30" height="22" rx="3" fill="#ffd700"/><rect x="139" y="208" width="8" height="22" fill="#c41e3a"/>
+</svg>
+<div class="card groups-welcome">
+<h2>{{t "groups.home.welcome"}}</h2>
+<p>{{t "groups.home.intro"}}</p>
+</div>
+<div class="groups-actions">
+<a class="btn btn-red groups-enter" href="/{{.Slug}}/connexion">{{t "groups.home.enter"}}</a>
+<a class="btn btn-ghost-light" href="/{{.Slug}}/connexion">{{t "groups.home.code"}}</a>
+</div>
+<p class="groups-privacy">{{t "groups.home.privacy"}}</p>
+</section>
+</main>
+{{template "layout/footer" .}}
+<script type="module" src="/static/js/theme/snow.js"></script>
+</body>
+</html>{{end}}
