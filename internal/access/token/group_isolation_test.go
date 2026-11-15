@@ -18,7 +18,7 @@ func TestGroupIsolationProperty(t *testing.T) {
 		groupB := rapid.StringMatching(`[a-z0-9-]{1,12}`).Filter(func(s string) bool { return s != groupA }).Draw(t, "groupB")
 		participant := rapid.StringMatching(`[a-z0-9]{1,8}`).Draw(t, "participant")
 
-		svc, _ := NewService(NewMemoryStore(), LoginCodeLength)
+		svc, _ := NewService(NewMemoryStore(), LoginCodeLength, testKey)
 		ctx := context.Background()
 		tokA, err := svc.IssueLink(ctx, groupA, participant)
 		if err != nil {
@@ -61,12 +61,12 @@ func TestHashBoundToGroupProperty(t *testing.T) {
 		a := rapid.String().Draw(t, "a")
 		b := rapid.String().Filter(func(s string) bool { return s != a }).Draw(t, "b")
 		secret := rapid.String().Draw(t, "secret")
-		if Hash(a, KindLink, secret) == Hash(b, KindLink, secret) {
+		if Hash(testKey, a, KindLink, secret) == Hash(testKey, b, KindLink, secret) {
 			t.Fatalf("même empreinte pour les groupes %q et %q", a, b)
 		}
 	})
 	// Découpage ambigu : ("ab","c") et ("a","bc") ne doivent pas coïncider.
-	if Hash("ab", KindLink, "c") == Hash("a", KindLink, "bc") {
+	if Hash(testKey, "ab", KindLink, "c") == Hash(testKey, "a", KindLink, "bc") {
 		t.Fatal("concaténation ambiguë dans l'empreinte")
 	}
 }
@@ -75,12 +75,12 @@ func TestHashBoundToGroupProperty(t *testing.T) {
 // qu'aucun des deux ne mène à l'autre.
 func TestSameCodeInTwoGroupsStaysIsolated(t *testing.T) {
 	st := NewMemoryStore()
-	svc, _ := NewService(st, LoginCodeLength)
+	svc, _ := NewService(st, LoginCodeLength, testKey)
 	ctx := context.Background()
 	code := "ABCD2345"
 	for _, c := range []Credential{
-		{GroupID: "g1", ParticipantID: "alice", Kind: KindCode, Hash: Hash("g1", KindCode, code)},
-		{GroupID: "g2", ParticipantID: "bob", Kind: KindCode, Hash: Hash("g2", KindCode, code)},
+		{GroupID: "g1", ParticipantID: "alice", Kind: KindCode, Hash: Hash(testKey, "g1", KindCode, code)},
+		{GroupID: "g2", ParticipantID: "bob", Kind: KindCode, Hash: Hash(testKey, "g2", KindCode, code)},
 	} {
 		if err := st.Put(ctx, c); err != nil {
 			t.Fatal(err)
@@ -126,7 +126,7 @@ func (p *promiscuousStore) Find(context.Context, string, Kind, string) (Credenti
 func TestIsolationSurvivesFaultyStore(t *testing.T) {
 	ctx := context.Background()
 	for name, st := range map[string]Store{"leaky": &leakyStore{}, "promiscuous": &promiscuousStore{}} {
-		svc, _ := NewService(st, LoginCodeLength)
+		svc, _ := NewService(st, LoginCodeLength, testKey)
 		tok, err := svc.IssueLink(ctx, "g1", "alice")
 		if err != nil {
 			t.Fatal(err)
@@ -147,7 +147,7 @@ func TestIsolationSurvivesFaultyStore(t *testing.T) {
 // Tous les refus se ressemblent : groupe inconnu, groupe vide, secret mal
 // formé ou absent donnent la même erreur et le même message.
 func TestUniformRefusal(t *testing.T) {
-	svc, _ := NewService(NewMemoryStore(), LoginCodeLength)
+	svc, _ := NewService(NewMemoryStore(), LoginCodeLength, testKey)
 	ctx := context.Background()
 	tok, _ := svc.IssueLink(ctx, "g1", "alice")
 	other, _ := NewToken()
@@ -176,7 +176,7 @@ func TestUniformRefusal(t *testing.T) {
 }
 
 func TestIssueRequiresIDs(t *testing.T) {
-	svc, _ := NewService(NewMemoryStore(), LoginCodeLength)
+	svc, _ := NewService(NewMemoryStore(), LoginCodeLength, testKey)
 	ctx := context.Background()
 	if _, err := svc.IssueLink(ctx, "", "p"); !errs.Is(err, errs.KindValidation) {
 		t.Fatalf("groupe vide : %v", err)
@@ -197,7 +197,7 @@ func (corruptStore) Find(_ context.Context, groupID string, kind Kind, hash stri
 }
 
 func TestResolveChecksRecordedGroup(t *testing.T) {
-	svc, _ := NewService(corruptStore{}, LoginCodeLength)
+	svc, _ := NewService(corruptStore{}, LoginCodeLength, testKey)
 	tok, _ := NewToken()
 	if p, err := svc.ResolveLink(context.Background(), "g1", tok); err == nil {
 		t.Fatalf("accès d'un autre groupe accepté (%q)", p)
