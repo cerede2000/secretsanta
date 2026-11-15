@@ -93,7 +93,7 @@ func newest(names []string, keep int) map[semver]bool {
 
 // Compute calcule le plan de retention. Une version de paquet n'est jamais
 // supprimee si elle porte latest ou un tag parmi les keep plus recents ;
-// les versions sans tag ou sans tag de version sont supprimees. Les tags Git
+// les versions SANS tag ne sont jamais supprimees (ce sont les manifestes enfants d'une version gardee : les supprimer casse l'image) ; celles qui n'ont qu'un tag hors version sont supprimees. Les tags Git
 // v<version> hors des keep plus recents sont supprimes (et leurs releases).
 func Compute(in Input, keep int) Plan {
 	var imageTags []string
@@ -112,6 +112,9 @@ func Compute(in Input, keep int) Plan {
 			if v, ok := parse(t); ok && keptImg[v] {
 				protect = true
 			}
+		}
+		if len(pv.Tags) == 0 {
+			continue
 		}
 		if !protect {
 			plan.DeletePackageVersionIDs = append(plan.DeletePackageVersionIDs, pv.ID)

@@ -28,7 +28,7 @@ func fixture() Input {
 
 func TestComputeKeepsFour(t *testing.T) {
 	p := Compute(fixture(), Keep)
-	wantIDs := []int64{1, 2, 7, 8, 9}
+	wantIDs := []int64{1, 2, 9} // 7 et 8 sont sans tag : jamais supprimes
 	if !reflect.DeepEqual(p.DeletePackageVersionIDs, wantIDs) {
 		t.Errorf("ids supprimes : got %v want %v", p.DeletePackageVersionIDs, wantIDs)
 	}
@@ -86,7 +86,7 @@ func TestSemverOrderNotLexical(t *testing.T) {
 }
 
 func TestRunJSON(t *testing.T) {
-	in := `{"package_versions":[{"id":7,"tags":[]}],"git_tags":[]}`
+	in := `{"package_versions":[{"id":7,"tags":["sha-x"]}],"git_tags":[]}`
 	var out bytes.Buffer
 	if err := run(strings.NewReader(in), &out); err != nil {
 		t.Fatal(err)

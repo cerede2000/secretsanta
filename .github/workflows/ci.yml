@@ -66,6 +66,10 @@ jobs:
           context: .
           platforms: linux/amd64
           push: true
+          # Image simple, sans attestation : pas de manifestes enfants sans tag
+          # que la retention pourrait supprimer.
+          provenance: false
+          sbom: false
           tags: |
             ${{ env.IMAGE }}:${{ steps.version.outputs.version }}
             ${{ env.IMAGE }}:latest
