@@ -89,6 +89,14 @@ test('parcours 03 : tirage, contrôle sans noms, révélation dans les trois sty
     expect(target, 'jamais soi-même').not.toBe(me.name);
     await expectCleanMobile(p, undefined, true);
 
+    // Lien réel vers la lettre reçue, depuis la page de révélation.
+    const targetFirstName = f.members.find((m) => m.name === target)!.firstName;
+    const letterLink = p.locator('[data-role="letter"]');
+    await expect(letterLink).toBeVisible();
+    await expect(letterLink).toHaveAttribute('href', new RegExp(`^/${f.slug}/lettre-recue/\\d+$`));
+    await letterLink.click();
+    await expect(p.locator('.letter-sheet .letter-intro')).toContainText(`Lettre de ${targetFirstName}`);
+
     // Carte de cible : même personne, lettre reçue lisible.
     await p.goto(`/${f.slug}/participant`);
     await expect(p.locator('.draw-card')).toHaveCount(1);

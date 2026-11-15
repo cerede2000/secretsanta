@@ -49,6 +49,9 @@ services:
     image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
     ports:
       - "127.0.0.1:${SS_TEST_MAIL_API_PORT:-18025}:8025"
+    environment:
+      # Requis par tests/e2e/journey/c/08-deliverability (injection de pannes SMTP).
+      MP_ENABLE_CHAOS: "true"
     healthcheck:
       test: ["CMD", "/mailpit", "readyz"]
       interval: 2s

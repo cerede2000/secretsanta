@@ -400,7 +400,10 @@ func (g *Guard) fetch(ctx context.Context, rawURL string, max int64, accept stri
 	}
 	ctx, cancel := context.WithTimeout(ctx, g.timeout)
 	defer cancel()
-	req := (&http.Request{Method: http.MethodGet, URL: u, Header: http.Header{}}).WithContext(ctx)
+	req, err := outbound.NewRequest(ctx, http.MethodGet, u, nil)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrURL, err)
+	}
 	req.Header.Set("Accept", accept)
 	resp, err := g.client.Do(req)
 	if err != nil {

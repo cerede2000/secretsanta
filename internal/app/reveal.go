@@ -287,7 +287,6 @@ func (p *revealPages) showPage(w http.ResponseWriter, r *http.Request) {
 		"TitleKey":   "reveal.core.title.page",
 		"TargetsURL": base + "/cibles",
 		"ConfirmURL": base + "/confirmation",
-		"LetterURL":  "",
 	})
 }
 
@@ -298,6 +297,8 @@ type targetView struct {
 	Hint     string `json:"hint,omitempty"`
 	Budget   string `json:"budget,omitempty"`
 	Deadline string `json:"deadline,omitempty"`
+	// Letter est le lien de la lettre reçue de cette cible (« /<slug>/lettre-recue/<paire> »).
+	Letter string `json:"letter,omitempty"`
 }
 
 // targets renvoie les cibles de la personne connectée : aucune tant que la
@@ -328,7 +329,8 @@ func (p *revealPages) targets(w http.ResponseWriter, r *http.Request) {
 			p.fail(w, r, err)
 			return
 		}
-		v := targetView{ID: t.PairID, Name: strings.TrimSpace(rec.FirstName + " " + rec.Name), Hint: rec.GiftHint}
+		v := targetView{ID: t.PairID, Name: strings.TrimSpace(rec.FirstName + " " + rec.Name), Hint: rec.GiftHint,
+			Letter: "/" + g.Slug + "/lettre-recue/" + strconv.FormatInt(t.PairID, 10)}
 		if g.BudgetCents != nil {
 			v.Budget = templates.FormatBudget(lang, *g.BudgetCents)
 		}

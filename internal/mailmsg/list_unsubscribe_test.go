@@ -107,3 +107,32 @@ func TestListUnsubscribeURLMayLiveOffPublicHost(t *testing.T) {
 		t.Errorf("List-Unsubscribe = %q", got)
 	}
 }
+
+// Le lien de désinscription suit la règle des liens : http autorisé seulement
+// vers l'hôte d'un PUBLIC_URL de bouclage (recette locale).
+func unsubLocal(base, url string) Message {
+	m := localMessage(base + "/famille/tirage")
+	m.Essential = false
+	m.UnsubscribeURL = url
+	m.Text += "Ne plus recevoir ces rappels : " + url + "\n"
+	m.HTML += `<p><a href="` + url + `">Ne plus recevoir ces rappels</a> : ` + url + `</p>`
+	return m
+}
+
+func TestListUnsubscribeHTTPOnlyOnLoopbackPublicURL(t *testing.T) {
+	base := "http://127.0.0.1:18080"
+	u := base + "/desinscription/jeton"
+	out := build(t, builderFor(t, base), unsubLocal(base, u))
+	if got := parse(t, out.Raw).Header.Get("List-Unsubscribe"); got != "<"+u+">" {
+		t.Errorf("List-Unsubscribe = %q", got)
+	}
+	// Un autre hôte en http reste refusé, même en bouclage.
+	if _, err := builderFor(t, base).Build(unsubLocal(base, "http://autre.example.com/u")); err == nil {
+		t.Errorf("http vers un autre hôte accepté")
+	}
+	// PUBLIC_URL non local : http refusé.
+	remote := "http://noel.example.org"
+	if _, err := builderFor(t, remote).Build(unsubLocal(remote, remote+"/u")); err == nil {
+		t.Errorf("http accepté sans PUBLIC_URL de bouclage")
+	}
+}

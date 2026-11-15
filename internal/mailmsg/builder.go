@@ -182,7 +182,7 @@ func (b *Builder) Build(m Message) (*Built, error) {
 	if err := LintSubject(subject); err != nil {
 		return nil, err
 	}
-	if err := checkUnsubscribe(m); err != nil {
+	if err := b.checkUnsubscribe(m); err != nil {
 		return nil, err
 	}
 	if strings.TrimSpace(m.Text) == "" || strings.TrimSpace(m.HTML) == "" {
@@ -268,13 +268,16 @@ func (b *Builder) Build(m Message) (*Built, error) {
 }
 
 // checkUnsubscribe valide les adresses de désinscription déclarées.
-func checkUnsubscribe(m Message) error {
+// Même règle que le lint des liens : https, ou http seulement vers l'hôte d'un
+// PUBLIC_URL de bouclage.
+func (b *Builder) checkUnsubscribe(m Message) error {
 	if m.UnsubscribeURL != "" {
 		if err := checkField(m.UnsubscribeURL, "Le lien de désinscription"); err != nil {
 			return err
 		}
 		u, err := url.Parse(m.UnsubscribeURL)
-		if err != nil || u.Scheme != "https" || u.Host == "" || u.User != nil || strings.ContainsAny(m.UnsubscribeURL, " <>,\"") {
+		httpLocal := err == nil && u.Scheme == "http" && b.allowHTTP && b.publicHost != "" && strings.EqualFold(u.Host, b.publicHost)
+		if err != nil || (u.Scheme != "https" && !httpLocal) || u.Host == "" || u.User != nil || strings.ContainsAny(m.UnsubscribeURL, " <>,\"") {
 			return fail(ErrLink, "Le lien de désinscription doit être une adresse https complète.")
 		}
 		if isShortener(u.Hostname()) {

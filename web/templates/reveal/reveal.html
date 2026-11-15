@@ -2,7 +2,7 @@
   Page de révélation (screen-revelation) : coque commune aux trois styles.
   Données : .TargetsURL (GET, JSON : liste de {id, name, hint, budget, deadline}
   ou {targets: [...]}), .ConfirmURL (POST JSON {target_id}, en-tête X-CSRF-Token),
-  .LetterURL (facultative). Les textes passent par t et sont fournis au script
+  le lien de la lettre vient de chaque cible (champ letter). Les textes passent par t et sont fournis au script
   en attributs data-t-*. Le jeton CSRF vient de csrfToken.
 */}}
 {{define "layout/content"}}<link rel="stylesheet" href="/static/css/reveal/core/reveal.css">
@@ -32,7 +32,7 @@
 </div>
 <div class="reveal-actions" data-role="actions" hidden>
 <button class="btn btn-gold reveal-action" type="button" data-role="next" hidden>{{t "reveal.core.next"}}</button>
-{{if .LetterURL}}<a class="btn btn-red reveal-action" href="{{.LetterURL}}" data-role="letter" hidden>{{t "reveal.core.letter"}}</a>{{end}}
+<a class="btn btn-red reveal-action" href="" data-role="letter" hidden>{{t "reveal.core.letter"}}</a>
 <p class="reveal-note">{{t "reveal.core.secret"}}</p>
 </div>
 <div class="reveal-error" data-role="error" role="alert" hidden>

@@ -1,7 +1,6 @@
 package sources
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -13,6 +12,7 @@ import (
 	"strings"
 
 	"secretsanta/internal/config"
+	"secretsanta/internal/shared/outbound"
 )
 
 // maxBody plafonne les réponses de recherche.
@@ -38,19 +38,13 @@ func do(client *http.Client, name string, req *http.Request, into any) error {
 	return nil
 }
 
-// newRequest construit une requête (sans http.NewRequest, réservé à outbound).
+// newRequest construit une requête par la fabrique outbound.
 func newRequest(ctx context.Context, method, raw string, body []byte) (*http.Request, error) {
 	u, err := url.Parse(raw)
 	if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
 		return nil, errors.New("adresse de source invalide")
 	}
-	r := &http.Request{Method: method, URL: u, Host: u.Host, Header: http.Header{}, Proto: "HTTP/1.1", ProtoMajor: 1, ProtoMinor: 1}
-	if body != nil {
-		r.Body = io.NopCloser(bytes.NewReader(body))
-		r.ContentLength = int64(len(body))
-		r.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(body)), nil }
-	}
-	return r.WithContext(ctx), nil
+	return outbound.NewRequest(ctx, method, u, body)
 }
 
 func trunc(s string, n int) string {

@@ -3,7 +3,7 @@
 // fondu avec prefers-reduced-motion.
 //
 // Les données arrivent par une interface injectée (`source`) :
-//   targets()          -> Promise<[{id, name, hint?, budget?, deadline?}]>
+//   targets()          -> Promise<[{id, name, hint?, budget?, deadline?, letter?}]>
 //   confirmReveal(target) -> Promise<void>  (une seule fois par cible)
 //   lastStyle?()       -> string|null     (dernier style vu)
 //   rememberStyle?(s)  -> void
@@ -134,7 +134,12 @@ export function createReveal({
     const more = index + 1 < targets.length;
     show('next', more);
     const letter = $('letter');
-    if (letter) letter.hidden = more || !letter.getAttribute('href');
+    if (letter) {
+      const href = targets[index] && targets[index].letter;
+      if (href && href.charAt(0) === '/') letter.setAttribute('href', href);
+      else letter.removeAttribute('href');
+      letter.hidden = more || !letter.getAttribute('href');
+    }
     show('actions', true);
   }
 

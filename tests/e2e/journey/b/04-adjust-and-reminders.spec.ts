@@ -119,9 +119,10 @@ test('parcours 04 : retrait, ajout, règle contre une paire et relance manuelle'
     await page.getByRole('button', { name: /envoyer|relancer/i }).click();
     await expect(page.locator('#stg-res')).toBeVisible();
     await expect(page.locator('main')).toContainText('relance mise en file');
-    // La remise du courriel de relance n'est pas vérifiée ici : sur le banc (PUBLIC_URL en
-    // http de bouclage) mailmsg refuse le lien de désinscription non https des courriels non
-    // essentiels (défaut de F6 signalé dans le rapport de phase, à corriger dans internal/mailmsg).
+    // Le courriel de relance (non essentiel, lien de désinscription en http de bouclage)
+    // doit être remis : mailmsg applique aux liens de désinscription la règle des liens.
+    const reminder = await waitForMailWhere((x) => /Ton tirage t'attend/.test(x.Subject) && x.To.some((t) => t.Address === chosen.email));
+    expect(reminder.Text).toMatch(new RegExp(`/${g.slug}/(connexion|participant|acces)`));
     await clean(page);
     await page.goto(`/${g.slug}/admin/relances?type=lecture`);
     await page.locator(`input[name="person"][value="${chosen.id}"]`).check();

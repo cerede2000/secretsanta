@@ -3,7 +3,11 @@
 package outbound
 
 import (
+	"bytes"
+	"context"
+	"io"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -44,4 +48,23 @@ func New(opts Options) *http.Client {
 		Jar:       nil,
 		Timeout:   timeout,
 	}
+}
+
+// NewRequest construit une requête sortante liée à ctx : c'est le seul endroit
+// où l'application fabrique une http.Request (le test de ce paquet interdit
+// http.NewRequest ailleurs). body peut être nil ; l'adresse u est déjà validée
+// par l'appelant (garde SSRF, schéma, hôte).
+func NewRequest(ctx context.Context, method string, u *url.URL, body []byte) (*http.Request, error) {
+	var rd io.Reader
+	if body != nil {
+		rd = bytes.NewReader(body)
+	}
+	r, err := http.NewRequestWithContext(ctx, method, u.String(), rd)
+	if err != nil {
+		return nil, err
+	}
+	if body != nil {
+		r.GetBody = func() (io.ReadCloser, error) { return io.NopCloser(bytes.NewReader(body)), nil }
+	}
+	return r, nil
 }
