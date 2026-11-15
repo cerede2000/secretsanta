@@ -1,0 +1,38 @@
+/* Boîte aux lettres animée. Mobile d'abord ; bloc de nuit pleine largeur
+   (marges négatives du .site-main) ; sans style en ligne. */
+.mb-night { margin: -20px -16px; padding: 28px 20px 32px; min-height: 70vh; border-radius: 0; display: flex; flex-direction: column; align-items: center; gap: 18px; overflow: hidden; color: #fff; position: relative; }
+.mb-night > * { position: relative; }
+.mb-top { width: 100%; display: flex; align-items: center; gap: 8px; min-height: 44px; }
+.mb-back { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-left: -10px; }
+.mb-kicker { font-size: 13px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #c9d3f0; }
+.mb-title { margin: 0; font-family: var(--font-display); font-size: 40px; line-height: 1.05; color: var(--gold); text-align: center; text-wrap: balance; }
+.mb-art { flex: none; max-width: 100%; height: auto; }
+
+.mb-entries { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.mb-entry { display: flex; gap: 14px; align-items: center; min-height: 88px; box-sizing: border-box; background: var(--frost); color: var(--ink); border-radius: 20px; padding: 14px 16px; text-decoration: none; box-shadow: 0 6px 18px rgba(8, 14, 40, .3); }
+.mb-entry:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.mb-entry-icon, .mb-chevron { flex: none; }
+.mb-entry-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.mb-entry-title { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1.05; overflow-wrap: anywhere; }
+.mb-own { color: var(--green); }
+.mb-recv { color: var(--red); }
+.mb-chip { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 28px; padding: 0 12px; border-radius: 999px; font: 700 13px var(--font-body); }
+.mb-chip-ok { background: #dff3e4; color: #0f4a2a; }
+.mb-chip-wait { background: #fff1c2; color: #6b4b00; }
+.mb-chip-todo { background: #e4ebff; color: #1c2f6b; }
+.mb-note { margin: 0; font-size: 13px; line-height: 1.45; color: #c9d3f0; text-align: center; }
+.mb-info { width: 100%; box-sizing: border-box; background: rgba(255, 250, 240, .1); border-radius: 16px; padding: 14px 16px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22); font-size: 14px; line-height: 1.5; color: #e6ebfb; }
+.mb-info p { margin: 0; }
+
+/* Le drapeau est baissé sauf lettre envoyée ; la lettre est absente d'une
+   boîte vide. */
+.mb-flag { transform-box: fill-box; transform-origin: 0 100%; transform: rotate(80deg); }
+.mb-night[data-state="sent"] .mb-flag { transform: none; }
+.mb-night[data-state="empty"] .mb-letter { display: none; }
+
+@keyframes mb-bob { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+@keyframes mb-drop { from { transform: translateY(-26px); opacity: 0; } to { transform: none; opacity: 1; } }
+.mb-art.is-animated .mb-letter { animation: mb-drop .9s ease-out both; }
+.mb-night[data-state="sent"] .mb-art.is-animated .mb-flag { animation: mb-bob 2.4s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) { .mb-night * { animation: none !important; transition: none !important; } }

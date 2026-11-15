@@ -1,0 +1,18 @@
+{
+  "mailbox.title": "Your mailbox",
+  "mailbox.error.title": "Mailbox not found",
+  "mailbox.back": "Back",
+  "mailbox.own.title": "My letter to Santa",
+  "mailbox.own.state.empty": "Not written yet",
+  "mailbox.own.state.draft": "Draft",
+  "mailbox.own.state.sent": "Not read yet",
+  "mailbox.own.state.read": "Read by Santa",
+  "mailbox.received.title": "Letter received",
+  "mailbox.received.title_n": "Letter received · gift {n} of {total}",
+  "mailbox.received.state.written": "Ready to read",
+  "mailbox.received.state.blank": "Not written yet",
+  "mailbox.note.two": "The second letter only appears if you give 2 gifts. No letter reveals who looks after yours.",
+  "mailbox.note.reception": "With no gift to give (reception only), only your own letter appears here.",
+  "mailbox.info.lead": "Santa reads everything and never replies.",
+  "mailbox.info.body": "You will never know who looks after your letter, and they will never know you wrote it unless you say so."
+}
