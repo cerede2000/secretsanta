@@ -1,0 +1,59 @@
+# Banc de recette (F12a). Utilisé par scripts/e2e.sh ; ne sert jamais en production.
+# Les valeurs de secrets ci-dessous sont des valeurs de TEST jetables, confinées à
+# ce fichier : scripts/e2e.sh en génère de nouvelles à chaque exécution (variables
+# SS_TEST_*) et scripts/check-no-test-secrets.sh vérifie qu'elles n'apparaissent
+# ni dans docker-compose.yml, ni dans .env.example, ni dans le Dockerfile.
+name: ss-test
+services:
+  secretsanta:
+    # Image construite localement par scripts/e2e.sh (docker build du dépôt).
+    image: ss-test-secretsanta:local
+    pull_policy: never
+    ports:
+      - "127.0.0.1:${SS_TEST_APP_PORT:-18080}:8080"
+    environment:
+      PUBLIC_URL: http://127.0.0.1:${SS_TEST_APP_PORT:-18080}
+      INSTANCE_PASSWORD: ${SS_TEST_INSTANCE_PASSWORD:-ss-test-instance-password-fixe}
+      SIGNING_SECRET: ${SS_TEST_SIGNING_SECRET:-ss-test-signing-secret-fixe-0123456789abcdef}
+      SMTP_HOST: mailpit
+      SMTP_PORT: "1025"
+      MAIL_FROM: noel@ss-test.invalid
+      MAIL_EHLO_HOSTNAME: ss-test.invalid
+      MAIL_TLS_MODE: none
+      MAIL_ALLOW_INSECURE: "true"
+    volumes:
+      - ss-test-data:/data
+    depends_on:
+      mailpit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/secretsanta", "healthcheck"]
+      interval: 2s
+      timeout: 5s
+      start_period: 2s
+      retries: 30
+
+  # Serveur SMTP factice : capture les messages, API HTTP pour les relire.
+  mailpit:
+    # Tag exact épinglé (jamais latest). Digest vérifié de l'index multi-arch.
+    image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
+    ports:
+      - "127.0.0.1:${SS_TEST_MAIL_API_PORT:-18025}:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  # Évaluation du CONTENU des messages (scripts/spamcheck.sh). Aucun test réseau :
+  # ni réputation d'IP, ni listes noires, ni DKIM/SPF/DMARC. Le conteneur reste
+  # simplement en attente ; le script y lance `spamassassin -L`.
+  spamassassin:
+    # Tag exact épinglé (jamais latest), multi-arch (amd64 et arm64) vérifié.
+    image: instantlinux/spamassassin:4.0.1-5@sha256:0c663024dc20238e93ad9b1054783743eb194b74dadb6faf031fb957c85400b0
+    entrypoint: ["sleep", "infinity"]
+    profiles: ["spam"]
+
+volumes:
+  ss-test-data:
+    name: ss-test-data
