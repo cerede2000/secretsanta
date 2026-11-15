@@ -1,0 +1,14 @@
+{{/* Page neutre : groupe introuvable ou erreur. Données : .Lang, .TitleKey, .ErrorKey. */}}
+{{define "draw/error"}}<!doctype html>
+<html lang="{{.Lang}}">
+{{template "layout/head" .}}
+<body>
+<link rel="stylesheet" href="/static/css/draw/draw.css">
+<a class="skip-link" href="#main">{{t "layout.skip"}}</a>
+<header class="site-header"><span class="brand">{{t "layout.brand"}}</span></header>
+<main id="main" class="site-main">
+<h1>{{t .ErrorKey}}</h1>
+</main>
+{{template "layout/footer" .}}
+</body>
+</html>{{end}}
