@@ -139,12 +139,14 @@ func (s *InviteStore) DeletePending(ctx context.Context, groupID, id int64) erro
 }
 
 // ListPending implémente invite.Store : inscriptions non expirées du groupe,
-// dans l'ordre d'arrivée.
+// dans l'ordre d'arrivée. L'instant zéro (time.Time{}) désigne toutes les
+// inscriptions du groupe, expirées comprises (la purge au démarrage s'en sert),
+// comme invite.MemoryStore.
 func (s *InviteStore) ListPending(ctx context.Context, groupID int64, now time.Time) ([]invite.Pending, error) {
 	rows, err := s.db.QueryContext(ctx,
 		`SELECT id, group_id, ref, first_name, name, name_key, email, email_key, shared_address, lang, created_at, expires_at
 		 FROM registration_pending WHERE group_id = ? AND expires_at > ? ORDER BY id`,
-		groupID, toNanos(now))
+		groupID, cutoff(now))
 	if err != nil {
 		return nil, errs.Internal(err)
 	}
@@ -176,7 +178,7 @@ func (s *InviteStore) CountPending(ctx context.Context, groupID int64, now time.
 	var n int
 	if err := s.db.QueryRowContext(ctx,
 		`SELECT COUNT(*) FROM registration_pending WHERE group_id = ? AND expires_at > ?`,
-		groupID, toNanos(now)).Scan(&n); err != nil {
+		groupID, cutoff(now)).Scan(&n); err != nil {
 		return 0, errs.Internal(err)
 	}
 	return n, nil
@@ -186,7 +188,7 @@ func (s *InviteStore) exists(ctx context.Context, column string, groupID int64, 
 	var one int
 	err := s.db.QueryRowContext(ctx,
 		`SELECT 1 FROM registration_pending WHERE group_id = ? AND `+column+` = ? AND expires_at > ? LIMIT 1`,
-		groupID, key, toNanos(now)).Scan(&one)
+		groupID, key, cutoff(now)).Scan(&one)
 	if errors.Is(err, sql.ErrNoRows) {
 		return false, nil
 	}
