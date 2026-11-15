@@ -1,0 +1,17 @@
+{{/*
+  Sélecteur de langue discret du pied de page. Remplace le bloc
+  "i18n/selector" de layout/footer. Fonctions : t, langs, langCurrent,
+  langNext (internal/i18n/web) et csrfField (websec). CSP stricte : ni style
+  ni script en ligne.
+*/}}
+{{define "i18n/selector"}}<link rel="stylesheet" href="/static/css/i18n/selector.css">
+<form class="lang-selector" method="post" action="/langue">
+{{csrfField}}
+<input type="hidden" name="next" value="{{langNext}}">
+<label class="lang-selector-label" for="lang-select">{{t "i18n.selector.label"}}</label>
+<select class="lang-selector-select" id="lang-select" name="lang">
+{{- $cur := langCurrent}}
+{{range langs}}<option value="{{.Code}}" lang="{{.Code}}"{{if eq .Code $cur}} selected{{end}}>{{.Name}}</option>
+{{end}}</select>
+<button class="lang-selector-apply" type="submit">{{t "i18n.selector.apply"}}</button>
+</form>{{end}}

@@ -1,0 +1,14 @@
+/* Sélecteur de langue : discret, mobile d'abord, jetons de design de base.css. */
+.lang-selector { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 0; }
+.lang-selector-label { font-size: 14px; color: var(--ink-2); }
+.lang-selector-select {
+  min-height: var(--target); padding: 0 12px; max-width: 100%;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  background: #fff; color: var(--ink); font: inherit;
+}
+.lang-selector-apply {
+  min-height: var(--target); padding: 0 16px;
+  background: #fff; color: var(--green); border: 1px solid var(--green);
+  font-size: 14px; font-weight: 700;
+}
+.lang-selector-select:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
