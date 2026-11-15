@@ -9,19 +9,23 @@ import (
 
 	"secretsanta/internal/access/magic"
 	accessmig "secretsanta/internal/access/migrations"
+	"secretsanta/internal/admin/audit"
 	"secretsanta/internal/draw"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/i18n/cli"
 	"secretsanta/internal/letter"
+	"secretsanta/internal/letterread"
 	mailmig "secretsanta/internal/mail/migrations"
 	"secretsanta/internal/mailsuppress"
 	unsubmig "secretsanta/internal/mailunsub/migrations"
 	"secretsanta/internal/participants"
+	regmig "secretsanta/internal/registration/migrations"
 	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
+	"secretsanta/internal/targetpage"
 	"secretsanta/internal/websec"
 )
 
@@ -43,7 +47,8 @@ func TestRegistryOrderAndEveryModuleApplied(t *testing.T) {
 	}
 	want := []string{groups.Module, websec.MigrationModule, magic.Module, participants.Module, rules.Module, accessmig.Module, letter.Module,
 		groupsettings.Module, rulechange.Module, draw.Module, mailmig.Module, unsubmig.Module, reveal.Module,
-		reminderrules.Module, mailsuppress.Module}
+		reminderrules.Module, mailsuppress.Module,
+		regmig.Module, targetpage.Module, letterread.Module, audit.Module, AppModule}
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Fatalf("ordre %v, attendu %v", got, want)
 	}

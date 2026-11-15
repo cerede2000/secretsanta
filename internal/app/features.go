@@ -36,8 +36,7 @@ import (
 // features liste les fonctionnalités branchées : UNE ligne par module, dans
 // l'ordre des dépendances (le port DrawState avant participants, le bus avant
 // groupsettings, le service de jetons avant l'inscription et les pages).
-// Adaptateurs encore temporaires : voir adapters.go (inscriptions en attente,
-// réparation du tirage).
+// Adaptateur encore temporaire : voir adapters.go (réparation du tirage).
 var features = []func(*App) error{
 	registerBus,
 	registerGroups,
@@ -45,13 +44,17 @@ var features = []func(*App) error{
 	registerParticipants,
 	registerGroupSettings,
 	registerRules,
-	registerDraw,
-	registerRuleChange,
+	// Les jetons, l'enrôlement et la file d'envoi précèdent l'inscription par
+	// lien (registerRegistration), qui tient le port RegistrationState du
+	// tirage : elle précède donc registerDraw.
 	registerTokens,
 	registerEnrolment,
 	registerMail,
 	registerSuppression,
 	registerMailQueue,
+	registerRegistration,
+	registerDraw,
+	registerRuleChange,
 	registerMailDiag,
 	registerReminderRules,
 	registerMailUnsub,
@@ -60,10 +63,15 @@ var features = []func(*App) error{
 	registerImages,
 	registerSuggestions,
 	registerLetter,
+	registerLetterRead,
+	registerAdjust,
 	registerWeb,
 	registerGroupPages,
 	registerAccessPages,
 	registerRevealPages,
+	registerTargetPage,
+	registerRegistrationPages,
+	registerAdminPages,
 }
 
 // publicBase renvoie PUBLIC_URL sans barre finale.
@@ -115,13 +123,14 @@ func registerRules(a *App) error {
 }
 
 // registerDraw construit le service du tirage. Les inscriptions en attente
-// viennent de l'adaptateur temporaire noPendingRegistrations ; la porte de
+// viennent du service de vérification (verify.Service, port RegistrationState :
+// compteur réel hors inscriptions ignorées) ; la porte de
 // révélation est celle du paquet reveal (ouverture enregistrée, absence de
 // date ou date atteinte). Elle ne dépend que de la base et de l'horloge, donc
 // elle précède le service de révélation, qui a besoin du service du tirage.
 func registerDraw(a *App) error {
 	a.Draw = draw.NewService(a.DB, a.Clock, a.Groups, a.Participants, a.Rules,
-		noPendingRegistrations{}, draw.Options{Location: a.Cfg.Location, Gate: reveal.NewGate(a.DB, a.Clock)})
+		a.Verify, draw.Options{Location: a.Cfg.Location, Gate: reveal.NewGate(a.DB, a.Clock)})
 	return nil
 }
 

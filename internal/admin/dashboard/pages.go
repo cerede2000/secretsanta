@@ -34,6 +34,10 @@ type PageOptions struct {
 	// Nav donne les entrées de navigation d'administration (registre de F1b,
 	// clé active en argument). Facultatif : sans lui, la navigation est vide.
 	Nav func(active string) []adminnav.Item
+	// NavFor est la variante qui voit la requête : les destinations du
+	// registre contiennent {slug}, que seule la requête permet de remplir.
+	// Elle l'emporte sur Nav quand elle est fournie.
+	NavFor func(r *http.Request, active string) []adminnav.Item
 	// RegistrationsPath est la page d'administration des inscriptions (F11c) ;
 	// défaut : /<slug>/admin/inscriptions.
 	RegistrationsPath func(slug string) string
@@ -158,7 +162,9 @@ func (p *Pages) render(w http.ResponseWriter, r *http.Request, status int, name,
 	}
 	clone.Funcs(websec.TemplateFuncs(r)).Funcs(i18nweb.Funcs(p.o.Translator, r))
 	d.Lang = negotiate.Lang(r.Context(), p.o.Translator.DefaultLang())
-	if p.o.Nav != nil {
+	if p.o.NavFor != nil {
+		d.Nav = p.o.NavFor(r, active)
+	} else if p.o.Nav != nil {
 		d.Nav = p.o.Nav(active)
 	}
 	var buf bytes.Buffer

@@ -85,5 +85,6 @@
   "admin.dashboard.journal.intro": "The organizer's sensitive actions: what, for whom, when. Never a draw or a link.",
   "admin.dashboard.journal.empty": "No action recorded yet.",
   "admin.dashboard.action.lien_remis": "Link handed over in person",
+  "admin.dashboard.action.roles_changement": "Roles changed",
   "admin.dashboard.action.unknown": "Sensitive action"
 }

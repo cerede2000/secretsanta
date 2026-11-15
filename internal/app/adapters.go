@@ -22,23 +22,6 @@ import (
 	"secretsanta/internal/websec"
 )
 
-// noPendingRegistrations est un adaptateur TEMPORAIRE du port
-// ports.RegistrationState : il répond toujours « aucune inscription en
-// attente ». La fonctionnalité d'inscription (F11) le remplace ; tant qu'il
-// est en place, le verrou « inscriptions en attente » du tirage ne se
-// déclenche jamais.
-type noPendingRegistrations struct{}
-
-// PendingCount renvoie toujours 0.
-func (noPendingRegistrations) PendingCount(context.Context, int64) (int, error) { return 0, nil }
-
-// Resolve ne fait rien : il n'y a rien à résoudre.
-func (noPendingRegistrations) Resolve(context.Context, int64, ports.RegistrationResolution) error {
-	return nil
-}
-
-var _ ports.RegistrationState = noPendingRegistrations{}
-
 // previewOnlyRepair est un adaptateur TEMPORAIRE du port
 // ports.RuleChangeRepair : l'aperçu est « sans effet » (aucune personne
 // touchée), si bien que rulechange enregistre directement la règle ou le rôle

@@ -1,0 +1,21 @@
+{{/*
+  Saisie du code de vérification (page minimale, remplacée par F11c). Données :
+  .Lang, .TitleKey, .GroupName, .Action, .Ref, .ErrorKey.
+*/}}
+{{define "layout/content"}}<link rel="stylesheet" href="/static/css/access/access.css">
+<link rel="stylesheet" href="/static/css/registration/registration.css">
+<div class="access access-night theme-night">
+<div class="access-hero">
+<h1 class="theme-title access-title">{{t "registration.code.title"}}</h1>
+</div>
+<form class="card access-card" method="post" action="{{.Action}}">
+{{csrfField}}
+<input type="hidden" name="ref" value="{{.Ref}}">
+<div class="access-alert access-alert-ok" role="status">{{t "registration.code_sent"}}</div>
+<p class="access-intro">{{t "registration.code.intro"}}</p>
+<label class="field-label access-label" for="reg-code">{{t "registration.code.label"}}</label>
+<input id="reg-code" class="field access-code" type="text" name="code" required autocomplete="one-time-code" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="20"{{if .ErrorKey}} aria-invalid="true" aria-describedby="reg-code-err"{{end}}>
+{{if .ErrorKey}}<div id="reg-code-err" class="access-alert access-alert-error" role="alert">{{t .ErrorKey}}</div>{{end}}
+<button class="btn btn-red access-submit" type="submit">{{t "registration.code.submit"}}</button>
+</form>
+</div>{{end}}

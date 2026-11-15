@@ -21,6 +21,8 @@ import (
 	"secretsanta/internal/access/magic"
 	"secretsanta/internal/access/token"
 	"secretsanta/internal/accesspages"
+	"secretsanta/internal/admin/audit"
+	"secretsanta/internal/admin/dashboard"
 	"secretsanta/internal/config"
 	"secretsanta/internal/draw"
 	"secretsanta/internal/enrich"
@@ -32,6 +34,7 @@ import (
 	"secretsanta/internal/i18n/catalog"
 	"secretsanta/internal/i18n/negotiate"
 	"secretsanta/internal/letter"
+	"secretsanta/internal/letterread"
 	"secretsanta/internal/mail/queue"
 	"secretsanta/internal/maildiag"
 	"secretsanta/internal/maildkim"
@@ -39,15 +42,21 @@ import (
 	"secretsanta/internal/mailsuppress"
 	"secretsanta/internal/mailunsub"
 	"secretsanta/internal/participants"
+	"secretsanta/internal/registration/code"
+	"secretsanta/internal/registration/invite"
+	"secretsanta/internal/registration/sqlstore"
+	"secretsanta/internal/registration/verify"
 	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
+	"secretsanta/internal/shared/adminnav"
 	"secretsanta/internal/shared/clock"
 	"secretsanta/internal/shared/ports"
 	"secretsanta/internal/shared/scheduler"
 	"secretsanta/internal/sources"
 	"secretsanta/internal/ssrf"
+	"secretsanta/internal/targetpage"
 	"secretsanta/internal/websec"
 	"secretsanta/web"
 )
@@ -122,6 +131,26 @@ type App struct {
 	Images *ssrf.Store
 	// Letter est le service des lettres (aucune route encore).
 	Letter *letter.Service
+	// Vague 8. Invite porte l'inscription par lien (activation, renouvellement,
+	// plafonds, formulaire) ; RegCodes les codes de vérification ; Verify la
+	// vérification réussie, qui crée le participant et tient le port
+	// RegistrationState du tirage (compteur réel des inscriptions en attente).
+	// Les pages du formulaire sont minimales, F11c les remplacera.
+	Invite   *invite.Service
+	RegCodes *code.Service
+	Verify   *verify.Service
+	// Adjust ajuste le tirage (retrait, ajout) et met la révélation à jour ;
+	// aucune page encore (F10c). LetterRead sert la lecture de la lettre par
+	// le tireur ; TargetPage les pages du participant.
+	Adjust     *Adjusting
+	LetterRead *letterread.Service
+	TargetPage *targetpage.Pages
+	// AdminNav est le registre de navigation d'administration (Tableau,
+	// Participants, Tirage, Plus) : F11c y déclarera « Inscriptions ». Audit
+	// tient le journal des actions sensibles, Dashboard le tableau de bord.
+	AdminNav  *adminnav.Registry
+	Audit     *audit.Service
+	Dashboard *dashboard.Service
 	// Mail est nil tant qu'aucune adresse d'expédition n'est configurée.
 	Mail *mailmsg.Builder
 	// DKIM est toujours non nil ; Enabled() dit s'il signe.
@@ -135,6 +164,10 @@ type App struct {
 	// le multiplexeur refuse qu'un joker de premier segment cohabite avec
 	// /static/ ou /images/ ; il n'est consulté que si Mux n'a aucune route.
 	Slugs *http.ServeMux
+
+	// regPending et regState sont les magasins SQL de l'inscription (purge).
+	regPending *sqlstore.InviteStore
+	regState   *sqlstore.VerifyStore
 
 	// mail est l'expéditeur de courriels des fonctionnalités (la file si elle
 	// tourne, sinon un refus net : voir mailOutbox).

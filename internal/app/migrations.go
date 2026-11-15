@@ -6,19 +6,23 @@ import (
 
 	"secretsanta/internal/access/magic"
 	accessmig "secretsanta/internal/access/migrations"
+	"secretsanta/internal/admin/audit"
 	"secretsanta/internal/db"
 	"secretsanta/internal/draw"
 	"secretsanta/internal/groups"
 	"secretsanta/internal/groupsettings"
 	"secretsanta/internal/letter"
+	"secretsanta/internal/letterread"
 	mailmig "secretsanta/internal/mail/migrations"
 	"secretsanta/internal/mailsuppress"
 	unsubmig "secretsanta/internal/mailunsub/migrations"
 	"secretsanta/internal/participants"
+	regmig "secretsanta/internal/registration/migrations"
 	"secretsanta/internal/reminderrules"
 	"secretsanta/internal/reveal"
 	"secretsanta/internal/rulechange"
 	"secretsanta/internal/rules"
+	"secretsanta/internal/targetpage"
 	"secretsanta/internal/websec"
 )
 
@@ -60,6 +64,16 @@ var migrationSources = []struct {
 	// indépendante (adresse et groupe seulement). Après groups.
 	{reminderrules.Module, reminderrules.Migrations},
 	{mailsuppress.Module, mailsuppress.Migrations},
+	// Vague 8. registration (inscription par lien) et admin (journal) ne
+	// référencent que groups ; targetpage référence groups et participants ;
+	// letterread référence letters et draw_pairs : après letter et draw. Le
+	// module « app » (archives des lettres des personnes retirées) ne
+	// référence que groups.
+	{regmig.Module, regmig.Migrations},
+	{targetpage.Module, targetpage.Migrations},
+	{letterread.Module, letterread.Migrations},
+	{audit.Module, audit.Migrations},
+	{AppModule, AppMigrations},
 }
 
 // Migrations renvoie le registre ordonné des migrations de tous les modules.

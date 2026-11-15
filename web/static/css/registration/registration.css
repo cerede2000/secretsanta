@@ -1,0 +1,9 @@
+/* Inscription par lien (pages minimales, remplacées par F11c). Aucune
+   ressource data:, aucun style en ligne. */
+.reg-field { display: flex; flex-direction: column; gap: 6px; }
+.reg-error { color: var(--danger); font-size: 14px; font-weight: 700; line-height: 1.4; }
+.reg-check { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; font-size: 15px; }
+.reg-offer { text-align: center; }
+.reg-code { margin: 0; text-align: center; font-size: 28px; font-weight: 800; letter-spacing: .14em; }
+/* Champ piège : hors écran, jamais vu ni atteint par une personne. */
+.reg-hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }

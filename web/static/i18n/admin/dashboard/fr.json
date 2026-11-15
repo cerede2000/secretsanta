@@ -85,5 +85,6 @@
   "admin.dashboard.journal.intro": "Les actions sensibles de l'organisateur : quoi, pour qui, quand. Jamais de tirage ni de lien.",
   "admin.dashboard.journal.empty": "Aucune action consignée pour le moment.",
   "admin.dashboard.action.lien_remis": "Lien remis en main propre",
+  "admin.dashboard.action.roles_changement": "Rôles modifiés",
   "admin.dashboard.action.unknown": "Action sensible"
 }

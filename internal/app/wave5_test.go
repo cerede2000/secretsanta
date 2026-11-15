@@ -612,8 +612,8 @@ func TestWave5ServicesBuilt(t *testing.T) {
 	if a.MailQueue != nil {
 		t.Error("la file d'envoi ne doit pas exister sans adresse d'expédition")
 	}
-	// Aucune inscription en attente tant que la fonctionnalité n'existe pas.
-	n, err := noPendingRegistrations{}.PendingCount(context.Background(), 1)
+	// Compteur réel des inscriptions en attente (vague 8) : aucune ici.
+	n, err := a.Verify.PendingCount(context.Background(), 1)
 	if err != nil || n != 0 {
 		t.Errorf("PendingCount %d (%v)", n, err)
 	}
